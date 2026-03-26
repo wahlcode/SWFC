@@ -11,8 +11,10 @@ public sealed class ValidationResult
 
     public static ValidationResult Failure(params ValidationError[] errors)
     {
+        ArgumentNullException.ThrowIfNull(errors);
+
         var result = new ValidationResult();
-        result._errors.AddRange(errors);
+        result._errors.AddRange(errors.Where(x => x is not null));
         return result;
     }
 

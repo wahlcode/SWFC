@@ -1,3 +1,5 @@
+using SWFC.Domain.Common.Rules;
+
 namespace SWFC.Domain.Common.ValueObjects;
 
 public sealed class ChangeContext
@@ -15,11 +17,8 @@ public sealed class ChangeContext
 
     public static ChangeContext Create(string userId, string reason)
     {
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("UserId is required.", nameof(userId));
-
-        if (string.IsNullOrWhiteSpace(reason))
-            throw new ArgumentException("Reason is required.", nameof(reason));
+        Guard.AgainstNullOrWhiteSpace(userId, nameof(userId));
+        Guard.AgainstNullOrWhiteSpace(reason, nameof(reason));
 
         return new ChangeContext(userId.Trim(), reason.Trim());
     }
