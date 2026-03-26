@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SWFC.Architecture.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5564fe06c8c27d5937e24cf9a0861d23359f2aef")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c5b6355a695d2bd2335b2a53a2dac629ef88ca3f")]
 [assembly: System.Reflection.AssemblyProductAttribute("SWFC.Architecture.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SWFC.Architecture.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
