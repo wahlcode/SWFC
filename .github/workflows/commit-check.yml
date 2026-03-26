@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check commit message
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate commit messages
         run: |
-          echo "${{ github.event.head_commit.message }}" | grep -E "^\[M[0-9]{3}\.[0-9]{2}\]" || (echo "❌ Invalid commit message format. Use [Mxxx.xx]" && exit 1)
+          git log origin/main..HEAD --pretty=format:%s | grep -E "^\[M[0-9]{3}\.[0-9]{2}\]" || (echo "❌ Invalid commit message format. Use [Mxxx.xx]" && exit 1)
