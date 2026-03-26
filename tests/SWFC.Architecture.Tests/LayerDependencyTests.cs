@@ -42,6 +42,50 @@ public sealed class LayerDependencyTests
         Assert.True(result.IsSuccessful, BuildMessage(result.FailingTypeNames));
     }
 
+    [Fact]
+    public void Domain_Should_Not_Depend_On_EntityFrameworkCore()
+    {
+        var result = Types.InAssembly(typeof(SWFC.Domain.AssemblyMarker).Assembly)
+            .ShouldNot()
+            .HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful, BuildMessage(result.FailingTypeNames));
+    }
+
+    [Fact]
+    public void Domain_Should_Not_Depend_On_AspNetCore()
+    {
+        var result = Types.InAssembly(typeof(SWFC.Domain.AssemblyMarker).Assembly)
+            .ShouldNot()
+            .HaveDependencyOn("Microsoft.AspNetCore")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful, BuildMessage(result.FailingTypeNames));
+    }
+
+    [Fact]
+    public void Application_Should_Not_Depend_On_AspNetCore()
+    {
+        var result = Types.InAssembly(typeof(SWFC.Application.AssemblyMarker).Assembly)
+            .ShouldNot()
+            .HaveDependencyOn("Microsoft.AspNetCore")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful, BuildMessage(result.FailingTypeNames));
+    }
+
+    [Fact]
+    public void Application_Should_Not_Depend_On_EntityFrameworkCore()
+    {
+        var result = Types.InAssembly(typeof(SWFC.Application.AssemblyMarker).Assembly)
+            .ShouldNot()
+            .HaveDependencyOn("Microsoft.EntityFrameworkCore")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful, BuildMessage(result.FailingTypeNames));
+    }
+
     private static string BuildMessage(IEnumerable<string> failingTypes)
     {
         var items = failingTypes?.ToArray() ?? [];
