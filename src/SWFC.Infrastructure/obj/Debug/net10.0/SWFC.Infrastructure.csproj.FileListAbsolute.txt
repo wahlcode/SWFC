@@ -63,3 +63,4 @@ C:\Dev\swfc\src\SWFC.Infrastructure\obj\Debug\net10.0\refint\SWFC.Infrastructure
 C:\Dev\swfc\src\SWFC.Infrastructure\obj\Debug\net10.0\SWFC.Infrastructure.pdb
 C:\Dev\swfc\src\SWFC.Infrastructure\obj\Debug\net10.0\SWFC.Infrastructure.genruntimeconfig.cache
 C:\Dev\swfc\src\SWFC.Infrastructure\obj\Debug\net10.0\ref\SWFC.Infrastructure.dll
+C:\Dev\swfc\src\SWFC.Infrastructure\obj\Debug\net10.0\SWFC.Infrastructure.sourcelink.json

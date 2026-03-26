@@ -13,3 +13,4 @@ C:\Dev\swfc\src\SWFC.Application\obj\Debug\net10.0\SWFC.Application.dll
 C:\Dev\swfc\src\SWFC.Application\obj\Debug\net10.0\refint\SWFC.Application.dll
 C:\Dev\swfc\src\SWFC.Application\obj\Debug\net10.0\SWFC.Application.pdb
 C:\Dev\swfc\src\SWFC.Application\obj\Debug\net10.0\ref\SWFC.Application.dll
+C:\Dev\swfc\src\SWFC.Application\obj\Debug\net10.0\SWFC.Application.sourcelink.json

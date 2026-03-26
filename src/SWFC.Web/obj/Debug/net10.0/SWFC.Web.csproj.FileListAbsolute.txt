@@ -235,3 +235,4 @@ C:\Dev\swfc\src\SWFC.Web\obj\Debug\net10.0\refint\SWFC.Web.dll
 C:\Dev\swfc\src\SWFC.Web\obj\Debug\net10.0\SWFC.Web.pdb
 C:\Dev\swfc\src\SWFC.Web\obj\Debug\net10.0\SWFC.Web.genruntimeconfig.cache
 C:\Dev\swfc\src\SWFC.Web\obj\Debug\net10.0\ref\SWFC.Web.dll
+C:\Dev\swfc\src\SWFC.Web\obj\Debug\net10.0\SWFC.Web.sourcelink.json

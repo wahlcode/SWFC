@@ -98,3 +98,4 @@ C:\Dev\swfc\tests\SWFC.Domain.Tests\obj\Debug\net10.0\refint\SWFC.Domain.Tests.d
 C:\Dev\swfc\tests\SWFC.Domain.Tests\obj\Debug\net10.0\SWFC.Domain.Tests.pdb
 C:\Dev\swfc\tests\SWFC.Domain.Tests\obj\Debug\net10.0\SWFC.Domain.Tests.genruntimeconfig.cache
 C:\Dev\swfc\tests\SWFC.Domain.Tests\obj\Debug\net10.0\ref\SWFC.Domain.Tests.dll
+C:\Dev\swfc\tests\SWFC.Domain.Tests\obj\Debug\net10.0\SWFC.Domain.Tests.sourcelink.json

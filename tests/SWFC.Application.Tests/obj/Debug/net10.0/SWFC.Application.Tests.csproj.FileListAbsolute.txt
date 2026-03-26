@@ -100,3 +100,4 @@ C:\Dev\swfc\tests\SWFC.Application.Tests\obj\Debug\net10.0\refint\SWFC.Applicati
 C:\Dev\swfc\tests\SWFC.Application.Tests\obj\Debug\net10.0\SWFC.Application.Tests.pdb
 C:\Dev\swfc\tests\SWFC.Application.Tests\obj\Debug\net10.0\SWFC.Application.Tests.genruntimeconfig.cache
 C:\Dev\swfc\tests\SWFC.Application.Tests\obj\Debug\net10.0\ref\SWFC.Application.Tests.dll
+C:\Dev\swfc\tests\SWFC.Application.Tests\obj\Debug\net10.0\SWFC.Application.Tests.sourcelink.json

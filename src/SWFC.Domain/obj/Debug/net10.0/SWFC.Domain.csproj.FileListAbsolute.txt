@@ -9,3 +9,4 @@ C:\Dev\swfc\src\SWFC.Domain\obj\Debug\net10.0\SWFC.Domain.dll
 C:\Dev\swfc\src\SWFC.Domain\obj\Debug\net10.0\refint\SWFC.Domain.dll
 C:\Dev\swfc\src\SWFC.Domain\obj\Debug\net10.0\SWFC.Domain.pdb
 C:\Dev\swfc\src\SWFC.Domain\obj\Debug\net10.0\ref\SWFC.Domain.dll
+C:\Dev\swfc\src\SWFC.Domain\obj\Debug\net10.0\SWFC.Domain.sourcelink.json

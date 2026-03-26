@@ -162,3 +162,4 @@ C:\Dev\swfc\tests\SWFC.Infrastructure.Tests\obj\Debug\net10.0\refint\SWFC.Infras
 C:\Dev\swfc\tests\SWFC.Infrastructure.Tests\obj\Debug\net10.0\SWFC.Infrastructure.Tests.pdb
 C:\Dev\swfc\tests\SWFC.Infrastructure.Tests\obj\Debug\net10.0\SWFC.Infrastructure.Tests.genruntimeconfig.cache
 C:\Dev\swfc\tests\SWFC.Infrastructure.Tests\obj\Debug\net10.0\ref\SWFC.Infrastructure.Tests.dll
+C:\Dev\swfc\tests\SWFC.Infrastructure.Tests\obj\Debug\net10.0\SWFC.Infrastructure.Tests.sourcelink.json
