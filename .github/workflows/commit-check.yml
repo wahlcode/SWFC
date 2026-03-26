@@ -1,0 +1,14 @@
+name: Commit Message Check
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check commit message
+        run: |
+          echo "${{ github.event.head_commit.message }}" | grep -E "^\[M[0-9]{3}\.[0-9]{2}\]" || (echo "❌ Invalid commit message format. Use [Mxxx.xx]" && exit 1)
