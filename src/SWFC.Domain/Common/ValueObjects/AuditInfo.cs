@@ -1,3 +1,5 @@
+using SWFC.Domain.Common.Rules;
+
 namespace SWFC.Domain.Common.ValueObjects;
 
 public sealed class AuditInfo
@@ -8,10 +10,12 @@ public sealed class AuditInfo
         DateTime? lastModifiedAtUtc = null,
         string? lastModifiedBy = null)
     {
+        Guard.AgainstNullOrWhiteSpace(createdBy, nameof(createdBy));
+
         CreatedAtUtc = createdAtUtc;
-        CreatedBy = createdBy;
+        CreatedBy = createdBy.Trim();
         LastModifiedAtUtc = lastModifiedAtUtc;
-        LastModifiedBy = lastModifiedBy;
+        LastModifiedBy = string.IsNullOrWhiteSpace(lastModifiedBy) ? null : lastModifiedBy.Trim();
     }
 
     public DateTime CreatedAtUtc { get; }

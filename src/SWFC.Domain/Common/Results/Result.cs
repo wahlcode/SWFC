@@ -4,6 +4,9 @@ public class Result
 {
     protected Result(bool isSuccess, Error error)
     {
+        if (error is null)
+            throw new ArgumentNullException(nameof(error));
+
         if (isSuccess && error != Error.None)
             throw new ArgumentException("Successful result cannot contain an error.", nameof(error));
 
@@ -20,5 +23,9 @@ public class Result
 
     public static Result Success() => new(true, Error.None);
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+        return new Result(false, error);
+    }
 }
