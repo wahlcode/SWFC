@@ -1,0 +1,21 @@
+name: PR Template Presence Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  pr-template-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate PR body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const required = ['Task-ID', 'Modul', 'CORE / EXT', 'Beschreibung', 'Checkliste'];
+            const missing = required.filter(x => !body.includes(x));
+            if (missing.length > 0) {
+              core.setFailed('PR body is missing required sections: ' + missing.join(', '));
+            }

@@ -1,0 +1,29 @@
+name: Dependency Check
+
+on:
+  pull_request:
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Vulnerability check
+        shell: bash
+        run: |
+          set -e
+          projects=
+          for project in ; do
+            echo "Checking "
+            dotnet list "" package --vulnerable --include-transitive
+          done

@@ -1,0 +1,59 @@
+name: Architecture Check
+
+on:
+  pull_request:
+
+jobs:
+  architecture-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate project references
+        shell: bash
+        run: |
+          DOMAIN='src/SWFC.Domain/SWFC.Domain.csproj'
+          APP='src/SWFC.Application/SWFC.Application.csproj'
+          INFRA='src/SWFC.Infrastructure/SWFC.Infrastructure.csproj'
+          WEB='src/SWFC.Web/SWFC.Web.csproj'
+
+          if grep -q 'SWFC.Infrastructure' ""; then
+            echo "Domain must not reference Infrastructure"
+            exit 1
+          fi
+
+          if grep -q 'SWFC.Web' ""; then
+            echo "Domain must not reference Web"
+            exit 1
+          fi
+
+          if grep -q 'SWFC.Infrastructure' ""; then
+            echo "Application must not reference Infrastructure"
+            exit 1
+          fi
+
+          if grep -q 'SWFC.Web' ""; then
+            echo "Application must not reference Web"
+            exit 1
+          fi
+
+          if ! grep -q 'SWFC.Domain' ""; then
+            echo "Application must reference Domain"
+            exit 1
+          fi
+
+          if ! grep -q 'SWFC.Domain' ""; then
+            echo "Infrastructure must reference Domain"
+            exit 1
+          fi
+
+          if ! grep -q 'SWFC.Application' ""; then
+            echo "Infrastructure must reference Application"
+            exit 1
+          fi
+
+          if grep -q 'SWFC.Domain' ""; then
+            echo "Web must not reference Domain directly"
+            exit 1
+          fi

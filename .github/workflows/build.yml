@@ -1,13 +1,13 @@
-name: CI
+name: SWFC CI
 
 on:
   pull_request:
-    branches: [ main ]
   push:
-    branches: [ main, develop, feature/** ]
+    branches:
+      - main
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,13 +17,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore
 
       - name: Test
-        run: dotnet test --no-build --configuration Release
+        run: dotnet test --no-build
