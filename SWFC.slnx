@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SWFC.Application/SWFC.Application.csproj" />
+    <Project Path="src/SWFC.Domain/SWFC.Domain.csproj" />
+    <Project Path="src/SWFC.Infrastructure/SWFC.Infrastructure.csproj" />
+    <Project Path="src/SWFC.Web/SWFC.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SWFC.Application.Tests/SWFC.Application.Tests.csproj" />
+    <Project Path="tests/SWFC.Architecture.Tests/SWFC.Architecture.Tests.csproj" />
+    <Project Path="tests/SWFC.Domain.Tests/SWFC.Domain.Tests.csproj" />
+    <Project Path="tests/SWFC.Infrastructure.Tests/SWFC.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>
