@@ -22,8 +22,8 @@ jobs:
         shell: bash
         run: |
           set -e
-          projects=
-          for project in ; do
-            echo "Checking "
-            dotnet list "" package --vulnerable --include-transitive
+          projects=$(find src tests -name '*.csproj')
+          for project in $projects; do
+            echo "Checking $project"
+            dotnet list "$project" package --vulnerable --include-transitive
           done

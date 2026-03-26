@@ -18,42 +18,42 @@ jobs:
           INFRA='src/SWFC.Infrastructure/SWFC.Infrastructure.csproj'
           WEB='src/SWFC.Web/SWFC.Web.csproj'
 
-          if grep -q 'SWFC.Infrastructure' ""; then
+          if grep -q 'SWFC.Infrastructure' "$DOMAIN"; then
             echo "Domain must not reference Infrastructure"
             exit 1
           fi
 
-          if grep -q 'SWFC.Web' ""; then
+          if grep -q 'SWFC.Web' "$DOMAIN"; then
             echo "Domain must not reference Web"
             exit 1
           fi
 
-          if grep -q 'SWFC.Infrastructure' ""; then
+          if grep -q 'SWFC.Infrastructure' "$APP"; then
             echo "Application must not reference Infrastructure"
             exit 1
           fi
 
-          if grep -q 'SWFC.Web' ""; then
+          if grep -q 'SWFC.Web' "$APP"; then
             echo "Application must not reference Web"
             exit 1
           fi
 
-          if ! grep -q 'SWFC.Domain' ""; then
+          if ! grep -q 'SWFC.Domain' "$APP"; then
             echo "Application must reference Domain"
             exit 1
           fi
 
-          if ! grep -q 'SWFC.Domain' ""; then
+          if ! grep -q 'SWFC.Domain' "$INFRA"; then
             echo "Infrastructure must reference Domain"
             exit 1
           fi
 
-          if ! grep -q 'SWFC.Application' ""; then
+          if ! grep -q 'SWFC.Application' "$INFRA"; then
             echo "Infrastructure must reference Application"
             exit 1
           fi
 
-          if grep -q 'SWFC.Domain' ""; then
+          if grep -q 'SWFC.Domain' "$WEB"; then
             echo "Web must not reference Domain directly"
             exit 1
           fi

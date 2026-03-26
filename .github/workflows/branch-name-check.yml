@@ -9,6 +9,7 @@ jobs:
 
     steps:
       - name: Validate branch name
+        shell: bash
         run: |
           BRANCH="${{ github.head_ref }}"
           echo "Branch: $BRANCH"
