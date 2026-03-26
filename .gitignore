@@ -2,21 +2,14 @@
 bin/
 obj/
 
-# Visual Studio
-.vs/
+# .NET
 *.user
 *.suo
+*.cache
+*.pdb
 
-# Test
-TestResults/
-
-# Rider / VSCode
-.idea/
-.vscode/
-
-# Logs
-*.log
+# VS
+.vs/
 
 # OS
-.DS_Store
 Thumbs.db
