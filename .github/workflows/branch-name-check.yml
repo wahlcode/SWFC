@@ -10,9 +10,10 @@ jobs:
     steps:
       - name: Validate branch name
         run: |
-           = 
-          echo "Branch: "
-          if [[ ! "" =~ ^(feature|fix|chore|refactor|test)/M[0-9]{3,4}\.[0-9]{2}-[a-z0-9-]+$ ]]; then
-            echo "Invalid branch name: "
+          BRANCH="${{ github.head_ref }}"
+          echo "Branch: $BRANCH"
+
+          if [[ ! "$BRANCH" =~ ^(feature|fix|chore|refactor|test)/M[0-9]{3,4}\.[0-9]{2}-[a-z0-9-]+$ ]]; then
+            echo "Invalid branch name: $BRANCH"
             exit 1
           fi
