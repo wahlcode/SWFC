@@ -1,0 +1,66 @@
+@page "/modules"
+
+<PageTitle>Modulübersicht</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Modulübersicht</h2>
+        <p class="m305-page__description">
+            Übersicht über die Hauptmodule des Projekts und ihren aktuellen Status.
+        </p>
+    </div>
+
+    <div class="m305-module-grid">
+        @foreach (var module in Modules)
+        {
+            <article class="m305-card m305-module-card">
+                <div class="m305-card__body">
+                    <div class="m305-module-card__top">
+                        <div>
+                            <div class="m305-module-card__code">@module.Code</div>
+                            <h3 class="m305-card__title">@module.Title</h3>
+                        </div>
+
+                        <span class="@GetStatusClass(module.Status)">
+                            @module.Status
+                        </span>
+                    </div>
+
+                    <p class="m305-card__text">
+                        Modulbereich @module.Code – @module.Title
+                    </p>
+
+                    <div class="m305-module-card__statusline">
+                        <span class="m305-module-card__label">Status:</span>
+                        <span class="m305-module-card__value">@module.Status</span>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private readonly List<ModuleItem> Modules =
+    [
+        new("M100", "System", "Erledigt"),
+        new("M200", "Business", "In Arbeit"),
+        new("M300", "Presentation", "In Arbeit"),
+        new("M400", "Integrations", "Offen"),
+        new("M500", "Runtime", "Offen"),
+        new("M600", "Planning", "Offen"),
+        new("M700", "Support", "Offen"),
+        new("M800", "Security", "Erledigt"),
+        new("M900", "Intelligence", "Offen"),
+        new("M1000", "Platform", "Offen")
+    ];
+
+    private static string GetStatusClass(string status) => status switch
+    {
+        "Erledigt" => "m305-badge m305-badge--done",
+        "In Arbeit" => "m305-badge m305-badge--progress",
+        _ => "m305-badge m305-badge--open"
+    };
+
+    private sealed record ModuleItem(string Code, string Title, string Status);
+}

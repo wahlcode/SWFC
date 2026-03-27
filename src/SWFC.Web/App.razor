@@ -1,10 +1,27 @@
-@namespace SWFC.Web
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link href="app.css" rel="stylesheet" />
+    <HeadOutlet />
+</head>
 
-<Router AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" />
-    </Found>
-    <NotFound>
-        <p>Seite nicht gefunden.</p>
-    </NotFound>
-</Router>
+<body>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(AppShell)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+
+        <NotFound>
+            <LayoutView Layout="@typeof(AppShell)">
+                <p>Seite nicht gefunden.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>
