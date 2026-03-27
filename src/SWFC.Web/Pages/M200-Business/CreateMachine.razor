@@ -1,6 +1,5 @@
 @page "/machines/create"
 @using SWFC.Application.M200_Business.M201_Assets.Commands
-@using SWFC.Application.M200_Business.M201_Assets.Handlers
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
 @inject IExecutionPipeline<CreateMachineCommand, Guid> Pipeline
 
@@ -43,7 +42,7 @@
         try
         {
             var command = new CreateMachineCommand(Name, Reason);
-            var result = await Pipeline.ExecuteAsync(command);
+            var result = await Pipeline.ExecuteAsync(command, CancellationToken.None);
 
             Message = result.IsSuccess
                 ? $"Machine created successfully. Id: {result.Value}"

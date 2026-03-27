@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IMachineWriteRepository, MachineWriteRepository>();
 
-        services.AddScoped<CreateMachineHandler>();
+        
         services.AddScoped<IUseCaseHandler<CreateMachineCommand, Guid>, CreateMachineHandler>();
 
         return services;
