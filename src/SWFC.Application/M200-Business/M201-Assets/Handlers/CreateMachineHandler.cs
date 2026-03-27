@@ -1,6 +1,7 @@
 using SWFC.Application.Common.Validation;
 using SWFC.Application.M200_Business.M201_Assets.Commands;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Domain.Common.Errors;
 using SWFC.Domain.Common.Results;
@@ -10,7 +11,9 @@ using SWFC.Domain.M200_Business.M201_Assets.ValueObjects;
 
 namespace SWFC.Application.M200_Business.M201_Assets.Handlers;
 
-public sealed class CreateMachineHandler : AuthorizedHandler<CreateMachineCommand, Guid>
+public sealed class CreateMachineHandler
+    : AuthorizedHandler<CreateMachineCommand, Guid>,
+      IUseCaseHandler<CreateMachineCommand, Guid>
 {
     private readonly ICommandValidator<CreateMachineCommand> _validator;
 
