@@ -7,9 +7,12 @@ using SWFC.Application.M200_Business.M201_Assets.Handlers;
 using SWFC.Application.M200_Business.M201_Assets.Interfaces;
 using SWFC.Application.M200_Business.M201_Assets.Services;
 using SWFC.Application.M200_Business.M201_Assets.Validators;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Infrastructure.Persistence.Context;
 using SWFC.Infrastructure.Persistence.Repositories.M200_Business;
+using SWFC.Infrastructure.Services.Security;
 
 namespace SWFC.Infrastructure.DependencyInjection;
 
@@ -20,15 +23,19 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? "Host=localhost;Port=5432;Database=swfc;Username=postgres;Password=postgres";
+            ?? "Host=localhost;Port=5432;Database=swfc";
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        services.AddScoped<ICurrentUserService, ConfiguredCurrentUserService>();
+
         services.AddScoped<ICommandValidator<CreateMachineCommand>, CreateMachineValidator>();
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IMachineWriteRepository, MachineWriteRepository>();
+
         services.AddScoped<CreateMachineHandler>();
+        services.AddScoped<IUseCaseHandler<CreateMachineCommand, Guid>, CreateMachineHandler>();
 
         return services;
     }
