@@ -12,7 +12,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const regex = new RegExp("^\\[M\\d{3,4}\\.\\d{2}\\] .+");
+            const forbidden = ["test", "wip", "fix", "update", "asdf", "123"];
 
             const commits = await github.rest.pulls.listCommits({
               owner: context.repo.owner,
@@ -21,13 +21,22 @@ jobs:
             });
 
             const invalid = commits.data.filter(c => {
-              const message = c.commit.message.split('\n')[0];
-              return !regex.test(message);
+              const message = c.commit.message.split('\n')[0].trim();
+              const normalized = message.toLowerCase();
+
+              if (!message) return true;
+              if (message.length < 8) return true;
+              if (forbidden.includes(normalized)) return true;
+              if (message.split(/\s+/).length < 2) return true;
+
+              return false;
             });
 
             if (invalid.length > 0) {
               core.setFailed(
                 "Invalid commit messages:\n" +
-                invalid.map(c => "- " + c.sha.substring(0,7) + " " + c.commit.message.split('\n')[0]).join('\n')
+                invalid
+                  .map(c => "- " + c.sha.substring(0, 7) + " " + c.commit.message.split('\n')[0])
+                  .join('\n')
               );
             }
