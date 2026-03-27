@@ -7,6 +7,6 @@ public sealed class CreateMachinePolicy : IAuthorizationPolicy<CreateMachineComm
 {
     public AuthorizationRequirement GetRequirement(CreateMachineCommand request)
     {
-        return new AuthorizationRequirement(new[] { "machine.create" });
+        return new AuthorizationRequirement(requiredPermissions: new[] { "machine.create" });
     }
 }

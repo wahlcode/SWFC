@@ -1,7 +1,8 @@
 @page "/machines/create"
 @using SWFC.Application.M200_Business.M201_Assets.Commands
 @using SWFC.Application.M200_Business.M201_Assets.Handlers
-@inject CreateMachineHandler Handler
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<CreateMachineCommand, Guid> Pipeline
 
 <h3>Create Machine</h3>
 
@@ -42,7 +43,7 @@
         try
         {
             var command = new CreateMachineCommand(Name, Reason);
-            var result = await Handler.HandleAsync(command);
+            var result = await Pipeline.ExecuteAsync(command);
 
             Message = result.IsSuccess
                 ? $"Machine created successfully. Id: {result.Value}"

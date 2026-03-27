@@ -19,7 +19,7 @@ public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
 
         var connectionString =
             configuration.GetConnectionString("DefaultConnection")
-            ?? "Host=localhost;Port=5432;Database=swfc;Username=postgres;Password=postgres";
+            ?? "Host=localhost;Port=5432;Database=swfc";
 
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
