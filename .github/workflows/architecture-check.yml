@@ -57,3 +57,43 @@ jobs:
             echo "Web must not reference Domain directly"
             exit 1
           fi
+
+      - name: Ensure no @layout is used in Pages
+        shell: bash
+        run: |
+          if grep -R -n --include="*.razor" "@layout" src/SWFC.Web/Pages; then
+            echo "Forbidden '@layout' usage found in Pages."
+            exit 1
+          fi
+
+      - name: Ensure no @page is used in Components
+        shell: bash
+        run: |
+          if grep -R -n --include="*.razor" "@page" src/SWFC.Web/Components; then
+            echo "Forbidden '@page' usage found in Components."
+            exit 1
+          fi
+
+      - name: Ensure NavMenu is not used
+        shell: bash
+        run: |
+          if grep -R -n --include="*.razor" "NavMenu" src/SWFC.Web; then
+            echo "NavMenu usage is not allowed."
+            exit 1
+          fi
+
+      - name: Ensure legacy MainLayout CSS does not exist
+        shell: bash
+        run: |
+          if [ -f "src/SWFC.Web/Components/Layout/MainLayout.razor.css" ]; then
+            echo "Legacy MainLayout.razor.css is not allowed."
+            exit 1
+          fi
+
+      - name: Ensure legacy Routes.razor does not exist
+        shell: bash
+        run: |
+          if [ -f "src/SWFC.Web/Components/Routes.razor" ]; then
+            echo "Legacy Components/Routes.razor is not allowed."
+            exit 1
+          fi
