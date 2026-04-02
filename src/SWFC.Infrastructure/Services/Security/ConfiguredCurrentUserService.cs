@@ -22,8 +22,11 @@ public sealed class ConfiguredCurrentUserService : ICurrentUserService
         var roles = section.GetSection("Roles").Get<string[]>() ?? Array.Empty<string>();
         var permissions = section.GetSection("Permissions").Get<string[]>() ?? Array.Empty<string>();
 
+        var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "system" : userId;
+
         var securityContext = new SecurityContext(
-            userId: string.IsNullOrWhiteSpace(userId) ? "system" : userId,
+            userId: resolvedUserId,
+            username: resolvedUserId,
             isAuthenticated: isAuthenticated,
             roles: roles,
             permissions: permissions);

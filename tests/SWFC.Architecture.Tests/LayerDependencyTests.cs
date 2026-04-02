@@ -93,4 +93,15 @@ public sealed class LayerDependencyTests
             ? "Architecture rule failed."
             : $"Architecture violation(s): {string.Join(", ", items)}";
     }
+
+    [Fact]
+    public void Application_Should_Not_Use_DbContext()
+    {
+        var result = Types.InAssembly(typeof(SWFC.Application.AssemblyMarker).Assembly)
+            .ShouldNot()
+            .HaveDependencyOn("AppDbContext")
+            .GetResult();
+
+        Assert.True(result.IsSuccessful);
+    }
 }

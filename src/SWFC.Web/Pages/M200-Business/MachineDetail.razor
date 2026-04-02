@@ -1,0 +1,121 @@
+@page "/machines/{Id:guid}"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M201_Assets.Commands
+@using SWFC.Application.M200_Business.M201_Assets.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMachineByIdQuery, MachineDetailsDto> GetPipeline
+@inject IExecutionPipeline<DeleteMachineCommand, bool> DeletePipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Machine Detail</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Machine Detail</h2>
+        <p class="m305-page__description">Detailansicht und Delete-Flow über Pipeline.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="m201-alert m201-alert--error">@ErrorMessage</div>
+            }
+            else if (Machine is null)
+            {
+                <p>Lade Daten...</p>
+            }
+            else
+            {
+                <dl>
+                    <dt>Id</dt>
+                    <dd>@Machine.Id</dd>
+                    <dt>Name</dt>
+                    <dd>@Machine.Name</dd>
+                    <dt>Erstellt am</dt>
+                    <dd>@Machine.CreatedAtUtc.ToLocalTime().ToString("f")</dd>
+                    <dt>Erstellt von</dt>
+                    <dd>@Machine.CreatedBy</dd>
+                    <dt>Zuletzt geändert</dt>
+                    <dd>@(Machine.LastModifiedAtUtc.HasValue ? Machine.LastModifiedAtUtc.Value.ToLocalTime().ToString("f") : "-")</dd>
+                </dl>
+
+                <div class="m201-form-actions">
+                    <a class="m201-button" href="@($"/machines/{Machine.Id}/edit")">Bearbeiten</a>
+                    <a class="m201-button m201-button--secondary" href="/machines">Zur Liste</a>
+                </div>
+
+                <hr />
+
+                <EditForm Model="DeleteModel" OnValidSubmit="HandleDeleteAsync" FormName="DeleteMachineForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="m201-validation-summary" />
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="delete-reason">Löschgrund</label>
+                        <InputTextArea id="delete-reason" class="m201-form-textarea" @bind-Value="DeleteModel.Reason" />
+                        <ValidationMessage For="@(() => DeleteModel.Reason)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-actions">
+                        <button type="submit" class="m201-button" disabled="@IsDeleting">
+                            @(IsDeleting ? "Löscht..." : "Machine löschen")
+                        </button>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private MachineDetailsDto? Machine;
+    [SupplyParameterFromForm(FormName = "DeleteMachineForm")]
+    private DeleteInput DeleteModel { get; set; } = new();
+    private string? ErrorMessage;
+    private bool IsDeleting;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ErrorMessage = null;
+
+        var result = await GetPipeline.ExecuteAsync(new GetMachineByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            Machine = result.Value;
+        }
+        else
+        {
+            ErrorMessage = result.Error.Message;
+        }
+    }
+
+    private async Task HandleDeleteAsync()
+    {
+        IsDeleting = true;
+        ErrorMessage = null;
+
+        var result = await DeletePipeline.ExecuteAsync(new DeleteMachineCommand(Id, DeleteModel.Reason));
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo("/machines");
+        }
+        else
+        {
+            ErrorMessage = result.Error.Message;
+        }
+
+        IsDeleting = false;
+    }
+
+    private sealed class DeleteInput
+    {
+        [Required(ErrorMessage = "Grund ist erforderlich.")]
+        public string Reason { get; set; } = string.Empty;
+    }
+}

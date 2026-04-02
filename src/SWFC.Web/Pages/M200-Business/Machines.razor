@@ -1,0 +1,81 @@
+@page "/machines"
+@using SWFC.Application.M200_Business.M201_Assets.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMachinesQuery, IReadOnlyList<MachineListItem>> Pipeline
+
+<PageTitle>Machines</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Machines</h2>
+        <p class="m305-page__description">Liste aller Maschinen aus M201.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            <div class="m201-form-actions">
+                <a class="m201-button" href="/machines/create">Neue Machine</a>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="m201-alert m201-alert--error">@ErrorMessage</div>
+            }
+            else if (MachineItems is null)
+            {
+                <p>Lade Daten...</p>
+            }
+            else if (MachineItems.Count == 0)
+            {
+                <p>Noch keine Machines vorhanden.</p>
+            }
+            else
+            {
+                <table class="m201-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Erstellt</th>
+                            <th>Bearbeitet</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var machine in MachineItems)
+                        {
+                            <tr>
+                                <td>@machine.Name</td>
+                                <td>@machine.CreatedAtUtc.ToLocalTime().ToString("g")</td>
+                                <td>@(machine.LastModifiedAtUtc.HasValue ? machine.LastModifiedAtUtc.Value.ToLocalTime().ToString("g") : "-")</td>
+                                <td>
+                                    <a href="@($"/machines/{machine.Id}")">Detail</a>
+                                    <span> | </span>
+                                    <a href="@($"/machines/{machine.Id}/edit")">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<MachineListItem>? MachineItems;
+    private string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetMachinesQuery());
+
+        if (result.IsSuccess)
+        {
+            MachineItems = result.Value;
+        }
+        else
+        {
+            ErrorMessage = result.Error.Message;
+        }
+    }
+}
