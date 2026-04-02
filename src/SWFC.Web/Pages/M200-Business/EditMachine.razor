@@ -1,0 +1,123 @@
+@page "/machines/{Id:guid}/edit"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M201_Assets.Commands
+@using SWFC.Application.M200_Business.M201_Assets.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMachineByIdQuery, MachineDetailsDto> GetPipeline
+@inject IExecutionPipeline<UpdateMachineCommand, bool> UpdatePipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Machine bearbeiten</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Machine bearbeiten</h2>
+        <p class="m305-page__description">Update-Flow direkt über die Execution Pipeline.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="m201-alert m201-alert--error">@ErrorMessage</div>
+            }
+            else if (IsLoading)
+            {
+                <p>Lade Daten...</p>
+            }
+            else
+            {
+                <EditForm Model="Model" OnValidSubmit="HandleSubmitAsync" FormName="EditMachineForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="m201-validation-summary" />
+
+                    <div class="m201-form-grid">
+                        <div class="m201-form-field">
+                            <label class="m201-form-label" for="name">Name</label>
+                            <InputText id="name" class="m201-form-input" @bind-Value="Model.Name" />
+                            <ValidationMessage For="@(() => Model.Name)" class="m201-validation-message" />
+                        </div>
+
+                        <div class="m201-form-field">
+                            <label class="m201-form-label" for="reason">Änderungsgrund</label>
+                            <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="Model.Reason" />
+                            <ValidationMessage For="@(() => Model.Reason)" class="m201-validation-message" />
+                        </div>
+                    </div>
+
+                    <div class="m201-form-actions">
+                        <button type="submit" class="m201-button" disabled="@IsSubmitting">
+                            @(IsSubmitting ? "Speichert..." : "Machine speichern")
+                        </button>
+
+                        <a class="m201-button m201-button--secondary" href="@($"/machines/{Id}")">
+                            Zurück
+                        </a>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [SupplyParameterFromForm(FormName = "EditMachineForm")]
+    private EditMachineInput Model { get; set; } = new();
+    private bool IsLoading = true;
+    private bool IsSubmitting;
+    private string? ErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+        ErrorMessage = null;
+
+        var result = await GetPipeline.ExecuteAsync(new GetMachineByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            Model = new EditMachineInput
+            {
+                Name = result.Value.Name
+            };
+        }
+        else
+        {
+            ErrorMessage = result.Error.Message;
+        }
+
+        IsLoading = false;
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        IsSubmitting = true;
+        ErrorMessage = null;
+
+        var result = await UpdatePipeline.ExecuteAsync(new UpdateMachineCommand(Id, Model.Name, Model.Reason));
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo($"/machines/{Id}");
+        }
+        else
+        {
+            ErrorMessage = result.Error.Message;
+        }
+
+        IsSubmitting = false;
+    }
+
+    private sealed class EditMachineInput
+    {
+        [Required(ErrorMessage = "Name ist erforderlich.")]
+        [StringLength(100, ErrorMessage = "Name darf maximal 100 Zeichen haben.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Grund ist erforderlich.")]
+        public string Reason { get; set; } = string.Empty;
+    }
+}

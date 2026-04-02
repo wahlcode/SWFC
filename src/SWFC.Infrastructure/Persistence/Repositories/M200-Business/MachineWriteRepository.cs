@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SWFC.Application.M200_Business.M201_Assets.Interfaces;
 using SWFC.Domain.M200_Business.M201_Assets.Entities;
 using SWFC.Infrastructure.Persistence.Context;
@@ -16,6 +17,16 @@ public sealed class MachineWriteRepository : IMachineWriteRepository
     public async Task AddAsync(Machine machine, CancellationToken cancellationToken = default)
     {
         await _dbContext.Machines.AddAsync(machine, cancellationToken);
+    }
+
+    public Task<Machine?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Machines.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public void Remove(Machine machine)
+    {
+        _dbContext.Machines.Remove(machine);
     }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
