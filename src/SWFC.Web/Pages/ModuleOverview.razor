@@ -1,66 +1,261 @@
 @page "/modules"
+@rendermode InteractiveServer
 
 <PageTitle>Modulübersicht</PageTitle>
 
-<section class="m305-page">
-    <div class="m305-page__header">
-        <h2 class="m305-page__title">Modulübersicht</h2>
-        <p class="m305-page__description">
-            Übersicht über die Hauptmodule des Projekts und ihren aktuellen Status.
-        </p>
+<div class="module-overview-page">
+    <div class="module-overview-header">
+        <div>
+            <h1 class="page-title">Modulübersicht</h1>
+            <p class="page-subtitle">
+                SWFC Modulstatus mit Status- und Level-Trennung.
+            </p>
+        </div>
     </div>
 
-    <div class="m305-module-grid">
-        @foreach (var module in Modules)
-        {
-            <article class="m305-card m305-module-card">
-                <div class="m305-card__body">
-                    <div class="m305-module-card__top">
-                        <div>
-                            <div class="m305-module-card__code">@module.Code</div>
-                            <h3 class="m305-card__title">@module.Title</h3>
-                        </div>
+    <div class="summary-grid summary-grid--six">
+        <div class="summary-card">
+            <div class="summary-label">Gesamt</div>
+            <div class="summary-value">@Modules.Count</div>
+        </div>
 
-                        <span class="@GetStatusClass(module.Status)">
-                            @module.Status
-                        </span>
-                    </div>
+        <div class="summary-card summary-card--done">
+            <div class="summary-label">Done</div>
+            <div class="summary-value">@DoneCount</div>
+        </div>
 
-                    <p class="m305-card__text">
-                        Modulbereich @module.Code – @module.Title
-                    </p>
+        <div class="summary-card summary-card--progress">
+            <div class="summary-label">In Progress</div>
+            <div class="summary-value">@InProgressCount</div>
+        </div>
 
-                    <div class="m305-module-card__statusline">
-                        <span class="m305-module-card__label">Status:</span>
-                        <span class="m305-module-card__value">@module.Status</span>
-                    </div>
+        <div class="summary-card summary-card--open">
+            <div class="summary-label">Open</div>
+            <div class="summary-value">@OpenCount</div>
+        </div>
+
+        <div class="summary-card summary-card--core">
+            <div class="summary-label">Core</div>
+            <div class="summary-value">@CoreCount</div>
+        </div>
+
+        <div class="summary-card summary-card--optional">
+            <div class="summary-label">Optional / Extension</div>
+            <div class="summary-value">@(OptionalCoreCount + ExtensionCount)</div>
+        </div>
+    </div>
+
+    @foreach (var group in GroupedModules)
+    {
+        var groupKey = group.Key.Code;
+        var groupModules = group.OrderBy(x => GetModuleOrder(x.Code)).ToList();
+
+        var groupDone = groupModules.Count(x => x.Status == "Done");
+        var groupInProgress = groupModules.Count(x => x.Status == "InProgress");
+        var groupOpen = groupModules.Count(x => x.Status == "Open");
+
+        var groupCore = groupModules.Count(x => x.Level == "Core");
+        var groupOptional = groupModules.Count(x => x.Level == "OptionalCore");
+        var groupExtension = groupModules.Count(x => x.Level == "Extension");
+
+        <section class="module-section">
+            <button type="button"
+                    class="module-section-toggle"
+                    @onclick="() => ToggleGroup(groupKey)">
+                <div>
+                    <h2 class="module-section-title">@group.Key.Code – @group.Key.Title</h2>
+                    <p class="module-section-subtitle">@groupModules.Count Module</p>
                 </div>
-            </article>
-        }
-    </div>
-</section>
+
+                <div class="module-section-header-right">
+                    <div class="module-section-summary">
+                        <span>Done @groupDone</span>
+                        <span>In Progress @groupInProgress</span>
+                        <span>Open @groupOpen</span>
+                        <span>Core @groupCore</span>
+                        <span>Optional @groupOptional</span>
+                        <span>Extension @groupExtension</span>
+                    </div>
+
+                    <span class="module-section-chevron">
+                        @(IsGroupExpanded(groupKey) ? "▼" : "▶")
+                    </span>
+                </div>
+            </button>
+
+            @if (IsGroupExpanded(groupKey))
+            {
+                <div class="module-card-grid">
+                    @foreach (var module in groupModules)
+                    {
+                        var moduleKey = module.Code;
+
+                        <article class="module-card-v1">
+                            <button type="button"
+                                    class="module-card-v1__header"
+                                    @onclick="() => ToggleModule(moduleKey)">
+                                <div class="module-card-v1__title-wrap">
+                                    <div class="module-card-v1__code">@module.Code</div>
+                                    <div class="module-card-v1__title">@module.Title</div>
+                                </div>
+
+                                <div class="module-card-v1__header-right">
+                                    <div class="module-card-v1__badges">
+                                        <ThemeLevelBadge Level="@module.Level" />
+                                        <ThemeStatusBadge Status="@module.Status" />
+                                    </div>
+
+                                    <span class="module-card-v1__progress">@module.ProgressPercent%</span>
+                                    <span class="module-card-v1__chevron">@(IsModuleExpanded(moduleKey) ? "▼" : "▶")</span>
+                                </div>
+                            </button>
+
+                            @if (!string.IsNullOrWhiteSpace(module.Description))
+                            {
+                                <div class="module-card-v1__description">
+                                    @module.Description
+                                </div>
+                            }
+
+                            <div class="module-card-v1__bar">
+                                <div class="bar-done" style="@GetWidth(module.DoneCount, module.TotalCount)"></div>
+                                <div class="bar-progress" style="@GetWidth(module.InProgressCount, module.TotalCount)"></div>
+                                <div class="bar-open" style="@GetWidth(module.OpenCount, module.TotalCount)"></div>
+                            </div>
+
+                            <div class="module-card-v1__stats">
+                                <div class="module-stat">
+                                    <span class="stat-label">Done</span>
+                                    <span class="stat-value">@module.DoneCount</span>
+                                </div>
+
+                                <div class="module-stat">
+                                    <span class="stat-label">In Progress</span>
+                                    <span class="stat-value">@module.InProgressCount</span>
+                                </div>
+
+                                <div class="module-stat">
+                                    <span class="stat-label">Open</span>
+                                    <span class="stat-value">@module.OpenCount</span>
+                                </div>
+
+                                <div class="module-stat">
+                                    <span class="stat-label">Level</span>
+                                    <span class="stat-value">@GetLevelLabel(module.Level)</span>
+                                </div>
+                            </div>
+
+                            @if (IsModuleExpanded(moduleKey))
+                            {
+                                <div class="module-card-v1__body">
+                                    @if (module.WorkItems.Count > 0)
+                                    {
+                                        <div class="workitem-list">
+                                            @foreach (var item in module.WorkItems)
+                                            {
+                                                <div class="workitem-row">
+                                                    <span class="workitem-title">@item.Title</span>
+
+                                                    <div class="workitem-badges">
+                                                        <ThemeLevelBadge Level="@item.Level" />
+                                                        <ThemeStatusBadge Status="@item.Status" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    }
+</div>
 
 @code {
-    private readonly List<ModuleItem> Modules =
-    [
-        new("M100", "System", "Erledigt"),
-        new("M200", "Business", "In Arbeit"),
-        new("M300", "Presentation", "In Arbeit"),
-        new("M400", "Integrations", "Offen"),
-        new("M500", "Runtime", "Offen"),
-        new("M600", "Planning", "Offen"),
-        new("M700", "Support", "Offen"),
-        new("M800", "Security", "Erledigt"),
-        new("M900", "Intelligence", "Offen"),
-        new("M1000", "Platform", "Offen")
-    ];
+    private readonly List<ModuleOverviewItem> Modules = ModuleOverviewData.GetModules();
+    private readonly HashSet<string> _expandedModules = new();
+    private readonly HashSet<string> _expandedGroups = new();
 
-    private static string GetStatusClass(string status) => status switch
+    private IEnumerable<IGrouping<(string Code, string Title), ModuleOverviewItem>> GroupedModules =>
+        Modules.GroupBy(x => (Code: x.GroupCode, Title: x.GroupTitle))
+               .OrderBy(x => GetModuleOrder(x.Key.Code));
+
+    private int DoneCount => Modules.Count(x => x.Status == "Done");
+    private int InProgressCount => Modules.Count(x => x.Status == "InProgress");
+    private int OpenCount => Modules.Count(x => x.Status == "Open");
+
+    private int CoreCount => Modules.Count(x => x.Level == "Core");
+    private int OptionalCoreCount => Modules.Count(x => x.Level == "OptionalCore");
+    private int ExtensionCount => Modules.Count(x => x.Level == "Extension");
+
+    protected override void OnInitialized()
     {
-        "Erledigt" => "m305-badge m305-badge--done",
-        "In Arbeit" => "m305-badge m305-badge--progress",
-        _ => "m305-badge m305-badge--open"
-    };
+        foreach (var module in Modules)
+        {
+            
+        }
 
-    private sealed record ModuleItem(string Code, string Title, string Status);
+        foreach (var group in GroupedModules)
+        {
+            
+        }
+    }
+
+    private bool IsModuleExpanded(string code) => _expandedModules.Contains(code);
+
+    private void ToggleModule(string code)
+    {
+        if (!_expandedModules.Add(code))
+        {
+            _expandedModules.Remove(code);
+        }
+    }
+
+    private bool IsGroupExpanded(string code) => _expandedGroups.Contains(code);
+
+    private void ToggleGroup(string code)
+    {
+        if (!_expandedGroups.Add(code))
+        {
+            _expandedGroups.Remove(code);
+        }
+    }
+
+    private static int GetModuleOrder(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return int.MaxValue;
+        }
+
+        var numericPart = new string(code.Where(char.IsDigit).ToArray());
+
+        if (int.TryParse(numericPart, out var number))
+        {
+            return number;
+        }
+
+        return int.MaxValue;
+    }
+
+    private static string GetWidth(int count, int total)
+    {
+        if (total <= 0)
+        {
+            return "width: 0%;";
+        }
+
+        var value = Math.Round((decimal)count / total * 100m, 0, MidpointRounding.AwayFromZero);
+        return $"width: {value}%;";
+    }
+
+    private static string GetLevelLabel(string level) => level switch
+    {
+        "OptionalCore" => "Optional Core",
+        "Extension" => "Extension",
+        _ => "Core"
+    };
 }

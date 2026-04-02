@@ -28,30 +28,44 @@
             }
             else
             {
-                <EditForm Model="Model" OnValidSubmit="HandleSubmitAsync" FormName="EditMachineForm">
+                <EditForm Model="Model"
+                          Method="post"
+                          OnSubmit="HandleSubmitAsync"
+                          FormName="EditMachineForm">
                     <DataAnnotationsValidator />
                     <ValidationSummary class="m201-validation-summary" />
 
                     <div class="m201-form-grid">
                         <div class="m201-form-field">
                             <label class="m201-form-label" for="name">Name</label>
-                            <InputText id="name" class="m201-form-input" @bind-Value="Model.Name" />
-                            <ValidationMessage For="@(() => Model.Name)" class="m201-validation-message" />
+                            <InputText id="name"
+                                       name="Model.Name"
+                                       class="m201-form-input"
+                                       @bind-Value="Model.Name" />
+                            <ValidationMessage For="@(() => Model.Name)"
+                                               class="m201-validation-message" />
                         </div>
 
                         <div class="m201-form-field">
                             <label class="m201-form-label" for="reason">Änderungsgrund</label>
-                            <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="Model.Reason" />
-                            <ValidationMessage For="@(() => Model.Reason)" class="m201-validation-message" />
+                            <InputTextArea id="reason"
+                                           name="Model.Reason"
+                                           class="m201-form-textarea"
+                                           @bind-Value="Model.Reason" />
+                            <ValidationMessage For="@(() => Model.Reason)"
+                                               class="m201-validation-message" />
                         </div>
                     </div>
 
                     <div class="m201-form-actions">
-                        <button type="submit" class="m201-button" disabled="@IsSubmitting">
+                        <button type="submit"
+                                class="m201-button"
+                                disabled="@IsSubmitting">
                             @(IsSubmitting ? "Speichert..." : "Machine speichern")
                         </button>
 
-                        <a class="m201-button m201-button--secondary" href="@($"/machines/{Id}")">
+                        <a class="m201-button m201-button--secondary"
+                           href="@($"/machines/{Id}")">
                             Zurück
                         </a>
                     </div>
@@ -62,10 +76,12 @@
 </section>
 
 @code {
-    [Parameter] public Guid Id { get; set; }
+    [Parameter]
+    public Guid Id { get; set; }
 
     [SupplyParameterFromForm(FormName = "EditMachineForm")]
     private EditMachineInput Model { get; set; } = new();
+
     private bool IsLoading = true;
     private bool IsSubmitting;
     private string? ErrorMessage;
@@ -75,13 +91,22 @@
         IsLoading = true;
         ErrorMessage = null;
 
+        // WICHTIG:
+        // Wenn Formdaten bereits geliefert wurden, NICHT erneut aus dem Backend überschreiben.
+        if (Model != null && (!string.IsNullOrWhiteSpace(Model.Name) || !string.IsNullOrWhiteSpace(Model.Reason)))
+        {
+            IsLoading = false;
+            return;
+        }
+
         var result = await GetPipeline.ExecuteAsync(new GetMachineByIdQuery(Id));
 
         if (result.IsSuccess)
         {
             Model = new EditMachineInput
             {
-                Name = result.Value.Name
+                Name = result.Value.Name,
+                Reason = string.Empty
             };
         }
         else
@@ -92,22 +117,33 @@
         IsLoading = false;
     }
 
-    private async Task HandleSubmitAsync()
+    private async Task HandleSubmitAsync(EditContext editContext)
     {
+        Console.WriteLine($"DEBUG BEFORE VALIDATE Name=[{Model.Name}] Reason=[{Model.Reason}]");
+
+        if (!editContext.Validate())
+        {
+            Console.WriteLine($"DEBUG INVALID Name=[{Model.Name}] Reason=[{Model.Reason}]");
+            return;
+        }
+
         IsSubmitting = true;
         ErrorMessage = null;
 
-        var result = await UpdatePipeline.ExecuteAsync(new UpdateMachineCommand(Id, Model.Name, Model.Reason));
+        Console.WriteLine($"DEBUG VALID Name=[{Model.Name}] Reason=[{Model.Reason}]");
+
+        var result = await UpdatePipeline.ExecuteAsync(
+            new UpdateMachineCommand(Id, Model.Name, Model.Reason));
+
+        Console.WriteLine($"DEBUG RESULT Success=[{result.IsSuccess}] Error=[{result.Error?.Message}]");
 
         if (result.IsSuccess)
         {
             NavigationManager.NavigateTo($"/machines/{Id}");
-        }
-        else
-        {
-            ErrorMessage = result.Error.Message;
+            return;
         }
 
+        ErrorMessage = result.Error.Message;
         IsSubmitting = false;
     }
 
