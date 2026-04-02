@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
     <link href="app.css" rel="stylesheet" />
+    <link href="css/theme.css" rel="stylesheet" />
     <HeadOutlet />
 </head>
 
 <body>
     <Router AppAssembly="@typeof(Program).Assembly">
+            
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(AppShell)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

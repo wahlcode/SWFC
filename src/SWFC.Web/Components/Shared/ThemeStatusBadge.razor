@@ -1,0 +1,19 @@
+<span class="@CssClass">@Label</span>
+
+@code {
+    [Parameter] public string Status { get; set; } = "Open";
+
+    private string CssClass => Status switch
+    {
+        "Done" => "theme-status theme-status--done",
+        "InProgress" => "theme-status theme-status--progress",
+        _ => "theme-status theme-status--open"
+    };
+
+    private string Label => Status switch
+    {
+        "Done" => "Done",
+        "InProgress" => "In Progress",
+        _ => "Open"
+    };
+}
