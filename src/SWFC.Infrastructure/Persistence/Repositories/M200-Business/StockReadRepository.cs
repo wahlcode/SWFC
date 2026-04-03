@@ -18,7 +18,10 @@ public sealed class StockReadRepository
         return _dbContext.Stocks
             .AsNoTracking()
             .Include(x => x.Movements)
+<<<<<<< HEAD
             .Include(x => x.Reservations)
+=======
+>>>>>>> origin/main
             .FirstOrDefaultAsync(x => x.InventoryItemId == inventoryItemId, cancellationToken);
     }
 
@@ -27,7 +30,10 @@ public sealed class StockReadRepository
         return _dbContext.Stocks
             .AsNoTracking()
             .Include(x => x.Movements)
+<<<<<<< HEAD
             .Include(x => x.Reservations)
+=======
+>>>>>>> origin/main
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }

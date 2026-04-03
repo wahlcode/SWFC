@@ -52,9 +52,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommandValidator<DeleteInventoryItemCommand>, DeleteInventoryItemValidator>();
         services.AddScoped<ICommandValidator<GetInventoryItemByIdQuery>, GetInventoryItemByIdValidator>();
 
+<<<<<<< HEAD
         services.AddScoped<ICommandValidator<CreateStockReservationCommand>, CreateStockReservationValidator>();
         services.AddScoped<ICommandValidator<ReleaseStockReservationCommand>, ReleaseStockReservationValidator>();
         services.AddScoped<ICommandValidator<GetStockReservationByIdQuery>, GetStockReservationByIdValidator>();
+=======
+        services.AddScoped<ICommandValidator<CreateStockMovementCommand>, CreateStockMovementValidator>();
+        services.AddScoped<ICommandValidator<GetStockMovementByIdQuery>, GetStockMovementByIdValidator>();
+>>>>>>> origin/main
 
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<UpdateMachineCommand>, UpdateMachinePolicy>();
@@ -68,16 +73,25 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemsQuery>, GetInventoryItemsPolicy>();
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemByIdQuery>, GetInventoryItemByIdPolicy>();
 
+<<<<<<< HEAD
         services.AddScoped<IAuthorizationPolicy<CreateStockReservationCommand>, CreateStockReservationPolicy>();
         services.AddScoped<IAuthorizationPolicy<ReleaseStockReservationCommand>, ReleaseStockReservationPolicy>();
         services.AddScoped<IAuthorizationPolicy<GetStockReservationsQuery>, GetStockReservationsPolicy>();
         services.AddScoped<IAuthorizationPolicy<GetStockReservationByIdQuery>, GetStockReservationByIdPolicy>();
+=======
+        services.AddScoped<IAuthorizationPolicy<CreateStockMovementCommand>, CreateStockMovementPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockMovementsQuery>, GetStockMovementsPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockMovementByIdQuery>, GetStockMovementByIdPolicy>();
+>>>>>>> origin/main
 
         services.AddScoped<IMachineWriteRepository, MachineWriteRepository>();
         services.AddScoped<IMachineReadRepository, MachineReadRepository>();
 
         services.AddScoped<IInventoryItemWriteRepository, InventoryItemWriteRepository>();
         services.AddScoped<IInventoryItemReadRepository, InventoryItemReadRepository>();
+
+        services.AddScoped<IStockMovementReadRepository, StockMovementReadRepository>();
+        services.AddScoped<IStockMovementWriteRepository, StockMovementWriteRepository>();
         services.AddScoped<StockReadRepository>();
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
@@ -98,10 +112,16 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCaseHandler<GetInventoryItemsQuery, IReadOnlyList<InventoryItemListItem>>, GetInventoryItemsHandler>();
         services.AddScoped<IUseCaseHandler<GetInventoryItemByIdQuery, InventoryItemDetailsDto>, GetInventoryItemByIdHandler>();
 
+<<<<<<< HEAD
         services.AddScoped<IUseCaseHandler<CreateStockReservationCommand, Guid>, CreateStockReservationHandler>();
         services.AddScoped<IUseCaseHandler<ReleaseStockReservationCommand, bool>, ReleaseStockReservationHandler>();
         services.AddScoped<IUseCaseHandler<GetStockReservationsQuery, IReadOnlyList<StockReservationListItem>>, GetStockReservationsHandler>();
         services.AddScoped<IUseCaseHandler<GetStockReservationByIdQuery, StockReservationDetailsDto>, GetStockReservationByIdHandler>();
+=======
+        services.AddScoped<IUseCaseHandler<CreateStockMovementCommand, Guid>, CreateStockMovementHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockMovementsQuery, IReadOnlyList<StockMovementListItem>>, GetStockMovementsHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockMovementByIdQuery, StockMovementDetailsDto>, GetStockMovementByIdHandler>();
+>>>>>>> origin/main
 
         services.AddM103Authentication(configuration);
 

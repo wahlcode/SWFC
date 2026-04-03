@@ -1,0 +1,32 @@
+@page "/m200/stock-movement/{Id:guid}"
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Stock Movement Detail</PageTitle>
+
+<div class="page">
+    <h1>Stock Movement Detail</h1>
+
+    <p>
+        Stock movement id: <strong>@Id</strong>
+    </p>
+
+    <dl>
+        <dt>Movement Type</dt>
+        <dd>GoodsReceipt</dd>
+
+        <dt>Quantity Delta</dt>
+        <dd>10</dd>
+
+        <dt>Stock Id</dt>
+        <dd>00000000-0000-0000-0000-000000000000</dd>
+    </dl>
+
+    <p>
+        <a href="/m200/stock-movements">Back to movement list</a>
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}
