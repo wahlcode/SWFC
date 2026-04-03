@@ -18,6 +18,7 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Machine> Machines => Set<Machine>();
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
+    public DbSet<Stock> Stocks => Set<Stock>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,18 +40,10 @@ public sealed class AppDbContext : DbContext
 
             entity.OwnsOne(x => x.AuditInfo, audit =>
             {
-                audit.Property(a => a.CreatedAtUtc)
-                    .IsRequired();
-
-                audit.Property(a => a.CreatedBy)
-                    .IsRequired();
-
-                audit.Property(a => a.LastModifiedAtUtc)
-                    .IsRequired(false);
-
-                audit.Property(a => a.LastModifiedBy)
-                    .HasMaxLength(200)
-                    .IsRequired(false);
+                audit.Property(a => a.CreatedAtUtc).IsRequired();
+                audit.Property(a => a.CreatedBy).IsRequired();
+                audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
+                audit.Property(a => a.LastModifiedBy).HasMaxLength(200).IsRequired(false);
             });
         });
 
@@ -69,18 +62,39 @@ public sealed class AppDbContext : DbContext
 
             entity.OwnsOne(x => x.AuditInfo, audit =>
             {
-                audit.Property(a => a.CreatedAtUtc)
-                    .IsRequired();
+                audit.Property(a => a.CreatedAtUtc).IsRequired();
+                audit.Property(a => a.CreatedBy).IsRequired();
+                audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
+                audit.Property(a => a.LastModifiedBy).HasMaxLength(200).IsRequired(false);
+            });
 
-                audit.Property(a => a.CreatedBy)
-                    .IsRequired();
+            entity.HasOne(x => x.Stock)
+                .WithOne()
+                .HasForeignKey<Stock>(x => x.InventoryItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-                audit.Property(a => a.LastModifiedAtUtc)
-                    .IsRequired(false);
+        modelBuilder.Entity<Stock>(entity =>
+        {
+            entity.ToTable("Stocks");
 
-                audit.Property(a => a.LastModifiedBy)
-                    .HasMaxLength(200)
-                    .IsRequired(false);
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.InventoryItemId)
+                .IsRequired();
+
+            entity.Property(x => x.QuantityOnHand)
+                .IsRequired();
+
+            entity.HasIndex(x => x.InventoryItemId)
+                .IsUnique();
+
+            entity.OwnsOne(x => x.AuditInfo, audit =>
+            {
+                audit.Property(a => a.CreatedAtUtc).IsRequired();
+                audit.Property(a => a.CreatedBy).IsRequired();
+                audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
+                audit.Property(a => a.LastModifiedBy).HasMaxLength(200).IsRequired(false);
             });
         });
 
@@ -90,36 +104,14 @@ public sealed class AppDbContext : DbContext
 
             entity.HasKey(x => x.Id);
 
-            entity.Property(x => x.UserId)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            entity.Property(x => x.Username)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            entity.Property(x => x.Action)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            entity.Property(x => x.Entity)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            entity.Property(x => x.EntityId)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            entity.Property(x => x.TimestampUtc)
-                .IsRequired();
-
-            entity.Property(x => x.OldValues)
-                .HasColumnType("text")
-                .IsRequired(false);
-
-            entity.Property(x => x.NewValues)
-                .HasColumnType("text")
-                .IsRequired(false);
+            entity.Property(x => x.UserId).IsRequired().HasMaxLength(200);
+            entity.Property(x => x.Username).IsRequired().HasMaxLength(200);
+            entity.Property(x => x.Action).IsRequired().HasMaxLength(100);
+            entity.Property(x => x.Entity).IsRequired().HasMaxLength(100);
+            entity.Property(x => x.EntityId).IsRequired().HasMaxLength(200);
+            entity.Property(x => x.TimestampUtc).IsRequired();
+            entity.Property(x => x.OldValues).HasColumnType("text").IsRequired(false);
+            entity.Property(x => x.NewValues).HasColumnType("text").IsRequired(false);
         });
 
         base.OnModelCreating(modelBuilder);

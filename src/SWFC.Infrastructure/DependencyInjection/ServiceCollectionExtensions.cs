@@ -20,8 +20,8 @@ using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
 using SWFC.Infrastructure.M800_Security.Audit;
 using SWFC.Infrastructure.M800_Security.Auth.DependencyInjection;
 using SWFC.Infrastructure.Persistence.Context;
-using SWFC.Infrastructure.Persistence.Repositories.M800_Security;
 using SWFC.Infrastructure.Persistence.Repositories.M200_Business;
+using SWFC.Infrastructure.Persistence.Repositories.M800_Security;
 
 namespace SWFC.Infrastructure.DependencyInjection;
 
@@ -69,6 +69,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IInventoryItemWriteRepository, InventoryItemWriteRepository>();
         services.AddScoped<IInventoryItemReadRepository, InventoryItemReadRepository>();
+        services.AddScoped<StockReadRepository>();
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IAuditService, AuditService>();

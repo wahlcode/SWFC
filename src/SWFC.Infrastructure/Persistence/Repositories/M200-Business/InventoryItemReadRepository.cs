@@ -18,6 +18,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
     {
         var inventoryItems = await _dbContext.InventoryItems
             .AsNoTracking()
+            .Include(x => x.Stock)
             .ToListAsync(cancellationToken);
 
         return inventoryItems
@@ -25,6 +26,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
             .Select(x => new InventoryItemListItem(
                 x.Id,
                 x.Name.Value,
+                x.Stock?.QuantityOnHand ?? 0,
                 x.AuditInfo.CreatedAtUtc,
                 x.AuditInfo.CreatedBy,
                 x.AuditInfo.LastModifiedAtUtc,
@@ -36,6 +38,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
     {
         var inventoryItem = await _dbContext.InventoryItems
             .AsNoTracking()
+            .Include(x => x.Stock)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (inventoryItem is null)
@@ -46,6 +49,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
         return new InventoryItemDetailsDto(
             inventoryItem.Id,
             inventoryItem.Name.Value,
+            inventoryItem.Stock?.QuantityOnHand ?? 0,
             inventoryItem.AuditInfo.CreatedAtUtc,
             inventoryItem.AuditInfo.CreatedBy,
             inventoryItem.AuditInfo.LastModifiedAtUtc,
