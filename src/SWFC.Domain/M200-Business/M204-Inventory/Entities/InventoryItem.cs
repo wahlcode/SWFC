@@ -23,6 +23,8 @@ public sealed class InventoryItem
     public InventoryItemName Name { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
+    public Stock? Stock { get; private set; }
+
     public static InventoryItem Create(InventoryItemName name, ChangeContext changeContext)
     {
         var auditInfo = new AuditInfo(
@@ -40,5 +42,15 @@ public sealed class InventoryItem
             createdBy: AuditInfo.CreatedBy,
             lastModifiedAtUtc: changeContext.ChangedAtUtc,
             lastModifiedBy: changeContext.UserId);
+    }
+
+    public void AttachStock(Stock stock)
+    {
+        if (stock.InventoryItemId != Id)
+        {
+            throw new InvalidOperationException("Stock does not belong to this inventory item.");
+        }
+
+        Stock = stock;
     }
 }

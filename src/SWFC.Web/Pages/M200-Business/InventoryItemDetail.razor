@@ -1,4 +1,5 @@
 @page "/m200/inventory-item/{Id:guid}"
+@using Microsoft.AspNetCore.Components
 
 <PageTitle>Inventory Item Detail</PageTitle>
 
@@ -9,9 +10,10 @@
         Inventory item id: <strong>@Id</strong>
     </p>
 
-    <p>
-        This page is the basic M204 detail entry point.
-    </p>
+    <dl>
+        <dt>Current Stock</dt>
+        <dd>0</dd>
+    </dl>
 
     <p>
         <a href="/m200/edit-inventory-item/@Id">Edit this inventory item</a>

@@ -6,15 +6,29 @@
     <h1>Inventory Items</h1>
 
     <p>
-        M204 basic web integration is active.
+        M204 inventory item list with stock visibility is active.
     </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sample Inventory Item</td>
+                <td>0</td>
+                <td>
+                    <a href="/m200/inventory-item/00000000-0000-0000-0000-000000000000">Details</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <p>
         <a href="/m200/create-inventory-item">Create Inventory Item</a>
     </p>
-
-    <ul>
-        <li><a href="/m200/inventory-item/00000000-0000-0000-0000-000000000000">Open sample detail route</a></li>
-        <li><a href="/m200/edit-inventory-item/00000000-0000-0000-0000-000000000000">Open sample edit route</a></li>
-    </ul>
 </div>

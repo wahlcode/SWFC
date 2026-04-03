@@ -21,7 +21,9 @@ public sealed class InventoryItemWriteRepository : IInventoryItemWriteRepository
 
     public Task<InventoryItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _dbContext.InventoryItems.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return _dbContext.InventoryItems
+            .Include(x => x.Stock)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public void Remove(InventoryItem inventoryItem)

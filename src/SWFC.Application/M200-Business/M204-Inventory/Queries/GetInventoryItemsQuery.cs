@@ -5,6 +5,7 @@ public sealed record GetInventoryItemsQuery;
 public sealed record InventoryItemListItem(
     Guid Id,
     string Name,
+    int QuantityOnHand,
     DateTime CreatedAtUtc,
     string CreatedBy,
     DateTime? LastModifiedAtUtc,
