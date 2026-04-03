@@ -1,9 +1,15 @@
+using SWFC.Domain.Common.Errors;
+using SWFC.Domain.Common.Exceptions;
 using SWFC.Domain.Common.ValueObjects;
+using SWFC.Domain.M200_Business.M204_Inventory.Enums;
 
 namespace SWFC.Domain.M200_Business.M204_Inventory.Entities;
 
 public sealed class Stock
 {
+    private readonly List<StockMovement> _movements = new();
+    private readonly List<StockReservation> _reservations = new();
+
     private Stock()
     {
         Id = Guid.Empty;
@@ -24,6 +30,9 @@ public sealed class Stock
     public int QuantityOnHand { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
+    public IReadOnlyCollection<StockMovement> Movements => _movements;
+    public IReadOnlyCollection<StockReservation> Reservations => _reservations;
+
     public static Stock Create(
         Guid inventoryItemId,
         int quantityOnHand,
@@ -31,12 +40,12 @@ public sealed class Stock
     {
         if (inventoryItemId == Guid.Empty)
         {
-            throw new ArgumentException("Inventory item id is required.", nameof(inventoryItemId));
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         if (quantityOnHand < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(quantityOnHand), "Quantity on hand must be zero or greater.");
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         var auditInfo = new AuditInfo(
@@ -50,10 +59,72 @@ public sealed class Stock
     {
         if (quantityOnHand < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(quantityOnHand), "Quantity on hand must be zero or greater.");
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         QuantityOnHand = quantityOnHand;
+        AuditInfo = new AuditInfo(
+            createdAtUtc: AuditInfo.CreatedAtUtc,
+            createdBy: AuditInfo.CreatedBy,
+            lastModifiedAtUtc: changeContext.ChangedAtUtc,
+            lastModifiedBy: changeContext.UserId);
+    }
+
+    public void ApplyMovement(StockMovement movement, ChangeContext changeContext)
+    {
+        if (movement.StockId != Id)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        var nextQuantity = QuantityOnHand + movement.QuantityDelta;
+
+        if (nextQuantity < 0)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        QuantityOnHand = nextQuantity;
+        _movements.Add(movement);
+
+        AuditInfo = new AuditInfo(
+            createdAtUtc: AuditInfo.CreatedAtUtc,
+            createdBy: AuditInfo.CreatedBy,
+            lastModifiedAtUtc: changeContext.ChangedAtUtc,
+            lastModifiedBy: changeContext.UserId);
+    }
+
+    public int GetReservedQuantity()
+    {
+        return _reservations
+            .Where(x => x.Status == StockReservationStatus.Active)
+            .Sum(x => x.Quantity);
+    }
+
+    public int GetAvailableQuantity()
+    {
+        return QuantityOnHand - GetReservedQuantity();
+    }
+
+    public void AddReservation(StockReservation reservation, ChangeContext changeContext)
+    {
+        if (reservation.StockId != Id)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (reservation.Status != StockReservationStatus.Active)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (reservation.Quantity > GetAvailableQuantity())
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        _reservations.Add(reservation);
+
         AuditInfo = new AuditInfo(
             createdAtUtc: AuditInfo.CreatedAtUtc,
             createdBy: AuditInfo.CreatedBy,

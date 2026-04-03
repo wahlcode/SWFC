@@ -52,6 +52,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommandValidator<DeleteInventoryItemCommand>, DeleteInventoryItemValidator>();
         services.AddScoped<ICommandValidator<GetInventoryItemByIdQuery>, GetInventoryItemByIdValidator>();
 
+        services.AddScoped<ICommandValidator<CreateStockReservationCommand>, CreateStockReservationValidator>();
+        services.AddScoped<ICommandValidator<ReleaseStockReservationCommand>, ReleaseStockReservationValidator>();
+        services.AddScoped<ICommandValidator<GetStockReservationByIdQuery>, GetStockReservationByIdValidator>();
+
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<UpdateMachineCommand>, UpdateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<DeleteMachineCommand>, DeleteMachinePolicy>();
@@ -64,6 +68,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemsQuery>, GetInventoryItemsPolicy>();
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemByIdQuery>, GetInventoryItemByIdPolicy>();
 
+        services.AddScoped<IAuthorizationPolicy<CreateStockReservationCommand>, CreateStockReservationPolicy>();
+        services.AddScoped<IAuthorizationPolicy<ReleaseStockReservationCommand>, ReleaseStockReservationPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockReservationsQuery>, GetStockReservationsPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockReservationByIdQuery>, GetStockReservationByIdPolicy>();
+
         services.AddScoped<IMachineWriteRepository, MachineWriteRepository>();
         services.AddScoped<IMachineReadRepository, MachineReadRepository>();
 
@@ -73,6 +82,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IAuditService, AuditService>();
+
+        services.AddScoped<IStockReservationReadRepository, StockReservationReadRepository>();
+        services.AddScoped<IStockReservationWriteRepository, StockReservationWriteRepository>();
 
         services.AddScoped<IUseCaseHandler<CreateMachineCommand, Guid>, CreateMachineHandler>();
         services.AddScoped<IUseCaseHandler<UpdateMachineCommand, bool>, UpdateMachineHandler>();
@@ -85,6 +97,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCaseHandler<DeleteInventoryItemCommand, bool>, DeleteInventoryItemHandler>();
         services.AddScoped<IUseCaseHandler<GetInventoryItemsQuery, IReadOnlyList<InventoryItemListItem>>, GetInventoryItemsHandler>();
         services.AddScoped<IUseCaseHandler<GetInventoryItemByIdQuery, InventoryItemDetailsDto>, GetInventoryItemByIdHandler>();
+
+        services.AddScoped<IUseCaseHandler<CreateStockReservationCommand, Guid>, CreateStockReservationHandler>();
+        services.AddScoped<IUseCaseHandler<ReleaseStockReservationCommand, bool>, ReleaseStockReservationHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockReservationsQuery, IReadOnlyList<StockReservationListItem>>, GetStockReservationsHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockReservationByIdQuery, StockReservationDetailsDto>, GetStockReservationByIdHandler>();
 
         services.AddM103Authentication(configuration);
 

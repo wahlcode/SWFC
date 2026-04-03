@@ -17,6 +17,17 @@ public sealed class StockReadRepository
     {
         return _dbContext.Stocks
             .AsNoTracking()
+            .Include(x => x.Movements)
+            .Include(x => x.Reservations)
             .FirstOrDefaultAsync(x => x.InventoryItemId == inventoryItemId, cancellationToken);
+    }
+
+    public Task<Stock?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Stocks
+            .AsNoTracking()
+            .Include(x => x.Movements)
+            .Include(x => x.Reservations)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }
