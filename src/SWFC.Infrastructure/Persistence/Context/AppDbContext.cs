@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using SWFC.Domain.M800_Security.M805_AuditCompliance.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.ValueObjects;
+using SWFC.Domain.M200_Business.M204_Inventory.Entities;
+using SWFC.Domain.M200_Business.M204_Inventory.ValueObjects;
 
 namespace SWFC.Infrastructure.Persistence.Context;
 
@@ -15,6 +17,7 @@ public sealed class AppDbContext : DbContext
     }
 
     public DbSet<Machine> Machines => Set<Machine>();
+    public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,12 +26,44 @@ public sealed class AppDbContext : DbContext
 
         modelBuilder.Entity<Machine>(entity =>
         {
+            entity.ToTable("Machines");
+
             entity.HasKey(x => x.Id);
 
             entity.Property(x => x.Name)
                 .HasConversion(
                     x => x.Value,
                     v => MachineName.Create(v))
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.OwnsOne(x => x.AuditInfo, audit =>
+            {
+                audit.Property(a => a.CreatedAtUtc)
+                    .IsRequired();
+
+                audit.Property(a => a.CreatedBy)
+                    .IsRequired();
+
+                audit.Property(a => a.LastModifiedAtUtc)
+                    .IsRequired(false);
+
+                audit.Property(a => a.LastModifiedBy)
+                    .HasMaxLength(200)
+                    .IsRequired(false);
+            });
+        });
+
+        modelBuilder.Entity<InventoryItem>(entity =>
+        {
+            entity.ToTable("InventoryItems");
+
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Name)
+                .HasConversion(
+                    x => x.Value,
+                    v => InventoryItemName.Create(v))
                 .IsRequired()
                 .HasMaxLength(100);
 

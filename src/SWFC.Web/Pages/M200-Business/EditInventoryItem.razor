@@ -1,0 +1,47 @@
+@page "/m200/edit-inventory-item/{Id:guid}"
+
+<PageTitle>Edit Inventory Item</PageTitle>
+
+<div class="page">
+    <h1>Edit Inventory Item</h1>
+
+    <p>
+        Inventory item id: <strong>@Id</strong>
+    </p>
+
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="name">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="_model.Name" />
+        </div>
+
+        <div class="mb-3">
+            <label for="reason">Reason</label>
+            <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-link" href="/m200/inventory-item/@Id">Cancel</a>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private EditInventoryItemWebModel _model = new();
+
+    private Task HandleValidSubmit()
+    {
+        return Task.CompletedTask;
+    }
+
+    private sealed class EditInventoryItemWebModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Reason { get; set; } = string.Empty;
+    }
+}
