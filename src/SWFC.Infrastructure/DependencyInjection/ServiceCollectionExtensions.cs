@@ -52,6 +52,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommandValidator<DeleteInventoryItemCommand>, DeleteInventoryItemValidator>();
         services.AddScoped<ICommandValidator<GetInventoryItemByIdQuery>, GetInventoryItemByIdValidator>();
 
+        services.AddScoped<ICommandValidator<CreateStockMovementCommand>, CreateStockMovementValidator>();
+        services.AddScoped<ICommandValidator<GetStockMovementByIdQuery>, GetStockMovementByIdValidator>();
+
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<UpdateMachineCommand>, UpdateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<DeleteMachineCommand>, DeleteMachinePolicy>();
@@ -64,11 +67,18 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemsQuery>, GetInventoryItemsPolicy>();
         services.AddScoped<IAuthorizationPolicy<GetInventoryItemByIdQuery>, GetInventoryItemByIdPolicy>();
 
+        services.AddScoped<IAuthorizationPolicy<CreateStockMovementCommand>, CreateStockMovementPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockMovementsQuery>, GetStockMovementsPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetStockMovementByIdQuery>, GetStockMovementByIdPolicy>();
+
         services.AddScoped<IMachineWriteRepository, MachineWriteRepository>();
         services.AddScoped<IMachineReadRepository, MachineReadRepository>();
 
         services.AddScoped<IInventoryItemWriteRepository, InventoryItemWriteRepository>();
         services.AddScoped<IInventoryItemReadRepository, InventoryItemReadRepository>();
+
+        services.AddScoped<IStockMovementReadRepository, StockMovementReadRepository>();
+        services.AddScoped<IStockMovementWriteRepository, StockMovementWriteRepository>();
         services.AddScoped<StockReadRepository>();
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
@@ -85,6 +95,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCaseHandler<DeleteInventoryItemCommand, bool>, DeleteInventoryItemHandler>();
         services.AddScoped<IUseCaseHandler<GetInventoryItemsQuery, IReadOnlyList<InventoryItemListItem>>, GetInventoryItemsHandler>();
         services.AddScoped<IUseCaseHandler<GetInventoryItemByIdQuery, InventoryItemDetailsDto>, GetInventoryItemByIdHandler>();
+
+        services.AddScoped<IUseCaseHandler<CreateStockMovementCommand, Guid>, CreateStockMovementHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockMovementsQuery, IReadOnlyList<StockMovementListItem>>, GetStockMovementsHandler>();
+        services.AddScoped<IUseCaseHandler<GetStockMovementByIdQuery, StockMovementDetailsDto>, GetStockMovementByIdHandler>();
 
         services.AddM103Authentication(configuration);
 

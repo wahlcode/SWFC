@@ -26,6 +26,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
             .Select(x => new InventoryItemListItem(
                 x.Id,
                 x.Name.Value,
+                x.Stock?.Id,
                 x.Stock?.QuantityOnHand ?? 0,
                 x.AuditInfo.CreatedAtUtc,
                 x.AuditInfo.CreatedBy,
@@ -49,6 +50,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
         return new InventoryItemDetailsDto(
             inventoryItem.Id,
             inventoryItem.Name.Value,
+            inventoryItem.Stock?.Id,
             inventoryItem.Stock?.QuantityOnHand ?? 0,
             inventoryItem.AuditInfo.CreatedAtUtc,
             inventoryItem.AuditInfo.CreatedBy,
