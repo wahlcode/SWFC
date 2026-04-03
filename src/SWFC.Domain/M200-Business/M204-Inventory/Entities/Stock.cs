@@ -1,9 +1,13 @@
+using SWFC.Domain.Common.Errors;
+using SWFC.Domain.Common.Exceptions;
 using SWFC.Domain.Common.ValueObjects;
 
 namespace SWFC.Domain.M200_Business.M204_Inventory.Entities;
 
 public sealed class Stock
 {
+    private readonly List<StockMovement> _movements = new();
+
     private Stock()
     {
         Id = Guid.Empty;
@@ -23,6 +27,7 @@ public sealed class Stock
     public Guid InventoryItemId { get; private set; }
     public int QuantityOnHand { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
+    public IReadOnlyCollection<StockMovement> Movements => _movements;
 
     public static Stock Create(
         Guid inventoryItemId,
@@ -31,12 +36,12 @@ public sealed class Stock
     {
         if (inventoryItemId == Guid.Empty)
         {
-            throw new ArgumentException("Inventory item id is required.", nameof(inventoryItemId));
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         if (quantityOnHand < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(quantityOnHand), "Quantity on hand must be zero or greater.");
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         var auditInfo = new AuditInfo(
@@ -50,10 +55,34 @@ public sealed class Stock
     {
         if (quantityOnHand < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(quantityOnHand), "Quantity on hand must be zero or greater.");
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
         QuantityOnHand = quantityOnHand;
+        AuditInfo = new AuditInfo(
+            createdAtUtc: AuditInfo.CreatedAtUtc,
+            createdBy: AuditInfo.CreatedBy,
+            lastModifiedAtUtc: changeContext.ChangedAtUtc,
+            lastModifiedBy: changeContext.UserId);
+    }
+
+    public void ApplyMovement(StockMovement movement, ChangeContext changeContext)
+    {
+        if (movement.StockId != Id)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        var nextQuantity = QuantityOnHand + movement.QuantityDelta;
+
+        if (nextQuantity < 0)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        QuantityOnHand = nextQuantity;
+        _movements.Add(movement);
+
         AuditInfo = new AuditInfo(
             createdAtUtc: AuditInfo.CreatedAtUtc,
             createdBy: AuditInfo.CreatedBy,

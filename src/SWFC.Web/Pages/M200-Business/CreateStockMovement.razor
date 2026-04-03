@@ -1,0 +1,62 @@
+@page "/m200/create-stock-movement"
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Create Stock Movement</PageTitle>
+
+<div class="page">
+    <h1>Create Stock Movement</h1>
+
+    <p>
+        This is the basic M204.03 movement creation page.
+    </p>
+
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="stockId">Stock Id</label>
+            <InputText id="stockId" class="form-control" @bind-Value="_model.StockId" />
+        </div>
+
+        <div class="mb-3">
+            <label for="movementType">Movement Type</label>
+            <select id="movementType" class="form-control" @bind="_model.MovementType">
+                <option value="GoodsReceipt">GoodsReceipt</option>
+                <option value="GoodsIssue">GoodsIssue</option>
+                <option value="Transfer">Transfer</option>
+                <option value="Correction">Correction</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantityDelta">Quantity Delta</label>
+            <InputNumber id="quantityDelta" class="form-control" @bind-Value="_model.QuantityDelta" />
+        </div>
+
+        <div class="mb-3">
+            <label for="reason">Reason</label>
+            <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-link" href="/m200/stock-movements">Cancel</a>
+    </EditForm>
+</div>
+
+@code {
+    private CreateStockMovementWebModel _model = new();
+
+    private Task HandleValidSubmit()
+    {
+        return Task.CompletedTask;
+    }
+
+    private sealed class CreateStockMovementWebModel
+    {
+        public string StockId { get; set; } = string.Empty;
+        public string MovementType { get; set; } = "GoodsReceipt";
+        public int QuantityDelta { get; set; }
+        public string Reason { get; set; } = string.Empty;
+    }
+}
