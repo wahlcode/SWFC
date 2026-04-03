@@ -7,6 +7,8 @@ public sealed record InventoryItemListItem(
     string Name,
     Guid? StockId,
     int QuantityOnHand,
+    int ReservedQuantity,
+    int AvailableQuantity,
     DateTime CreatedAtUtc,
     string CreatedBy,
     DateTime? LastModifiedAtUtc,

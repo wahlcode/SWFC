@@ -1,12 +1,14 @@
 using SWFC.Domain.Common.Errors;
 using SWFC.Domain.Common.Exceptions;
 using SWFC.Domain.Common.ValueObjects;
+using SWFC.Domain.M200_Business.M204_Inventory.Enums;
 
 namespace SWFC.Domain.M200_Business.M204_Inventory.Entities;
 
 public sealed class Stock
 {
     private readonly List<StockMovement> _movements = new();
+    private readonly List<StockReservation> _reservations = new();
 
     private Stock()
     {
@@ -27,7 +29,9 @@ public sealed class Stock
     public Guid InventoryItemId { get; private set; }
     public int QuantityOnHand { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
+
     public IReadOnlyCollection<StockMovement> Movements => _movements;
+    public IReadOnlyCollection<StockReservation> Reservations => _reservations;
 
     public static Stock Create(
         Guid inventoryItemId,
@@ -82,6 +86,44 @@ public sealed class Stock
 
         QuantityOnHand = nextQuantity;
         _movements.Add(movement);
+
+        AuditInfo = new AuditInfo(
+            createdAtUtc: AuditInfo.CreatedAtUtc,
+            createdBy: AuditInfo.CreatedBy,
+            lastModifiedAtUtc: changeContext.ChangedAtUtc,
+            lastModifiedBy: changeContext.UserId);
+    }
+
+    public int GetReservedQuantity()
+    {
+        return _reservations
+            .Where(x => x.Status == StockReservationStatus.Active)
+            .Sum(x => x.Quantity);
+    }
+
+    public int GetAvailableQuantity()
+    {
+        return QuantityOnHand - GetReservedQuantity();
+    }
+
+    public void AddReservation(StockReservation reservation, ChangeContext changeContext)
+    {
+        if (reservation.StockId != Id)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (reservation.Status != StockReservationStatus.Active)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (reservation.Quantity > GetAvailableQuantity())
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        _reservations.Add(reservation);
 
         AuditInfo = new AuditInfo(
             createdAtUtc: AuditInfo.CreatedAtUtc,

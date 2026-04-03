@@ -5,26 +5,28 @@
 <div class="page">
     <h1>Inventory Items</h1>
 
-    <p>
-        M204 inventory item list with stock visibility is active.
-    </p>
-
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Stock</th>
+                <th>Reserved</th>
+                <th>Available</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Sample Inventory Item</td>
-                <td>0</td>
+                <td>10</td>
+                <td>5</td>
+                <td>5</td>
                 <td>
                     <a href="/m200/inventory-item/00000000-0000-0000-0000-000000000000">Details</a>
                     |
                     <a href="/m200/stock-movements">Movements</a>
+                    |
+                    <a href="/m200/stock-reservations">Reservations</a>
                 </td>
             </tr>
         </tbody>

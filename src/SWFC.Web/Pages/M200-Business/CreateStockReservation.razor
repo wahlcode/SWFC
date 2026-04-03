@@ -1,0 +1,53 @@
+@page "/m200/create-stock-reservation"
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Create Stock Reservation</PageTitle>
+
+<div class="page">
+    <h1>Create Stock Reservation</h1>
+
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="stockId">Stock Id</label>
+            <InputText id="stockId" class="form-control" @bind-Value="_model.StockId" />
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity" class="form-control" @bind-Value="_model.Quantity" />
+        </div>
+
+        <div class="mb-3">
+            <label for="note">Note</label>
+            <InputText id="note" class="form-control" @bind-Value="_model.Note" />
+        </div>
+
+        <div class="mb-3">
+            <label for="reason">Reason</label>
+            <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-link" href="/m200/stock-reservations">Cancel</a>
+    </EditForm>
+</div>
+
+@code {
+    private CreateStockReservationWebModel _model = new();
+
+    private Task HandleValidSubmit()
+    {
+        return Task.CompletedTask;
+    }
+
+    private sealed class CreateStockReservationWebModel
+    {
+        public string StockId { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public string Note { get; set; } = string.Empty;
+        public string Reason { get; set; } = string.Empty;
+    }
+}
