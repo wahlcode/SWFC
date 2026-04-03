@@ -1,10 +1,19 @@
-@page "/m200/create-stock-reservation"
+@page "/create-stock-reservation"
 @using Microsoft.AspNetCore.Components.Forms
+@using SWFC.Application.M200_Business.M204_Inventory.Commands
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<CreateStockReservationCommand, Guid> Pipeline
+@inject NavigationManager NavigationManager
 
 <PageTitle>Create Stock Reservation</PageTitle>
 
 <div class="page">
     <h1>Create Stock Reservation</h1>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p>@_errorMessage</p>
+    }
 
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -30,17 +39,44 @@
             <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Save</button>
         <a class="btn btn-link" href="/m200/stock-reservations">Cancel</a>
     </EditForm>
 </div>
 
 @code {
-    private CreateStockReservationWebModel _model = new();
+    private readonly CreateStockReservationWebModel _model = new();
+    private bool _isSubmitting;
+    private string? _errorMessage;
 
-    private Task HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        return Task.CompletedTask;
+        _errorMessage = null;
+        _isSubmitting = true;
+
+        if (!Guid.TryParse(_model.StockId, out var stockId))
+        {
+            _errorMessage = "Stock Id is invalid.";
+            _isSubmitting = false;
+            return;
+        }
+
+        var command = new CreateStockReservationCommand(
+            stockId,
+            _model.Quantity,
+            _model.Note,
+            _model.Reason);
+
+        var result = await Pipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo("/stock-reservations");
+            return;
+        }
+
+        _errorMessage = result.Error?.Message ?? "Failed to create stock reservation.";
+        _isSubmitting = false;
     }
 
     private sealed class CreateStockReservationWebModel

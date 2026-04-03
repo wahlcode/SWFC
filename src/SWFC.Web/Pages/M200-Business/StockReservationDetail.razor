@@ -1,36 +1,76 @@
-@page "/m200/stock-reservations"
+@page "/stock-reservation/{Id:guid}"
+@using Microsoft.AspNetCore.Components
+@using SWFC.Application.M200_Business.M204_Inventory.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetStockReservationByIdQuery, StockReservationDetailsDto> Pipeline
 
-<PageTitle>Stock Reservations</PageTitle>
+<PageTitle>Stock Reservation Detail</PageTitle>
 
 <div class="page">
-    <h1>Stock Reservations</h1>
+    <h1>Stock Reservation Detail</h1>
+
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p>@_errorMessage</p>
+    }
+    else if (_item is null)
+    {
+        <p>Reservation not found.</p>
+    }
+    else
+    {
+        <p>
+            Stock reservation id: <strong>@_item.Id</strong>
+        </p>
+
+        <dl>
+            <dt>Status</dt>
+            <dd>@_item.Status</dd>
+
+            <dt>Quantity</dt>
+            <dd>@_item.Quantity</dd>
+
+            <dt>Stock Id</dt>
+            <dd>@_item.StockId</dd>
+
+            <dt>Note</dt>
+            <dd>@_item.Note</dd>
+        </dl>
+    }
 
     <p>
-        M204.04 stock reservation list is active.
+        <a href="/stock-reservations">Back to reservation list</a>
     </p>
-
-    <p>
-        <a href="/m200/create-stock-reservation">Create Stock Reservation</a>
-    </p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Status</th>
-                <th>Quantity</th>
-                <th>Stock Id</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Active</td>
-                <td>5</td>
-                <td>00000000-0000-0000-0000-000000000000</td>
-                <td>
-                    <a href="/m200/stock-reservation/00000000-0000-0000-0000-000000000000">Details</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private StockReservationDetailsDto? _item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        var result = await Pipeline.ExecuteAsync(new GetStockReservationByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            _item = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Failed to load stock reservation.";
+        }
+
+        _isLoading = false;
+    }
+}

@@ -1,4 +1,7 @@
-@page "/m200/stock-reservations"
+@page "/stock-reservations"
+@using SWFC.Application.M200_Business.M204_Inventory.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetStockReservationsQuery, IReadOnlyList<StockReservationListItem>> Pipeline
 
 <PageTitle>Stock Reservations</PageTitle>
 
@@ -6,31 +9,70 @@
     <h1>Stock Reservations</h1>
 
     <p>
-        M204.04 stock reservation list is active.
+        <a href="/create-stock-reservation">Create Stock Reservation</a>
     </p>
 
-    <p>
-        <a href="/m200/create-stock-reservation">Create Stock Reservation</a>
-    </p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Status</th>
-                <th>Quantity</th>
-                <th>Stock Id</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Active</td>
-                <td>5</td>
-                <td>00000000-0000-0000-0000-000000000000</td>
-                <td>
-                    <a href="/m200/stock-reservation/00000000-0000-0000-0000-000000000000">Details</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p>@_errorMessage</p>
+    }
+    else if (_items.Count == 0)
+    {
+        <p>No stock reservations found.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Stock Id</th>
+                    <th>Note</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _items)
+                {
+                    <tr>
+                        <td>@item.Status</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.StockId</td>
+                        <td>@item.Note</td>
+                        <td>
+                            <a href="/stock-reservation/@item.Id">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>
+
+@code {
+    private readonly List<StockReservationListItem> _items = new();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetStockReservationsQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _items.Clear();
+            _items.AddRange(result.Value);
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Failed to load stock reservations.";
+        }
+
+        _isLoading = false;
+    }
+}
