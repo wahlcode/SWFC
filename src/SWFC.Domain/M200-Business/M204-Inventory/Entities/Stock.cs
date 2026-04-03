@@ -8,10 +8,7 @@ namespace SWFC.Domain.M200_Business.M204_Inventory.Entities;
 public sealed class Stock
 {
     private readonly List<StockMovement> _movements = new();
-<<<<<<< HEAD
     private readonly List<StockReservation> _reservations = new();
-=======
->>>>>>> origin/main
 
     private Stock()
     {
@@ -32,7 +29,6 @@ public sealed class Stock
     public Guid InventoryItemId { get; private set; }
     public int QuantityOnHand { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
-    public IReadOnlyCollection<StockMovement> Movements => _movements;
 
     public IReadOnlyCollection<StockMovement> Movements => _movements;
     public IReadOnlyCollection<StockReservation> Reservations => _reservations;
@@ -97,7 +93,6 @@ public sealed class Stock
             lastModifiedAtUtc: changeContext.ChangedAtUtc,
             lastModifiedBy: changeContext.UserId);
     }
-<<<<<<< HEAD
 
     public int GetReservedQuantity()
     {
@@ -136,6 +131,4 @@ public sealed class Stock
             lastModifiedAtUtc: changeContext.ChangedAtUtc,
             lastModifiedBy: changeContext.UserId);
     }
-=======
->>>>>>> origin/main
 }

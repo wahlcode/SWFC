@@ -21,10 +21,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<Stock> Stocks => Set<Stock>();
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
-<<<<<<< HEAD
     public DbSet<StockReservation> StockReservations => Set<StockReservation>();
-=======
->>>>>>> origin/main
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -107,14 +104,11 @@ public sealed class AppDbContext : DbContext
                 .WithOne()
                 .HasForeignKey(x => x.StockId)
                 .OnDelete(DeleteBehavior.Cascade);
-<<<<<<< HEAD
 
             entity.HasMany(x => x.Reservations)
                 .WithOne()
                 .HasForeignKey(x => x.StockId)
                 .OnDelete(DeleteBehavior.Cascade);
-=======
->>>>>>> origin/main
         });
 
         modelBuilder.Entity<StockMovement>(entity =>
@@ -140,7 +134,6 @@ public sealed class AppDbContext : DbContext
                 audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
                 audit.Property(a => a.LastModifiedBy).HasMaxLength(200).IsRequired(false);
             });
-<<<<<<< HEAD
         });
 
         modelBuilder.Entity<StockReservation>(entity =>
@@ -170,8 +163,6 @@ public sealed class AppDbContext : DbContext
                 audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
                 audit.Property(a => a.LastModifiedBy).HasMaxLength(200).IsRequired(false);
             });
-=======
->>>>>>> origin/main
         });
 
         modelBuilder.Entity<AuditLog>(entity =>

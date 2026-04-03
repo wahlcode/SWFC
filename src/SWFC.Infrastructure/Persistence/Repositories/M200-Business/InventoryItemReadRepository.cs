@@ -25,7 +25,6 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
 
         return inventoryItems
             .OrderBy(x => x.Name.Value)
-<<<<<<< HEAD
             .Select(x =>
             {
                 var reservedQuantity = x.Stock?.Reservations
@@ -47,17 +46,6 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
                     x.AuditInfo.LastModifiedAtUtc,
                     x.AuditInfo.LastModifiedBy);
             })
-=======
-            .Select(x => new InventoryItemListItem(
-                x.Id,
-                x.Name.Value,
-                x.Stock?.Id,
-                x.Stock?.QuantityOnHand ?? 0,
-                x.AuditInfo.CreatedAtUtc,
-                x.AuditInfo.CreatedBy,
-                x.AuditInfo.LastModifiedAtUtc,
-                x.AuditInfo.LastModifiedBy))
->>>>>>> origin/main
             .ToList();
     }
 
@@ -85,13 +73,9 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
             inventoryItem.Id,
             inventoryItem.Name.Value,
             inventoryItem.Stock?.Id,
-<<<<<<< HEAD
             quantityOnHand,
             reservedQuantity,
             availableQuantity,
-=======
-            inventoryItem.Stock?.QuantityOnHand ?? 0,
->>>>>>> origin/main
             inventoryItem.AuditInfo.CreatedAtUtc,
             inventoryItem.AuditInfo.CreatedBy,
             inventoryItem.AuditInfo.LastModifiedAtUtc,
