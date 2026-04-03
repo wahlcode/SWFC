@@ -1,0 +1,28 @@
+@page "/m200/inventory-item/{Id:guid}"
+
+<PageTitle>Inventory Item Detail</PageTitle>
+
+<div class="page">
+    <h1>Inventory Item Detail</h1>
+
+    <p>
+        Inventory item id: <strong>@Id</strong>
+    </p>
+
+    <p>
+        This page is the basic M204 detail entry point.
+    </p>
+
+    <p>
+        <a href="/m200/edit-inventory-item/@Id">Edit this inventory item</a>
+    </p>
+
+    <p>
+        <a href="/m200/inventory-items">Back to list</a>
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}
