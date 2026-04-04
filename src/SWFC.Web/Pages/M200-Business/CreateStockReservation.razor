@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using SWFC.Application.M200_Business.M204_Inventory.Commands
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M204_Inventory.Enums
 @inject IExecutionPipeline<CreateStockReservationCommand, Guid> Pipeline
 @inject NavigationManager NavigationManager
 
@@ -39,6 +40,22 @@
             <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Target Type</label>
+            <InputSelect TValue="InventoryTargetType?" @bind-Value="_model.TargetType" class="form-control">
+                <option value="">-- none --</option>
+                    @foreach (var value in Enum.GetValues<InventoryTargetType>())
+                        {
+                            <option value="@value">@value</option>
+                        }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Target Reference</label>
+                <InputText @bind-Value="_model.TargetReference" class="form-control" />
+        </div>
+
         <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Save</button>
         <a class="btn btn-link" href="/m200/stock-reservations">Cancel</a>
     </EditForm>
@@ -65,7 +82,10 @@
             stockId,
             _model.Quantity,
             _model.Note,
-            _model.Reason);
+            _model.Reason,
+            _model.TargetType,
+            _model.TargetReference);
+            
 
         var result = await Pipeline.ExecuteAsync(command);
 
@@ -85,5 +105,7 @@
         public int Quantity { get; set; }
         public string Note { get; set; } = string.Empty;
         public string Reason { get; set; } = string.Empty;
+        public InventoryTargetType? TargetType { get; set; }
+        public string? TargetReference { get; set; }
     }
 }

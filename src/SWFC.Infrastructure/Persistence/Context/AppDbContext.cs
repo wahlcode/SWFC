@@ -127,8 +127,17 @@ public sealed class AppDbContext : DbContext
             entity.Property(x => x.QuantityDelta)
                 .IsRequired();
 
+            entity.Property(x => x.TargetType)
+                .HasConversion<int>()
+                .IsRequired(false);
+
+            entity.Property(x => x.TargetReference)
+                .HasMaxLength(200)
+                .IsRequired(false);
+
             entity.OwnsOne(x => x.AuditInfo, audit =>
-            {
+            
+        {
                 audit.Property(a => a.CreatedAtUtc).IsRequired();
                 audit.Property(a => a.CreatedBy).IsRequired();
                 audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);
@@ -155,6 +164,14 @@ public sealed class AppDbContext : DbContext
             entity.Property(x => x.Status)
                 .HasConversion<int>()
                 .IsRequired();
+
+            entity.Property(x => x.TargetType)
+                .HasConversion<int>()
+                .IsRequired(false);
+
+            entity.Property(x => x.TargetReference)
+                .HasMaxLength(200)
+                .IsRequired(false);
 
             entity.OwnsOne(x => x.AuditInfo, audit =>
             {

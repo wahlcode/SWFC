@@ -57,6 +57,8 @@ public sealed class CreateStockReservationHandler : IUseCaseHandler<CreateStockR
             command.StockId,
             command.Quantity,
             command.Note,
+            command.TargetType,
+            command.TargetReference,
             changeContext);
 
         stock.AddReservation(reservation, changeContext);

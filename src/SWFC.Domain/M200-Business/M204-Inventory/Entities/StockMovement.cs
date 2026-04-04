@@ -11,6 +11,7 @@ public sealed class StockMovement
     {
         Id = Guid.Empty;
         StockId = Guid.Empty;
+        TargetReference = null;
         AuditInfo = null!;
     }
 
@@ -19,12 +20,16 @@ public sealed class StockMovement
         Guid stockId,
         StockMovementType movementType,
         int quantityDelta,
+        InventoryTargetType? targetType,
+        string? targetReference,
         AuditInfo auditInfo)
     {
         Id = id;
         StockId = stockId;
         MovementType = movementType;
         QuantityDelta = quantityDelta;
+        TargetType = targetType;
+        TargetReference = targetReference;
         AuditInfo = auditInfo;
     }
 
@@ -33,12 +38,16 @@ public sealed class StockMovement
     public StockMovementType MovementType { get; private set; }
     public int QuantityDelta { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
+    public InventoryTargetType? TargetType { get; private set; }
+    public string? TargetReference { get; private set; }
 
     public static StockMovement Create(
         Guid stockId,
         StockMovementType movementType,
         int quantityDelta,
-        ChangeContext changeContext)
+        ChangeContext changeContext,
+        InventoryTargetType? targetType = null,
+        string? targetReference = null)
     {
         if (stockId == Guid.Empty)
         {
@@ -65,6 +74,16 @@ public sealed class StockMovement
             throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
 
+        if (targetType is null && !string.IsNullOrWhiteSpace(targetReference))
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (targetType is not null && string.IsNullOrWhiteSpace(targetReference))
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
         var auditInfo = new AuditInfo(
             createdAtUtc: changeContext.ChangedAtUtc,
             createdBy: changeContext.UserId);
@@ -74,6 +93,8 @@ public sealed class StockMovement
             stockId,
             movementType,
             quantityDelta,
+            targetType,
+            string.IsNullOrWhiteSpace(targetReference) ? null : targetReference.Trim(),
             auditInfo);
     }
 }

@@ -1,0 +1,129 @@
+@page "/m200/consume-stock-reservation/{Id:guid}"
+
+@using SWFC.Application.M200_Business.M204_Inventory.Commands
+@using SWFC.Application.M200_Business.M204_Inventory.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetStockReservationByIdQuery, StockReservationDetailsDto> GetPipeline
+@inject IExecutionPipeline<ConsumeStockReservationCommand, Guid> ConsumePipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Consume Stock Reservation</PageTitle>
+
+<div class="page">
+    <h1>Consume Stock Reservation</h1>
+
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p>@_errorMessage</p>
+    }
+    else if (_reservation is null)
+    {
+        <p>Reservation not found.</p>
+    }
+    else
+    {
+        <div class="mb-3">
+            <strong>Reservation Id:</strong> @_reservation.Id
+        </div>
+
+        <div class="mb-3">
+            <strong>Stock Id:</strong> @_reservation.StockId
+        </div>
+
+        <div class="mb-3">
+            <strong>Reserved Quantity:</strong> @_reservation.Quantity
+        </div>
+
+        <div class="mb-3">
+            <strong>Status:</strong> @_reservation.Status
+        </div>
+
+        <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Quantity to consume</label>
+                <InputNumber @bind-Value="_model.Quantity" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Reason</label>
+                <InputText @bind-Value="_model.Reason" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-danger" disabled="_isSubmitting">
+                @(_isSubmitting ? "Processing..." : "Consume")
+            </button>
+        </EditForm>
+    }
+
+    <p>
+        <a href="/stock-reservations">Back to list</a>
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    private StockReservationDetailsDto? _reservation;
+
+    private FormModel _model = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        var result = await GetPipeline.ExecuteAsync(new GetStockReservationByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            _reservation = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Failed to load reservation.";
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        var command = new ConsumeStockReservationCommand(
+            Id,
+            _model.Quantity,
+            _model.Reason);
+
+        var result = await ConsumePipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo($"/m200/stock-movement/{result.Value}");
+            return;
+        }
+
+        _errorMessage = result.Error?.Message ?? "Consumption failed.";
+        _isSubmitting = false;
+    }
+
+    private sealed class FormModel
+    {
+        public int Quantity { get; set; }
+        public string Reason { get; set; } = string.Empty;
+    }
+}
