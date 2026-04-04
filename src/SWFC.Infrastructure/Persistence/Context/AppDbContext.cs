@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using SWFC.Domain.M100_System.M102_Organization.Entities;
 using SWFC.Domain.M800_Security.M805_AuditCompliance.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.ValueObjects;
 using SWFC.Domain.M200_Business.M204_Inventory.Entities;
 using SWFC.Domain.M200_Business.M204_Inventory.ValueObjects;
+using SWFC.Infrastructure.Persistence.Configurations.M100_System;
 
 namespace SWFC.Infrastructure.Persistence.Context;
 
@@ -16,6 +18,12 @@ public sealed class AppDbContext : DbContext
     {
     }
 
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<OrganizationUnit> OrganizationUnits => Set<OrganizationUnit>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<UserOrganizationUnit> UserOrganizationUnits => Set<UserOrganizationUnit>();
+
     public DbSet<Machine> Machines => Set<Machine>();
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<Stock> Stocks => Set<Stock>();
@@ -26,6 +34,12 @@ public sealed class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(DefaultSchema);
+
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new OrganizationUnitConfiguration());
+        modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+        modelBuilder.ApplyConfiguration(new UserOrganizationUnitConfiguration());
 
         modelBuilder.Entity<Machine>(entity =>
         {

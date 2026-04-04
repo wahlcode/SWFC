@@ -23,6 +23,126 @@ namespace SWFC.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.OrganizationUnit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("ParentOrganizationUnitId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("OrganizationUnits", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Roles", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("IdentityKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityKey")
+                        .IsUnique();
+
+                    b.ToTable("Users", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.UserOrganizationUnit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("OrganizationUnitId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "OrganizationUnitId")
+                        .IsUnique();
+
+                    b.ToTable("UserOrganizationUnits", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles", "core");
+                });
+
             modelBuilder.Entity("SWFC.Domain.M200_Business.M201_Assets.Entities.Machine", b =>
                 {
                     b.Property<Guid>("Id")
@@ -221,6 +341,183 @@ namespace SWFC.Infrastructure.Migrations
                     b.ToTable("AuditLogs", "core");
                 });
 
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.OrganizationUnit", b =>
+                {
+                    b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
+                        {
+                            b1.Property<Guid>("OrganizationUnitId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("LastModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("LastModifiedBy")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("OrganizationUnitId");
+
+                            b1.ToTable("OrganizationUnits", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganizationUnitId");
+                        });
+
+                    b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.Role", b =>
+                {
+                    b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
+                        {
+                            b1.Property<Guid>("RoleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("LastModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("LastModifiedBy")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("RoleId");
+
+                            b1.ToTable("Roles", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoleId");
+                        });
+
+                    b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.User", b =>
+                {
+                    b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("LastModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("LastModifiedBy")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.UserOrganizationUnit", b =>
+                {
+                    b.HasOne("SWFC.Domain.M100_System.M102_Organization.Entities.User", null)
+                        .WithMany("OrganizationUnits")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
+                        {
+                            b1.Property<Guid>("UserOrganizationUnitId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("LastModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("LastModifiedBy")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("UserOrganizationUnitId");
+
+                            b1.ToTable("UserOrganizationUnits", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserOrganizationUnitId");
+                        });
+
+                    b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.UserRole", b =>
+                {
+                    b.HasOne("SWFC.Domain.M100_System.M102_Organization.Entities.User", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
+                        {
+                            b1.Property<Guid>("UserRoleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("CreatedBy")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("LastModifiedAtUtc")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<string>("LastModifiedBy")
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
+
+                            b1.HasKey("UserRoleId");
+
+                            b1.ToTable("UserRoles", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserRoleId");
+                        });
+
+                    b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWFC.Domain.M200_Business.M201_Assets.Entities.Machine", b =>
                 {
                     b.OwnsOne("SWFC.Domain.Common.ValueObjects.AuditInfo", "AuditInfo", b1 =>
@@ -402,6 +699,13 @@ namespace SWFC.Infrastructure.Migrations
 
                     b.Navigation("AuditInfo")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.User", b =>
+                {
+                    b.Navigation("OrganizationUnits");
+
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("SWFC.Domain.M200_Business.M204_Inventory.Entities.InventoryItem", b =>

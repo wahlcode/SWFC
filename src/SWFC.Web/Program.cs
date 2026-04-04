@@ -5,6 +5,7 @@ using SWFC.Infrastructure.DependencyInjection;
 using SWFC.Infrastructure.M800_Security.Auth;
 using SWFC.Infrastructure.M800_Security.Auth.Configuration;
 using SWFC.Infrastructure.M800_Security.Auth.Providers.Sso;
+using SWFC.Infrastructure.Services.System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,12 @@ builder.Services.AddScoped(_ =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider.GetRequiredService<IM102DataInitializer>();
+    await initializer.InitializeAsync();
+}
 
 if (!app.Environment.IsDevelopment())
 {

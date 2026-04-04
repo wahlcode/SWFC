@@ -2,6 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SWFC.Application.Common.Validation;
+using SWFC.Application.M100_System.M102_Organization.Authorization;
+using SWFC.Application.M100_System.M102_Organization.Commands;
+using SWFC.Application.M100_System.M102_Organization.DTOs;
+using SWFC.Application.M100_System.M102_Organization.Handlers;
+using SWFC.Application.M100_System.M102_Organization.Interfaces;
+using SWFC.Application.M100_System.M102_Organization.Queries;
+using SWFC.Application.M100_System.M102_Organization.Services;
+using SWFC.Application.M100_System.M102_Organization.Validators;
 using SWFC.Application.M200_Business.M201_Assets.Commands;
 using SWFC.Application.M200_Business.M201_Assets.Handlers;
 using SWFC.Application.M200_Business.M201_Assets.Interfaces;
@@ -20,8 +28,11 @@ using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
 using SWFC.Infrastructure.M800_Security.Audit;
 using SWFC.Infrastructure.M800_Security.Auth.DependencyInjection;
 using SWFC.Infrastructure.Persistence.Context;
+using SWFC.Infrastructure.Persistence.Repositories.M100_System;
 using SWFC.Infrastructure.Persistence.Repositories.M200_Business;
 using SWFC.Infrastructure.Persistence.Repositories.M800_Security;
+using SWFC.Infrastructure.Services.Security;
+using SWFC.Infrastructure.Services.System;
 
 namespace SWFC.Infrastructure.DependencyInjection;
 
@@ -42,6 +53,40 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        services.Configure<M102InitializationOptions>(options =>
+        {
+            options.AdminRoleName = "Admin";
+            options.DeveloperIdentityKey = "local-admin";
+            options.DeveloperDisplayName = "Developer";
+            options.CreateRootOrganizationUnit = true;
+            options.RootOrganizationUnitCode = "ROOT";
+            options.RootOrganizationUnitName = "ROOT";
+        });
+
+        services.AddScoped<IM102DataInitializer, M102DataInitializer>();
+
+        services.AddScoped<IUserReadRepository, UserReadRepository>();
+        services.AddScoped<IUserWriteRepository, UserWriteRepository>();
+        services.AddScoped<IRoleReadRepository, RoleReadRepository>();
+        services.AddScoped<IRoleWriteRepository, RoleWriteRepository>();
+        services.AddScoped<IOrganizationUnitReadRepository, OrganizationUnitReadRepository>();
+        services.AddScoped<IOrganizationUnitWriteRepository, OrganizationUnitWriteRepository>();
+        services.AddScoped<IRolePermissionMapper, RolePermissionMapper>();
+        services.AddScoped<IM102SecurityProjectionService, M102SecurityProjectionService>();
+        services.AddScoped<M102SecurityContextResolver>();
+
+        services.AddScoped<ICommandValidator<CreateUserCommand>, CreateUserValidator>();
+        services.AddScoped<ICommandValidator<UpdateUserCommand>, UpdateUserValidator>();
+        services.AddScoped<ICommandValidator<CreateRoleCommand>, CreateRoleValidator>();
+        services.AddScoped<ICommandValidator<CreateOrganizationUnitCommand>, CreateOrganizationUnitValidator>();
+        services.AddScoped<ICommandValidator<GetUserByIdQuery>, GetUserByIdValidator>();
+        services.AddScoped<ICommandValidator<AssignRoleToUserCommand>, AssignRoleToUserValidator>();
+        services.AddScoped<ICommandValidator<RemoveRoleFromUserCommand>, RemoveRoleFromUserValidator>();
+        services.AddScoped<ICommandValidator<AssignOrganizationUnitToUserCommand>, AssignOrganizationUnitToUserValidator>();
+        services.AddScoped<ICommandValidator<RemoveOrganizationUnitFromUserCommand>, RemoveOrganizationUnitFromUserValidator>();
+        services.AddScoped<ICommandValidator<GetRoleByIdQuery>, GetRoleByIdValidator>();
+        services.AddScoped<ICommandValidator<GetOrganizationUnitByIdQuery>, GetOrganizationUnitByIdValidator>();
+
         services.AddScoped<ICommandValidator<CreateMachineCommand>, CreateMachineValidator>();
         services.AddScoped<ICommandValidator<UpdateMachineCommand>, UpdateMachineValidator>();
         services.AddScoped<ICommandValidator<DeleteMachineCommand>, DeleteMachineValidator>();
@@ -61,6 +106,21 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ICommandValidator<ConsumeStockReservationCommand>, ConsumeStockReservationValidator>();
         services.AddScoped<ICommandValidator<GetStockAvailabilityQuery>, GetStockAvailabilityValidator>();
+
+        services.AddScoped<IAuthorizationPolicy<CreateUserCommand>, CreateUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<UpdateUserCommand>, UpdateUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<CreateRoleCommand>, CreateRolePolicy>();
+        services.AddScoped<IAuthorizationPolicy<CreateOrganizationUnitCommand>, CreateOrganizationUnitPolicy>();
+        services.AddScoped<IAuthorizationPolicy<AssignRoleToUserCommand>, AssignRoleToUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<RemoveRoleFromUserCommand>, RemoveRoleFromUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<AssignOrganizationUnitToUserCommand>, AssignOrganizationUnitToUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<RemoveOrganizationUnitFromUserCommand>, RemoveOrganizationUnitFromUserPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetUsersQuery>, GetUsersPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetUserByIdQuery>, GetUserByIdPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetRolesQuery>, GetRolesPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetRoleByIdQuery>, GetRoleByIdPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetOrganizationUnitsQuery>, GetOrganizationUnitsPolicy>();
+        services.AddScoped<IAuthorizationPolicy<GetOrganizationUnitByIdQuery>, GetOrganizationUnitByIdPolicy>();
 
         services.AddScoped<IAuthorizationPolicy<CreateMachineCommand>, CreateMachinePolicy>();
         services.AddScoped<IAuthorizationPolicy<UpdateMachineCommand>, UpdateMachinePolicy>();
@@ -103,6 +163,21 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IAuditService, AuditService>();
+
+        services.AddScoped<IUseCaseHandler<CreateUserCommand, Guid>, CreateUserHandler>();
+        services.AddScoped<IUseCaseHandler<UpdateUserCommand, bool>, UpdateUserHandler>();
+        services.AddScoped<IUseCaseHandler<CreateRoleCommand, Guid>, CreateRoleHandler>();
+        services.AddScoped<IUseCaseHandler<CreateOrganizationUnitCommand, Guid>, CreateOrganizationUnitHandler>();
+        services.AddScoped<IUseCaseHandler<AssignRoleToUserCommand, bool>, AssignRoleToUserHandler>();
+        services.AddScoped<IUseCaseHandler<RemoveRoleFromUserCommand, bool>, RemoveRoleFromUserHandler>();
+        services.AddScoped<IUseCaseHandler<AssignOrganizationUnitToUserCommand, bool>, AssignOrganizationUnitToUserHandler>();
+        services.AddScoped<IUseCaseHandler<RemoveOrganizationUnitFromUserCommand, bool>, RemoveOrganizationUnitFromUserHandler>();
+        services.AddScoped<IUseCaseHandler<GetUsersQuery, IReadOnlyList<UserListItem>>, GetUsersHandler>();
+        services.AddScoped<IUseCaseHandler<GetUserByIdQuery, UserDetailsDto>, GetUserByIdHandler>();
+        services.AddScoped<IUseCaseHandler<GetRolesQuery, IReadOnlyList<RoleListItem>>, GetRolesHandler>();
+        services.AddScoped<IUseCaseHandler<GetRoleByIdQuery, RoleDetailsDto>, GetRoleByIdHandler>();
+        services.AddScoped<IUseCaseHandler<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>>, GetOrganizationUnitsHandler>();
+        services.AddScoped<IUseCaseHandler<GetOrganizationUnitByIdQuery, OrganizationUnitDetailsDto>, GetOrganizationUnitByIdHandler>();
 
         services.AddScoped<IUseCaseHandler<CreateMachineCommand, Guid>, CreateMachineHandler>();
         services.AddScoped<IUseCaseHandler<UpdateMachineCommand, bool>, UpdateMachineHandler>();

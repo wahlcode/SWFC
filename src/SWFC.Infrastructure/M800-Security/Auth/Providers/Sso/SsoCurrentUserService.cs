@@ -1,16 +1,21 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity;
+using SWFC.Infrastructure.Services.Security;
 
 namespace SWFC.Infrastructure.M800_Security.Auth.Providers.Sso;
 
 public sealed class SsoCurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly M102SecurityContextResolver _securityContextResolver;
 
-    public SsoCurrentUserService(IHttpContextAccessor httpContextAccessor)
+    public SsoCurrentUserService(
+        IHttpContextAccessor httpContextAccessor,
+        M102SecurityContextResolver securityContextResolver)
     {
         _httpContextAccessor = httpContextAccessor;
+        _securityContextResolver = securityContextResolver;
     }
 
     public Task<SecurityContext> GetSecurityContextAsync(CancellationToken cancellationToken = default)
@@ -28,36 +33,21 @@ public sealed class SsoCurrentUserService : ICurrentUserService
                     permissions: Array.Empty<string>()));
         }
 
-        var userId =
+        var identityKey =
             principal.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? principal.FindFirstValue("sub")
             ?? principal.Identity?.Name
             ?? string.Empty;
 
-        var username =
+        var fallbackUsername =
             principal.Identity?.Name
             ?? principal.FindFirstValue(ClaimTypes.Name)
-            ?? userId;
+            ?? identityKey;
 
-        var roles = principal.FindAll(ClaimTypes.Role)
-            .Select(x => x.Value)
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
-        var permissions = principal.FindAll("permission")
-            .Select(x => x.Value)
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
-        var securityContext = new SecurityContext(
-            userId: userId,
-            username: username,
+        return _securityContextResolver.ResolveAsync(
+            identityKey: identityKey,
+            fallbackUsername: fallbackUsername,
             isAuthenticated: true,
-            roles: roles,
-            permissions: permissions);
-
-        return Task.FromResult(securityContext);
+            cancellationToken: cancellationToken);
     }
 }
