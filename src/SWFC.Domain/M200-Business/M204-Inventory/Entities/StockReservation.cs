@@ -12,6 +12,7 @@ public sealed class StockReservation
         Id = Guid.Empty;
         StockId = Guid.Empty;
         Note = string.Empty;
+        TargetReference = null;
         AuditInfo = null!;
     }
 
@@ -21,6 +22,8 @@ public sealed class StockReservation
         int quantity,
         string note,
         StockReservationStatus status,
+        InventoryTargetType? targetType,
+        string? targetReference,
         AuditInfo auditInfo)
     {
         Id = id;
@@ -28,6 +31,8 @@ public sealed class StockReservation
         Quantity = quantity;
         Note = note;
         Status = status;
+        TargetType = targetType;
+        TargetReference = targetReference;
         AuditInfo = auditInfo;
     }
 
@@ -37,11 +42,15 @@ public sealed class StockReservation
     public string Note { get; private set; }
     public StockReservationStatus Status { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
+    public InventoryTargetType? TargetType { get; private set; }
+    public string? TargetReference { get; private set; }
 
     public static StockReservation Create(
         Guid stockId,
         int quantity,
         string? note,
+        InventoryTargetType? targetType,
+        string? targetReference,
         ChangeContext changeContext)
     {
         if (stockId == Guid.Empty)
@@ -50,6 +59,16 @@ public sealed class StockReservation
         }
 
         if (quantity <= 0)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (targetType is null && !string.IsNullOrWhiteSpace(targetReference))
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (targetType is not null && string.IsNullOrWhiteSpace(targetReference))
         {
             throw new ValidationException(ErrorCodes.Validation.Invalid);
         }
@@ -64,6 +83,8 @@ public sealed class StockReservation
             quantity,
             note?.Trim() ?? string.Empty,
             StockReservationStatus.Active,
+            targetType,
+            string.IsNullOrWhiteSpace(targetReference) ? null : targetReference.Trim(),
             auditInfo);
     }
 
@@ -75,6 +96,37 @@ public sealed class StockReservation
         }
 
         Status = StockReservationStatus.Released;
+
+        AuditInfo = new AuditInfo(
+            createdAtUtc: AuditInfo.CreatedAtUtc,
+            createdBy: AuditInfo.CreatedBy,
+            lastModifiedAtUtc: changeContext.ChangedAtUtc,
+            lastModifiedBy: changeContext.UserId);
+    }
+
+    public void Consume(int quantity, ChangeContext changeContext)
+    {
+        if (Status != StockReservationStatus.Active)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (quantity <= 0)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        if (quantity > Quantity)
+        {
+            throw new ValidationException(ErrorCodes.Validation.Invalid);
+        }
+
+        Quantity -= quantity;
+
+        if (Quantity == 0)
+        {
+            Status = StockReservationStatus.Released;
+        }
 
         AuditInfo = new AuditInfo(
             createdAtUtc: AuditInfo.CreatedAtUtc,

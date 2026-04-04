@@ -27,6 +27,16 @@ public sealed class CreateStockReservationValidator : ICommandValidator<CreateSt
             result.Add(ErrorCodes.General.ContextRequired, "Reason is required.");
         }
 
+        if (command.TargetType is null && !string.IsNullOrWhiteSpace(command.TargetReference))
+        {
+            result.Add(ErrorCodes.Validation.Invalid, "TargetType is required when TargetReference is set.");
+        }
+
+        if (command.TargetType is not null && string.IsNullOrWhiteSpace(command.TargetReference))
+        {
+            result.Add(ErrorCodes.Validation.Invalid, "TargetReference is required when TargetType is set.");
+        }
+
         return Task.FromResult(result);
     }
 }
