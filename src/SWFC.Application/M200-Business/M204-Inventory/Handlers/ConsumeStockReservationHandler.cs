@@ -10,7 +10,6 @@ using SWFC.Domain.Common.ValueObjects;
 using SWFC.Domain.M200_Business.M204_Inventory.Entities;
 using SWFC.Domain.M200_Business.M204_Inventory.Enums;
 
-
 namespace SWFC.Application.M200_Business.M204_Inventory.Handlers;
 
 public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStockReservationCommand, Guid>
@@ -94,6 +93,8 @@ public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStoc
             reservation.Quantity,
             reservation.Note,
             reservation.Status,
+            ReservationTargetType = reservation.TargetType,
+            ReservationTargetReference = reservation.TargetReference,
             ReservationCreatedAtUtc = reservation.AuditInfo.CreatedAtUtc,
             ReservationCreatedBy = reservation.AuditInfo.CreatedBy,
             ReservationLastModifiedAtUtc = reservation.AuditInfo.LastModifiedAtUtc,
@@ -111,7 +112,9 @@ public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStoc
             stock.Id,
             StockMovementType.GoodsIssue,
             -command.Quantity,
-            changeContext);
+            changeContext,
+            reservation.TargetType,
+            reservation.TargetReference);
 
         stock.ApplyMovement(movement, changeContext);
 
@@ -124,6 +127,8 @@ public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStoc
             reservation.Quantity,
             reservation.Note,
             reservation.Status,
+            ReservationTargetType = reservation.TargetType,
+            ReservationTargetReference = reservation.TargetReference,
             ReservationCreatedAtUtc = reservation.AuditInfo.CreatedAtUtc,
             ReservationCreatedBy = reservation.AuditInfo.CreatedBy,
             ReservationLastModifiedAtUtc = reservation.AuditInfo.LastModifiedAtUtc,
@@ -137,6 +142,8 @@ public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStoc
             MovementStockId = movement.StockId,
             movement.MovementType,
             movement.QuantityDelta,
+            MovementTargetType = movement.TargetType,
+            MovementTargetReference = movement.TargetReference,
             command.Reason
         });
 

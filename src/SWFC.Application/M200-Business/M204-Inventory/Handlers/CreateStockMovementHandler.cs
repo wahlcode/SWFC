@@ -28,24 +28,26 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
     }
 
     public async Task<Result<Guid>> HandleAsync(
-        CreateStockMovementCommand command,
-        CancellationToken cancellationToken = default)
+    CreateStockMovementCommand command,
+    CancellationToken cancellationToken = default)
     {
-        var stock = await _stockMovementWriteRepository.GetStockByIdAsync(command.StockId, cancellationToken);
-
-        if (stock is null)
-        {
-            return Result<Guid>.Failure(new Error(
-                ErrorCodes.General.NotFound,
-                $"Stock '{command.StockId}' was not found.",
-                ErrorCategory.NotFound));
-        }
-
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
         var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
 
+        var stock = await _stockMovementWriteRepository.GetStockByInventoryItemIdAsync(command.StockId, cancellationToken);
+
+        if (stock is null)
+        {
+            stock = Stock.Create(
+                command.StockId,
+                0,
+                changeContext);
+
+            await _stockMovementWriteRepository.AddStockAsync(stock, cancellationToken);
+        }
+
         var movement = StockMovement.Create(
-            command.StockId,
+            stock.Id,
             command.MovementType,
             command.QuantityDelta,
             changeContext);
@@ -91,4 +93,5 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
 
         return Result<Guid>.Success(movement.Id);
     }
+
 }

@@ -1,5 +1,6 @@
 @page "/machines/{Id:guid}"
 @using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.WebUtilities
 @using System.ComponentModel.DataAnnotations
 @using SWFC.Application.M200_Business.M201_Assets.Commands
 @using SWFC.Application.M200_Business.M201_Assets.Queries
@@ -13,7 +14,7 @@
 <section class="m305-page">
     <div class="m305-page__header">
         <h2 class="m305-page__title">Machine Detail</h2>
-        <p class="m305-page__description">Detailansicht und Delete-Flow über Pipeline.</p>
+        <p class="m305-page__description">Detailansicht und Arbeitsseite für Asset↔Inventory-Flow.</p>
     </div>
 
     <div class="m305-card">
@@ -31,18 +32,48 @@
                 <dl>
                     <dt>Id</dt>
                     <dd>@Machine.Id</dd>
+
                     <dt>Name</dt>
                     <dd>@Machine.Name</dd>
+
+                    <dt>Inventory Number</dt>
+                    <dd>@Machine.InventoryNumber</dd>
+
+                    <dt>Status</dt>
+                    <dd>@Machine.Status</dd>
+
+                    <dt>Location</dt>
+                    <dd>@DisplayOrDash(Machine.Location)</dd>
+
+                    <dt>Manufacturer</dt>
+                    <dd>@DisplayOrDash(Machine.Manufacturer)</dd>
+
+                    <dt>Model</dt>
+                    <dd>@DisplayOrDash(Machine.Model)</dd>
+
+                    <dt>Serial Number</dt>
+                    <dd>@DisplayOrDash(Machine.SerialNumber)</dd>
+
+                    <dt>Description</dt>
+                    <dd>@DisplayOrDash(Machine.Description)</dd>
+
                     <dt>Erstellt am</dt>
                     <dd>@Machine.CreatedAtUtc.ToLocalTime().ToString("f")</dd>
+
                     <dt>Erstellt von</dt>
                     <dd>@Machine.CreatedBy</dd>
+
                     <dt>Zuletzt geändert</dt>
                     <dd>@(Machine.LastModifiedAtUtc.HasValue ? Machine.LastModifiedAtUtc.Value.ToLocalTime().ToString("f") : "-")</dd>
+
+                    <dt>Zuletzt geändert von</dt>
+                    <dd>@DisplayOrDash(Machine.LastModifiedBy)</dd>
                 </dl>
 
                 <div class="m201-form-actions">
                     <a class="m201-button" href="@($"/machines/{Machine.Id}/edit")">Bearbeiten</a>
+                    <a class="m201-button" href="@BuildCreateReservationUrl()">Material reservieren</a>
+                    <a class="m201-button m201-button--secondary" href="@BuildReservationsUrl()">Reservierungen anzeigen</a>
                     <a class="m201-button m201-button--secondary" href="/machines">Zur Liste</a>
                 </div>
 
@@ -73,8 +104,10 @@
     [Parameter] public Guid Id { get; set; }
 
     private MachineDetailsDto? Machine;
+
     [SupplyParameterFromForm(FormName = "DeleteMachineForm")]
     private DeleteInput DeleteModel { get; set; } = new();
+
     private string? ErrorMessage;
     private bool IsDeleting;
 
@@ -104,13 +137,37 @@
         if (result.IsSuccess)
         {
             NavigationManager.NavigateTo("/machines");
-        }
-        else
-        {
-            ErrorMessage = result.Error.Message;
+            return;
         }
 
+        ErrorMessage = result.Error.Message;
         IsDeleting = false;
+    }
+
+    private string BuildCreateReservationUrl()
+    {
+        return QueryHelpers.AddQueryString(
+            "/create-stock-reservation",
+            new Dictionary<string, string?>
+            {
+                ["machineId"] = Id.ToString()
+            });
+    }
+
+    private string BuildReservationsUrl()
+    {
+        return QueryHelpers.AddQueryString(
+            "/m200/stock-reservations",
+            new Dictionary<string, string?>
+            {
+                ["targetType"] = "Asset",
+                ["targetReference"] = Id.ToString()
+            });
+    }
+
+    private static string DisplayOrDash(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "-" : value;
     }
 
     private sealed class DeleteInput

@@ -18,7 +18,7 @@ public sealed class GetStockReservationsHandler : IUseCaseHandler<GetStockReserv
         GetStockReservationsQuery command,
         CancellationToken cancellationToken = default)
     {
-        var reservations = await _stockReservationReadRepository.GetAllAsync(command.StockId, cancellationToken);
+        var reservations = await _stockReservationReadRepository.GetAllAsync(cancellationToken);
         return Result<IReadOnlyList<StockReservationListItem>>.Success(reservations);
     }
 }

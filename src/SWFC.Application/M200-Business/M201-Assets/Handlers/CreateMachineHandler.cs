@@ -34,9 +34,26 @@ public sealed class CreateMachineHandler : IUseCaseHandler<CreateMachineCommand,
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
 
         var machineName = MachineName.Create(command.Name);
+        var inventoryNumber = MachineInventoryNumber.Create(command.InventoryNumber);
+        var location = MachineLocation.Create(command.Location);
+        var status = MachineStatus.Create(command.Status);
+        var manufacturer = MachineManufacturer.Create(command.Manufacturer);
+        var model = MachineModel.Create(command.Model);
+        var serialNumber = MachineSerialNumber.Create(command.SerialNumber);
+        var description = MachineDescription.Create(command.Description);
+
         var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
 
-        var machine = Machine.Create(machineName, changeContext);
+        var machine = Machine.Create(
+            machineName,
+            inventoryNumber,
+            location,
+            status,
+            manufacturer,
+            model,
+            serialNumber,
+            description,
+            changeContext);
 
         await _machineWriteRepository.AddAsync(machine, cancellationToken);
 
@@ -52,6 +69,13 @@ public sealed class CreateMachineHandler : IUseCaseHandler<CreateMachineCommand,
             {
                 machine.Id,
                 Name = machine.Name.Value,
+                InventoryNumber = machine.InventoryNumber.Value,
+                Location = machine.Location.Value,
+                Status = machine.Status.Value,
+                Manufacturer = machine.Manufacturer.Value,
+                Model = machine.Model.Value,
+                SerialNumber = machine.SerialNumber.Value,
+                Description = machine.Description.Value,
                 command.Reason
             }),
             cancellationToken: cancellationToken);

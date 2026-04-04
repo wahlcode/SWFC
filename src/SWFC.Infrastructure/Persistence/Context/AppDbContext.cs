@@ -3,7 +3,6 @@ using SWFC.Domain.M800_Security.M805_AuditCompliance.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.ValueObjects;
 using SWFC.Domain.M200_Business.M204_Inventory.Entities;
-using SWFC.Domain.M200_Business.M204_Inventory.Enums;
 using SWFC.Domain.M200_Business.M204_Inventory.ValueObjects;
 
 namespace SWFC.Infrastructure.Persistence.Context;
@@ -40,6 +39,58 @@ public sealed class AppDbContext : DbContext
                     v => MachineName.Create(v))
                 .IsRequired()
                 .HasMaxLength(100);
+
+            entity.Property(x => x.InventoryNumber)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineInventoryNumber.Create(v))
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.Property(x => x.Location)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineLocation.Create(v))
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.Status)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineStatus.Create(v))
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.Property(x => x.Manufacturer)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineManufacturer.Create(v))
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.Model)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineModel.Create(v))
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.SerialNumber)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineSerialNumber.Create(v))
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.Description)
+                .HasConversion(
+                    x => x.Value,
+                    v => MachineDescription.Create(v))
+                .IsRequired()
+                .HasMaxLength(500);
+
+            entity.HasIndex(x => x.InventoryNumber)
+                .IsUnique();
 
             entity.OwnsOne(x => x.AuditInfo, audit =>
             {
@@ -136,8 +187,7 @@ public sealed class AppDbContext : DbContext
                 .IsRequired(false);
 
             entity.OwnsOne(x => x.AuditInfo, audit =>
-            
-        {
+            {
                 audit.Property(a => a.CreatedAtUtc).IsRequired();
                 audit.Property(a => a.CreatedBy).IsRequired();
                 audit.Property(a => a.LastModifiedAtUtc).IsRequired(false);

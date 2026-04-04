@@ -1,38 +1,81 @@
 @page "/inventory-items"
+@using SWFC.Application.M200_Business.M204_Inventory.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetInventoryItemsQuery, IReadOnlyList<InventoryItemListItem>> Pipeline
 
 <PageTitle>Inventory Items</PageTitle>
 
 <div class="page">
     <h1>Inventory Items</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Stock</th>
-                <th>Reserved</th>
-                <th>Available</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Sample Inventory Item</td>
-                <td>10</td>
-                <td>5</td>
-                <td>5</td>
-                <td>
-                    <a href="/m200/inventory-item/00000000-0000-0000-0000-000000000000">Details</a>
-                    |
-                    <a href="/m200/stock-movements">Movements</a>
-                    |
-                    <a href="/m200/stock-reservations">Reservations</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p>@_errorMessage</p>
+    }
+    else if (_items.Count == 0)
+    {
+        <p>No inventory items found.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Reserved</th>
+                    <th>Available</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _items)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.QuantityOnHand</td>
+                        <td>@item.ReservedQuantity</td>
+                        <td>@item.AvailableQuantity</td>
+                        <td>
+                            <a href="@($"/m200/inventory-item/{item.Id}")">Details</a>
+                            |
+                            <a href="/m200/stock-movements">Movements</a>
+                            |
+                            <a href="/m200/stock-reservations">Reservations</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
     <p>
         <a href="/m200/create-inventory-item">Create Inventory Item</a>
     </p>
 </div>
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private IReadOnlyList<InventoryItemListItem> _items = Array.Empty<InventoryItemListItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetInventoryItemsQuery());
+
+        if (result.IsSuccess)
+        {
+            _items = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Failed to load inventory items.";
+        }
+
+        _isLoading = false;
+    }
+}

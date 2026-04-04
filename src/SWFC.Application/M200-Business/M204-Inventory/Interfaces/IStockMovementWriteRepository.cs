@@ -7,4 +7,6 @@ public interface IStockMovementWriteRepository
     Task<Stock?> GetStockByIdAsync(Guid stockId, CancellationToken cancellationToken = default);
     Task AddAsync(StockMovement stockMovement, CancellationToken cancellationToken = default);
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task AddStockAsync(Stock stock, CancellationToken cancellationToken);
+    Task<Stock?> GetStockByInventoryItemIdAsync(Guid inventoryItemId, CancellationToken cancellationToken = default);
 }

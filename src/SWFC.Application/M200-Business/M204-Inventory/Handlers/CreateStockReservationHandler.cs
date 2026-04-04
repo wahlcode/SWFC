@@ -5,6 +5,7 @@ using SWFC.Application.M800_Security.M802_ApplicationSecurity;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
 using SWFC.Domain.Common.Errors;
+using SWFC.Domain.Common.Exceptions;
 using SWFC.Domain.Common.Results;
 using SWFC.Domain.Common.ValueObjects;
 using SWFC.Domain.M200_Business.M204_Inventory.Entities;
@@ -53,15 +54,28 @@ public sealed class CreateStockReservationHandler : IUseCaseHandler<CreateStockR
             AvailableQuantity = stock.GetAvailableQuantity()
         });
 
-        var reservation = StockReservation.Create(
-            command.StockId,
-            command.Quantity,
-            command.Note,
-            command.TargetType,
-            command.TargetReference,
-            changeContext);
+        StockReservation reservation;
 
-        stock.AddReservation(reservation, changeContext);
+        try
+        {
+            reservation = StockReservation.Create(
+                command.StockId,
+                command.Quantity,
+                command.Note,
+                command.TargetType,
+                command.TargetReference,
+                changeContext);
+
+            stock.AddReservation(reservation, changeContext);
+        }
+        catch (ValidationException)
+        {
+            return Result<Guid>.Failure(new Error(
+                ErrorCodes.Validation.Invalid,
+                "Reservation quantity exceeds available stock or contains invalid data.",
+                ErrorCategory.Validation));
+        }
+
         await _stockReservationWriteRepository.AddAsync(reservation, cancellationToken);
 
         var newValues = JsonSerializer.Serialize(new
@@ -75,6 +89,8 @@ public sealed class CreateStockReservationHandler : IUseCaseHandler<CreateStockR
             reservation.Quantity,
             reservation.Note,
             reservation.Status,
+            reservation.TargetType,
+            reservation.TargetReference,
             command.Reason
         });
 

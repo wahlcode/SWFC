@@ -16,11 +16,12 @@ public sealed class CreateInventoryItemHandler : IUseCaseHandler<CreateInventory
     private readonly ICurrentUserService _currentUserService;
     private readonly IInventoryItemWriteRepository _inventoryItemWriteRepository;
     private readonly IAuditService _auditService;
+    
 
     public CreateInventoryItemHandler(
         ICurrentUserService currentUserService,
         IInventoryItemWriteRepository inventoryItemWriteRepository,
-        IAuditService auditService)
+        IAuditService auditService) 
     {
         _currentUserService = currentUserService;
         _inventoryItemWriteRepository = inventoryItemWriteRepository;

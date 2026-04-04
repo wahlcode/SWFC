@@ -14,21 +14,10 @@ public sealed class StockReservationReadRepository : IStockReservationReadReposi
         _dbContext = dbContext;
     }
 
-    public async Task<IReadOnlyList<StockReservationListItem>> GetAllAsync(
-        Guid? stockId,
-        CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<StockReservationListItem>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var query = _dbContext.StockReservations
+        var reservations = await _dbContext.StockReservations
             .AsNoTracking()
-            .AsQueryable();
-
-        if (stockId.HasValue)
-        {
-            query = query.Where(x => x.StockId == stockId.Value);
-        }
-
-        var reservations = await query
-            .OrderByDescending(x => x.AuditInfo.CreatedAtUtc)
             .ToListAsync(cancellationToken);
 
         return reservations
@@ -37,7 +26,9 @@ public sealed class StockReservationReadRepository : IStockReservationReadReposi
                 x.StockId,
                 x.Quantity,
                 x.Note,
-                x.Status,
+                x.Status.ToString(),
+                (int?)x.TargetType,
+                x.TargetReference,
                 x.AuditInfo.CreatedAtUtc,
                 x.AuditInfo.CreatedBy,
                 x.AuditInfo.LastModifiedAtUtc,
@@ -61,7 +52,9 @@ public sealed class StockReservationReadRepository : IStockReservationReadReposi
             reservation.StockId,
             reservation.Quantity,
             reservation.Note,
-            reservation.Status,
+            reservation.Status.ToString(),
+            (int?)reservation.TargetType,
+            reservation.TargetReference,
             reservation.AuditInfo.CreatedAtUtc,
             reservation.AuditInfo.CreatedBy,
             reservation.AuditInfo.LastModifiedAtUtc,

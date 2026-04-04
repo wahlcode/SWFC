@@ -30,4 +30,16 @@ public sealed class StockMovementWriteRepository : IStockMovementWriteRepository
     {
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task AddStockAsync(Stock stock, CancellationToken cancellationToken)
+    {
+        await _dbContext.Stocks.AddAsync(stock, cancellationToken);
+    }
+
+    public Task<Stock?> GetStockByInventoryItemIdAsync(Guid inventoryItemId, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Stocks
+            .Include(x => x.Movements)
+            .FirstOrDefaultAsync(x => x.InventoryItemId == inventoryItemId, cancellationToken);
+    }
 }

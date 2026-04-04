@@ -1,52 +1,97 @@
 @page "/m200/inventory-item/{Id:guid}"
 @using Microsoft.AspNetCore.Components
+@using SWFC.Application.M200_Business.M204_Inventory.Queries
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetInventoryItemByIdQuery, InventoryItemDetailsDto> Pipeline
 
 <PageTitle>Inventory Item Detail</PageTitle>
 
 <div class="page">
     <h1>Inventory Item Detail</h1>
 
-    <p>
-        Inventory item id: <strong>@Id</strong>
-    </p>
+    @if (_isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p class="text-danger">@_errorMessage</p>
+    }
+    else if (_item is null)
+    {
+        <p>Inventory item not found.</p>
+    }
+    else
+    {
+        <p>
+            Inventory item id: <strong>@_item.Id</strong>
+        </p>
 
-    <dl>
-        <dt>Current Stock</dt>
-        <dd>10</dd>
+        <dl>
+            <dt>Name</dt>
+            <dd>@_item.Name</dd>
 
-        <dt>Reserved</dt>
-        <dd>5</dd>
+            <dt>Current Stock</dt>
+            <dd>@_item.QuantityOnHand</dd>
 
-        <dt>Available</dt>
-        <dd>5</dd>
-    </dl>
+            <dt>Reserved</dt>
+            <dd>@_item.ReservedQuantity</dd>
 
-    <p>
-        <a href="/m200/stock-movements">Open stock movements</a>
-    </p>
+            <dt>Available</dt>
+            <dd>@_item.AvailableQuantity</dd>
+        </dl>
 
-    <p>
-        <a href="/m200/create-stock-movement">Create stock movement</a>
-    </p>
+        <p>
+            <a href="/m200/stock-movements">Open stock movements</a>
+        </p>
 
-    <p>
-        <a href="/m200/stock-reservations">Open stock reservations</a>
-    </p>
+        <p>
+            <a href="/m200/create-stock-movement">Create stock movement</a>
+        </p>
 
-    <p>
-        <a href="/m200/create-stock-reservation">Create stock reservation</a>
-    </p>
+        <p>
+            <a href="/m200/stock-reservations">Open stock reservations</a>
+        </p>
 
-    <p>
-        <a href="/m200/edit-inventory-item/@Id">Edit this inventory item</a>
-    </p>
+        <p>
+            <a href="/create-stock-reservation">Create stock reservation</a>
+        </p>
 
-    <p>
-        <a href="/m200/inventory-items">Back to list</a>
-    </p>
+        <p>
+            <a href="@($"/m200/edit-inventory-item/{_item.Id}")">Edit this inventory item</a>
+        </p>
+
+        <p>
+            <a href="/inventory-items">Back to list</a>
+        </p>
+    }
 </div>
 
 @code {
     [Parameter]
     public Guid Id { get; set; }
+
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private InventoryItemDetailsDto? _item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        var result = await Pipeline.ExecuteAsync(new GetInventoryItemByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            _item = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Failed to load inventory item.";
+        }
+
+        _isLoading = false;
+    }
 }
