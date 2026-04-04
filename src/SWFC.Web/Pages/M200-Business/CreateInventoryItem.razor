@@ -1,44 +1,92 @@
 @page "/m200/create-inventory-item"
 
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M204_Inventory.Commands
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<CreateInventoryItemCommand, Guid> Pipeline
+@inject NavigationManager NavigationManager
+
 <PageTitle>Create Inventory Item</PageTitle>
 
 <div class="page">
     <h1>Create Inventory Item</h1>
 
-    <p>
-        This is the basic M204 create page shell.
-    </p>
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <p class="text-danger">@_errorMessage</p>
+    }
 
-    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="Model" OnValidSubmit="HandleValidSubmit" FormName="CreateInventoryItemForm">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="mb-3">
             <label for="name">Name</label>
-            <InputText id="name" class="form-control" @bind-Value="_model.Name" />
+            <InputText id="name" class="form-control" @bind-Value="Model!.Name" />
+            <ValidationMessage For="@(() => Model!.Name)" />
         </div>
 
         <div class="mb-3">
             <label for="reason">Reason</label>
-            <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
+            <InputText id="reason" class="form-control" @bind-Value="Model!.Reason" />
+            <ValidationMessage For="@(() => Model!.Reason)" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a class="btn btn-link" href="/m200/inventory-items">Cancel</a>
+        <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">
+            @(_isSubmitting ? "Saving..." : "Save")
+        </button>
+
+        <a class="btn btn-link" href="/inventory-items">Cancel</a>
     </EditForm>
 </div>
 
 @code {
-    private CreateInventoryItemWebModel _model = new();
+    [SupplyParameterFromForm(FormName = "CreateInventoryItemForm")]
+    private CreateInventoryItemWebModel? Model { get; set; }
 
-    private Task HandleValidSubmit()
+    private bool _isSubmitting;
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
     {
-        return Task.CompletedTask;
+        Model ??= new CreateInventoryItemWebModel();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Model is null)
+        {
+            _errorMessage = "Form data is missing.";
+            return;
+        }
+
+        _errorMessage = null;
+        _isSubmitting = true;
+
+        var command = new CreateInventoryItemCommand(
+            Model.Name,
+            Model.Reason);
+
+        var result = await Pipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo("/inventory-items");
+            return;
+        }
+
+        _errorMessage = result.Error?.Message ?? "Failed to create inventory item.";
+        _isSubmitting = false;
     }
 
     private sealed class CreateInventoryItemWebModel
     {
+        [Required(ErrorMessage = "Inventory item name is required.")]
         public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Reason is required.")]
         public string Reason { get; set; } = string.Empty;
     }
 }

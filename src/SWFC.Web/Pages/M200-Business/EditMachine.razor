@@ -8,12 +8,12 @@
 @inject IExecutionPipeline<UpdateMachineCommand, bool> UpdatePipeline
 @inject NavigationManager NavigationManager
 
-<PageTitle>Machine bearbeiten</PageTitle>
+<PageTitle>Edit Machine</PageTitle>
 
 <section class="m305-page">
     <div class="m305-page__header">
-        <h2 class="m305-page__title">Machine bearbeiten</h2>
-        <p class="m305-page__description">Update-Flow direkt über die Execution Pipeline.</p>
+        <h2 class="m305-page__title">Edit Machine</h2>
+        <p class="m305-page__description">Anlage fachlich bearbeiten.</p>
     </div>
 
     <div class="m305-card">
@@ -28,46 +28,69 @@
             }
             else
             {
-                <EditForm Model="Model"
-                          Method="post"
-                          OnSubmit="HandleSubmitAsync"
-                          FormName="EditMachineForm">
+                <EditForm Model="Model" OnValidSubmit="HandleValidSubmitAsync" FormName="EditMachineForm">
                     <DataAnnotationsValidator />
                     <ValidationSummary class="m201-validation-summary" />
 
-                    <div class="m201-form-grid">
-                        <div class="m201-form-field">
-                            <label class="m201-form-label" for="name">Name</label>
-                            <InputText id="name"
-                                       name="Model.Name"
-                                       class="m201-form-input"
-                                       @bind-Value="Model.Name" />
-                            <ValidationMessage For="@(() => Model.Name)"
-                                               class="m201-validation-message" />
-                        </div>
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="name">Name</label>
+                        <InputText id="name" class="m201-form-input" @bind-Value="Model.Name" />
+                        <ValidationMessage For="@(() => Model.Name)" class="m201-validation-message" />
+                    </div>
 
-                        <div class="m201-form-field">
-                            <label class="m201-form-label" for="reason">Änderungsgrund</label>
-                            <InputTextArea id="reason"
-                                           name="Model.Reason"
-                                           class="m201-form-textarea"
-                                           @bind-Value="Model.Reason" />
-                            <ValidationMessage For="@(() => Model.Reason)"
-                                               class="m201-validation-message" />
-                        </div>
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="inventory-number">Inventory Number</label>
+                        <InputText id="inventory-number" class="m201-form-input" @bind-Value="Model.InventoryNumber" />
+                        <ValidationMessage For="@(() => Model.InventoryNumber)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="status">Status</label>
+                        <InputSelect id="status" class="m201-form-select" @bind-Value="Model.Status">
+                            @foreach (var status in StatusOptions)
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => Model.Status)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="location">Location</label>
+                        <InputText id="location" class="m201-form-input" @bind-Value="Model.Location" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="manufacturer">Manufacturer</label>
+                        <InputText id="manufacturer" class="m201-form-input" @bind-Value="Model.Manufacturer" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="model">Model</label>
+                        <InputText id="model" class="m201-form-input" @bind-Value="Model.MachineModel" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="serial-number">Serial Number</label>
+                        <InputText id="serial-number" class="m201-form-input" @bind-Value="Model.SerialNumber" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="description">Description</label>
+                        <InputTextArea id="description" class="m201-form-textarea" @bind-Value="Model.Description" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="reason">Reason</label>
+                        <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="Model.Reason" />
+                        <ValidationMessage For="@(() => Model.Reason)" class="m201-validation-message" />
                     </div>
 
                     <div class="m201-form-actions">
-                        <button type="submit"
-                                class="m201-button"
-                                disabled="@IsSubmitting">
-                            @(IsSubmitting ? "Speichert..." : "Machine speichern")
+                        <button type="submit" class="m201-button" disabled="@IsSubmitting">
+                            @(IsSubmitting ? "Speichert..." : "Änderungen speichern")
                         </button>
-
-                        <a class="m201-button m201-button--secondary"
-                           href="@($"/machines/{Id}")">
-                            Zurück
-                        </a>
+                        <a class="m201-button m201-button--secondary" href="@($"/machines/{Id}")">Zurück</a>
                     </div>
                 </EditForm>
             }
@@ -76,11 +99,19 @@
 </section>
 
 @code {
-    [Parameter]
-    public Guid Id { get; set; }
+    [Parameter] public Guid Id { get; set; }
+
+    private static readonly string[] StatusOptions =
+    [
+        "Planned",
+        "Active",
+        "InMaintenance",
+        "Inactive",
+        "Retired"
+    ];
 
     [SupplyParameterFromForm(FormName = "EditMachineForm")]
-    private EditMachineInput Model { get; set; } = new();
+    private EditMachineInput Model { get; set; }
 
     private bool IsLoading = true;
     private bool IsSubmitting;
@@ -91,23 +122,26 @@
         IsLoading = true;
         ErrorMessage = null;
 
-        // WICHTIG:
-        // Wenn Formdaten bereits geliefert wurden, NICHT erneut aus dem Backend überschreiben.
-        if (Model != null && (!string.IsNullOrWhiteSpace(Model.Name) || !string.IsNullOrWhiteSpace(Model.Reason)))
-        {
-            IsLoading = false;
-            return;
-        }
-
         var result = await GetPipeline.ExecuteAsync(new GetMachineByIdQuery(Id));
 
         if (result.IsSuccess)
         {
-            Model = new EditMachineInput
+            var machine = result.Value;
+
+            if (Model is null)
             {
-                Name = result.Value.Name,
-                Reason = string.Empty
-            };
+                Model = new EditMachineInput
+                {
+                    Name = machine.Name,
+                    InventoryNumber = machine.InventoryNumber,
+                    Status = machine.Status,
+                    Location = machine.Location,
+                    Manufacturer = machine.Manufacturer,
+                    MachineModel = machine.Model,
+                    SerialNumber = machine.SerialNumber,
+                    Description = machine.Description
+                };
+}
         }
         else
         {
@@ -117,25 +151,27 @@
         IsLoading = false;
     }
 
-    private async Task HandleSubmitAsync(EditContext editContext)
+    private async Task HandleValidSubmitAsync()
     {
-        Console.WriteLine($"DEBUG BEFORE VALIDATE Name=[{Model.Name}] Reason=[{Model.Reason}]");
-
-        if (!editContext.Validate())
+        if (Model is null)
         {
-            Console.WriteLine($"DEBUG INVALID Name=[{Model.Name}] Reason=[{Model.Reason}]");
+            ErrorMessage = "Form data is missing.";
             return;
         }
 
-        IsSubmitting = true;
-        ErrorMessage = null;
+        var command = new UpdateMachineCommand(
+            Id,
+            Model.Name,
+            Model.InventoryNumber,
+            Model.Location,
+            Model.Status,
+            Model.Manufacturer,
+            Model.MachineModel,
+            Model.SerialNumber,
+            Model.Description,
+            Model.Reason);
 
-        Console.WriteLine($"DEBUG VALID Name=[{Model.Name}] Reason=[{Model.Reason}]");
-
-        var result = await UpdatePipeline.ExecuteAsync(
-            new UpdateMachineCommand(Id, Model.Name, Model.Reason));
-
-        Console.WriteLine($"DEBUG RESULT Success=[{result.IsSuccess}] Error=[{result.Error?.Message}]");
+        var result = await UpdatePipeline.ExecuteAsync(command);
 
         if (result.IsSuccess)
         {
@@ -150,8 +186,19 @@
     private sealed class EditMachineInput
     {
         [Required(ErrorMessage = "Name ist erforderlich.")]
-        [StringLength(100, ErrorMessage = "Name darf maximal 100 Zeichen haben.")]
         public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Inventory Number ist erforderlich.")]
+        public string InventoryNumber { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Status ist erforderlich.")]
+        public string Status { get; set; } = "Planned";
+
+        public string? Location { get; set; }
+        public string? Manufacturer { get; set; }
+        public string? MachineModel { get; set; }
+        public string? SerialNumber { get; set; }
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "Grund ist erforderlich.")]
         public string Reason { get; set; } = string.Empty;

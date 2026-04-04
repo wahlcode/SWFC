@@ -1,5 +1,6 @@
 @page "/create-stock-reservation"
 @using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
 @using SWFC.Application.M200_Business.M204_Inventory.Commands
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
 @using SWFC.Domain.M200_Business.M204_Inventory.Enums
@@ -13,65 +14,114 @@
 
     @if (!string.IsNullOrWhiteSpace(_errorMessage))
     {
-        <p>@_errorMessage</p>
+        <p class="text-danger">@_errorMessage</p>
     }
 
-    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    @if (HasMachineContext)
+    {
+        <div class="mb-3">
+            <strong>Machine Context:</strong> @Model?.TargetReference
+        </div>
+    }
+
+    <EditForm Model="Model" OnValidSubmit="HandleValidSubmit" FormName="CreateStockReservationForm">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="mb-3">
             <label for="stockId">Stock Id</label>
-            <InputText id="stockId" class="form-control" @bind-Value="_model.StockId" />
+            <InputText id="stockId" class="form-control" @bind-Value="Model!.StockId" />
+            <ValidationMessage For="@(() => Model!.StockId)" />
         </div>
 
         <div class="mb-3">
             <label for="quantity">Quantity</label>
-            <InputNumber id="quantity" class="form-control" @bind-Value="_model.Quantity" />
+            <InputNumber id="quantity" class="form-control" @bind-Value="Model!.Quantity" />
+            <ValidationMessage For="@(() => Model!.Quantity)" />
         </div>
 
         <div class="mb-3">
             <label for="note">Note</label>
-            <InputText id="note" class="form-control" @bind-Value="_model.Note" />
+            <InputText id="note" class="form-control" @bind-Value="Model!.Note" />
         </div>
 
         <div class="mb-3">
             <label for="reason">Reason</label>
-            <InputText id="reason" class="form-control" @bind-Value="_model.Reason" />
+            <InputText id="reason" class="form-control" @bind-Value="Model!.Reason" />
+            <ValidationMessage For="@(() => Model!.Reason)" />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Target Type</label>
-            <InputSelect TValue="InventoryTargetType?" @bind-Value="_model.TargetType" class="form-control">
-                <option value="">-- none --</option>
+        @if (HasMachineContext)
+        {
+            <div class="mb-3">
+                <label class="form-label">Target Type</label>
+                <input class="form-control" value="Asset" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Target Reference</label>
+                <input class="form-control" value="@Model?.TargetReference" disabled />
+            </div>
+        }
+        else
+        {
+            <div class="mb-3">
+                <label class="form-label">Target Type</label>
+                <InputSelect TValue="InventoryTargetType?" @bind-Value="Model!.TargetType" class="form-control">
+                    <option value="">-- none --</option>
                     @foreach (var value in Enum.GetValues<InventoryTargetType>())
-                        {
-                            <option value="@value">@value</option>
-                        }
-            </InputSelect>
-        </div>
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </InputSelect>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Target Reference</label>
-                <InputText @bind-Value="_model.TargetReference" class="form-control" />
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Target Reference</label>
+                <InputText @bind-Value="Model!.TargetReference" class="form-control" />
+            </div>
+        }
 
         <button type="submit" class="btn btn-primary" disabled="@_isSubmitting">Save</button>
-        <a class="btn btn-link" href="/m200/stock-reservations">Cancel</a>
+        <a class="btn btn-link" href="@GetCancelUrl()">Cancel</a>
     </EditForm>
 </div>
 
 @code {
-    private readonly CreateStockReservationWebModel _model = new();
+    [SupplyParameterFromQuery(Name = "machineId")]
+    public Guid? MachineId { get; set; }
+
+    [SupplyParameterFromForm(FormName = "CreateStockReservationForm")]
+    private CreateStockReservationWebModel? Model { get; set; }
+
     private bool _isSubmitting;
     private string? _errorMessage;
 
+    private bool HasMachineContext => MachineId.HasValue && MachineId.Value != Guid.Empty;
+
+    protected override void OnParametersSet()
+    {
+        Model ??= new CreateStockReservationWebModel();
+
+        if (HasMachineContext)
+        {
+            Model.TargetType = InventoryTargetType.Asset;
+            Model.TargetReference = MachineId!.Value.ToString();
+        }
+    }
+
     private async Task HandleValidSubmit()
     {
+        if (Model is null)
+        {
+            _errorMessage = "Form data is missing.";
+            return;
+        }
+
         _errorMessage = null;
         _isSubmitting = true;
 
-        if (!Guid.TryParse(_model.StockId, out var stockId))
+        if (!Guid.TryParse(Model.StockId, out var stockId))
         {
             _errorMessage = "Stock Id is invalid.";
             _isSubmitting = false;
@@ -80,18 +130,17 @@
 
         var command = new CreateStockReservationCommand(
             stockId,
-            _model.Quantity,
-            _model.Note,
-            _model.Reason,
-            _model.TargetType,
-            _model.TargetReference);
-            
+            Model.Quantity,
+            Model.Note,
+            Model.Reason,
+            Model.TargetType,
+            Model.TargetReference);
 
         var result = await Pipeline.ExecuteAsync(command);
 
         if (result.IsSuccess)
         {
-            NavigationManager.NavigateTo("/stock-reservations");
+            NavigationManager.NavigateTo(GetSuccessUrl());
             return;
         }
 
@@ -99,12 +148,39 @@
         _isSubmitting = false;
     }
 
+    private string GetSuccessUrl()
+    {
+        if (HasMachineContext)
+        {
+            return $"/machines/{MachineId}";
+        }
+
+        return "/stock-reservations";
+    }
+
+    private string GetCancelUrl()
+    {
+        if (HasMachineContext)
+        {
+            return $"/machines/{MachineId}";
+        }
+
+        return "/stock-reservations";
+    }
+
     private sealed class CreateStockReservationWebModel
     {
+        [Required(ErrorMessage = "Stock Id is required.")]
         public string StockId { get; set; } = string.Empty;
+
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than 0.")]
         public int Quantity { get; set; }
+
         public string Note { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Reason is required.")]
         public string Reason { get; set; } = string.Empty;
+
         public InventoryTargetType? TargetType { get; set; }
         public string? TargetReference { get; set; }
     }

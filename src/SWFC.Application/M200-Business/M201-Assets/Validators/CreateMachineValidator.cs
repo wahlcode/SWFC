@@ -1,5 +1,4 @@
 using SWFC.Application.Common.Validation;
-using SWFC.Domain.Common.Errors;
 using SWFC.Application.M200_Business.M201_Assets.Commands;
 
 namespace SWFC.Application.M200_Business.M201_Assets.Validators;
@@ -14,16 +13,22 @@ public sealed class CreateMachineValidator : ICommandValidator<CreateMachineComm
 
         if (string.IsNullOrWhiteSpace(command.Name))
         {
-            result.Add(ErrorCodes.Machine.NameRequired, "Machine name is required.");
+            result.Add("Name", "Machine name is required.");
         }
-        else if (command.Name.Trim().Length > 100)
+
+        if (string.IsNullOrWhiteSpace(command.InventoryNumber))
         {
-            result.Add(ErrorCodes.Machine.NameTooLong, "Machine name must not exceed 100 characters.");
+            result.Add("InventoryNumber", "Inventory number is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(command.Status))
+        {
+            result.Add("Status", "Machine status is required.");
         }
 
         if (string.IsNullOrWhiteSpace(command.Reason))
         {
-            result.Add(ErrorCodes.General.ContextRequired, "Reason is required.");
+            result.Add("Reason", "Reason is required.");
         }
 
         return Task.FromResult(result);

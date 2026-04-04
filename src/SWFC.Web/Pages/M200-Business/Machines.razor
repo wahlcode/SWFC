@@ -8,61 +8,70 @@
 <section class="m305-page">
     <div class="m305-page__header">
         <h2 class="m305-page__title">Machines</h2>
-        <p class="m305-page__description">Liste aller Maschinen aus M201.</p>
+        <p class="m305-page__description">Übersicht über Anlagen mit fachlichen Stammdaten.</p>
+    </div>
+
+    <div class="m201-form-actions">
+        <a class="m201-button" href="/machines/create">Machine anlegen</a>
     </div>
 
     <div class="m305-card">
         <div class="m305-card__body">
-            <div class="m201-form-actions">
-                <a class="m201-button" href="/machines/create">Neue Machine</a>
-            </div>
-
-            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
-            {
-                <div class="m201-alert m201-alert--error">@ErrorMessage</div>
-            }
-            else if (MachineItems is null)
+            @if (IsLoading)
             {
                 <p>Lade Daten...</p>
             }
+            else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="m201-alert m201-alert--error">@ErrorMessage</div>
+            }
             else if (MachineItems.Count == 0)
             {
-                <p>Noch keine Machines vorhanden.</p>
+                <p>Keine Machines vorhanden.</p>
             }
             else
             {
-                <table class="m201-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Erstellt</th>
-                            <th>Bearbeitet</th>
-                            <th>Aktionen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var machine in MachineItems)
-                        {
+                <div style="overflow-x:auto; width:100%;">
+                    <table class="table" style="min-width:1100px; width:max-content;">
+                        <thead>
                             <tr>
-                                <td>@machine.Name</td>
-                                <td>@machine.CreatedAtUtc.ToLocalTime().ToString("g")</td>
-                                <td>@(machine.LastModifiedAtUtc.HasValue ? machine.LastModifiedAtUtc.Value.ToLocalTime().ToString("g") : "-")</td>
-                                <td>
-                                    <a href="@($"/machines/{machine.Id}")">Detail</a>
-                                    <span> | </span>
-                                    <a href="@($"/machines/{machine.Id}/edit")">Edit</a>
-                                </td>
+                                <th style="white-space:nowrap;">Name</th>
+                                <th style="white-space:nowrap;">Inventory Number</th>
+                                <th style="white-space:nowrap;">Status</th>
+                                <th style="white-space:nowrap;">Location</th>
+                                <th style="white-space:nowrap;">Manufacturer</th>
+                                <th style="white-space:nowrap;">Model</th>
+                                <th style="white-space:nowrap;">Serial Number</th>
+                                <th style="white-space:nowrap;">Aktionen</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var machine in MachineItems)
+                            {
+                                <tr>
+                                    <td style="white-space:nowrap;">@machine.Name</td>
+                                    <td style="white-space:nowrap;">@machine.InventoryNumber</td>
+                                    <td style="white-space:nowrap;">@machine.Status</td>
+                                    <td style="white-space:nowrap;">@DisplayOrDash(machine.Location)</td>
+                                    <td style="white-space:nowrap;">@DisplayOrDash(machine.Manufacturer)</td>
+                                    <td style="white-space:nowrap;">@DisplayOrDash(machine.Model)</td>
+                                    <td style="white-space:nowrap;">@DisplayOrDash(machine.SerialNumber)</td>
+                                    <td style="white-space:nowrap;">
+                                        <a href="@($"/machines/{machine.Id}")">Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         </div>
     </div>
 </section>
 
 @code {
-    private IReadOnlyList<MachineListItem>? MachineItems;
+    private IReadOnlyList<MachineListItem> MachineItems { get; set; } = Array.Empty<MachineListItem>();
+    private bool IsLoading = true;
     private string? ErrorMessage;
 
     protected override async Task OnInitializedAsync()
@@ -77,5 +86,12 @@
         {
             ErrorMessage = result.Error.Message;
         }
+
+        IsLoading = false;
+    }
+
+    private static string DisplayOrDash(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "-" : value;
     }
 }
