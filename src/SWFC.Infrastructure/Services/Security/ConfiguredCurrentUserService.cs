@@ -7,10 +7,14 @@ public sealed class ConfiguredCurrentUserService : ICurrentUserService
 {
     private const string SectionName = "Security:CurrentUser";
     private readonly IConfiguration _configuration;
+    private readonly M102SecurityContextResolver _securityContextResolver;
 
-    public ConfiguredCurrentUserService(IConfiguration configuration)
+    public ConfiguredCurrentUserService(
+        IConfiguration configuration,
+        M102SecurityContextResolver securityContextResolver)
     {
         _configuration = configuration;
+        _securityContextResolver = securityContextResolver;
     }
 
     public Task<SecurityContext> GetSecurityContextAsync(CancellationToken cancellationToken = default)
@@ -19,18 +23,12 @@ public sealed class ConfiguredCurrentUserService : ICurrentUserService
 
         var userId = section["UserId"];
         var isAuthenticated = section.GetValue<bool?>("IsAuthenticated") ?? false;
-        var roles = section.GetSection("Roles").Get<string[]>() ?? Array.Empty<string>();
-        var permissions = section.GetSection("Permissions").Get<string[]>() ?? Array.Empty<string>();
+        var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "system" : userId.Trim();
 
-        var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "system" : userId;
-
-        var securityContext = new SecurityContext(
-            userId: resolvedUserId,
-            username: resolvedUserId,
+        return _securityContextResolver.ResolveAsync(
+            identityKey: resolvedUserId,
+            fallbackUsername: resolvedUserId,
             isAuthenticated: isAuthenticated,
-            roles: roles,
-            permissions: permissions);
-
-        return Task.FromResult(securityContext);
+            cancellationToken: cancellationToken);
     }
 }
