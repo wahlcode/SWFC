@@ -1,0 +1,14 @@
+@inject NavigationManager NavigationManager
+
+@code
+{
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo("/auth/login", forceLoad: true);
+    }
+}

@@ -27,7 +27,9 @@ public sealed class SsoCurrentUserService : ICurrentUserService
             return Task.FromResult(
                 new SecurityContext(
                     userId: string.Empty,
+                    identityKey: string.Empty,
                     username: string.Empty,
+                    displayName: string.Empty,
                     isAuthenticated: false,
                     roles: Array.Empty<string>(),
                     permissions: Array.Empty<string>()));

@@ -12,6 +12,7 @@ public sealed class User
     {
         Id = Guid.Empty;
         IdentityKey = null!;
+        Username = null!;
         DisplayName = null!;
         IsActive = false;
         AuditInfo = null!;
@@ -20,12 +21,14 @@ public sealed class User
     private User(
         Guid id,
         UserIdentityKey identityKey,
+        Username username,
         UserDisplayName displayName,
         bool isActive,
         AuditInfo auditInfo)
     {
         Id = id;
         IdentityKey = identityKey;
+        Username = username;
         DisplayName = displayName;
         IsActive = isActive;
         AuditInfo = auditInfo;
@@ -33,6 +36,7 @@ public sealed class User
 
     public Guid Id { get; private set; }
     public UserIdentityKey IdentityKey { get; private set; }
+    public Username Username { get; private set; }
     public UserDisplayName DisplayName { get; private set; }
     public bool IsActive { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
@@ -42,6 +46,7 @@ public sealed class User
 
     public static User Create(
         UserIdentityKey identityKey,
+        Username username,
         UserDisplayName displayName,
         bool isActive,
         ChangeContext changeContext)
@@ -53,16 +58,19 @@ public sealed class User
         return new User(
             Guid.NewGuid(),
             identityKey,
+            username,
             displayName,
             isActive,
             auditInfo);
     }
 
     public void UpdateDetails(
+        Username username,
         UserDisplayName displayName,
         bool isActive,
         ChangeContext changeContext)
     {
+        Username = username;
         DisplayName = displayName;
         IsActive = isActive;
 

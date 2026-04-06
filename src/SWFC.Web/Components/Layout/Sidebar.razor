@@ -1,62 +1,187 @@
-<div class="m305-sidebar">
-    <div class="m305-sidebar__brand">
-        <a class="m305-sidebar__brand-link" href="/dashboard">SWFC</a>
-        <div class="m305-sidebar__subtitle">Application Shell</div>
+@rendermode InteractiveServer
+
+<div class="app-sidebar">
+    <div class="app-sidebar__logo">
+        <img src="/images/dbw_logo.svg" alt="DBW Logo" />
     </div>
 
-    <div class="m305-sidebar__section">
-    <div class="m305-sidebar__section-title">Start</div>
+    <div class="app-sidebar__groups">
+        @foreach (var group in ModuleGroups)
+        {
+            var isOpen = OpenGroupKey == group.Key;
 
-    <nav class="m305-nav">
-        <NavLink class="m305-nav__link" href="/" Match="NavLinkMatch.All">
-            Dashboard
-        </NavLink>
+            <section class="app-sidebar__group">
+                <button type="button"
+                        class="app-sidebar__group-button @(isOpen ? "app-sidebar__group-button--active" : null)"
+                        @onclick="() => ToggleGroup(group.Key)">
+                    <span class="app-sidebar__group-label">@group.DisplayName</span>
+                </button>
 
-        <NavLink class="m305-nav__link" href="/modules">
-            Modulübersicht
-        </NavLink>
-
-        <NavLink class="m305-nav__link" href="/theme-preview">
-            Theme Preview
-        </NavLink>
-    </nav>
+                @if (isOpen)
+                {
+                    <div class="app-sidebar__tiles">
+                        @foreach (var module in group.Modules)
+                        {
+                            if (module.IsActive)
+                            {
+                                <a class="app-sidebar__tile app-sidebar__tile--active-module"
+                                   href="@module.Route">
+                                    <div class="app-sidebar__tile-icon">@module.Icon</div>
+                                    <div class="app-sidebar__tile-title">@module.DisplayName</div>
+                                </a>
+                            }
+                            else
+                            {
+                                <div class="app-sidebar__tile app-sidebar__tile--disabled"
+                                     aria-disabled="true">
+                                    <div class="app-sidebar__tile-icon">@module.Icon</div>
+                                    <div class="app-sidebar__tile-title">@module.DisplayName</div>
+                                    <div class="app-sidebar__tile-status">ComingSoon</div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </section>
+        }
     </div>
 
-    <div class="m305-sidebar__section">
-        <div class="m305-sidebar__section-title">M200 Business</div>
-
-        <nav class="m305-nav">
-            <NavLink class="m305-nav__link" href="/machines">
-                Machines
-            </NavLink>
-
-            <NavLink class="m305-nav__link" href="/machines/create">
-                Machine anlegen
-            </NavLink>
-
-            <nav class="nav flex-column">
-
-            <NavLink class="m305-nav__link" href="/inventory-items">
-                Inventory Items
-            </NavLink>
-
-            <NavLink class="m305-nav__link" href="/m200/stock-movements">
-                Stock Movements
-            </NavLink>
-
-            <NavLink class="m305-nav__link" href="/m200/stock-reservations">
-                Stock Reservations
-            </NavLink>
-        </nav>
-    </nav>
-
-    </div>
-
-    <div class="m305-sidebar__section">
-        <div class="m305-sidebar__section-title">M800 Security</div>
-
-        <div class="m305-nav">
-            <span class="m305-nav__link m305-nav__link--muted">Security Foundations</span>
-        </div>
+    <div class="app-sidebar__footer">
+        <a class="btn btn-danger w-100" href="/auth/logout">Abmelden</a>
     </div>
 </div>
+
+@code {
+    private string? OpenGroupKey;
+
+    private IReadOnlyList<ModuleGroupItem> ModuleGroups => new[]
+    {
+        new ModuleGroupItem(
+            "system",
+            "System",
+            new[]
+            {
+                new ModuleTileItem("M100", "Modulübersicht", "▤", true, "/modules"),
+                new ModuleTileItem("M102", "Organisation", "◫", true, "/system/organization"),
+                new ModuleTileItem("M103", "Authentifizierung", "🔑", true, "/auth/change-password"),
+                new ModuleTileItem("M104", "Dokumente", "📂", false),
+                new ModuleTileItem("M105", "Konfiguration", "⚙", false),
+                new ModuleTileItem("M106", "Theme", "◌", false),
+                new ModuleTileItem("M800", "Security", "🛡", false)
+            }),
+
+        new ModuleGroupItem(
+            "business",
+            "Geschäft",
+            new[]
+            {
+                new ModuleTileItem("M201", "Assets", "▥", true, "/business/assets"),
+                new ModuleTileItem("M202", "Wartung", "🛠", false),
+                new ModuleTileItem("M203", "Prüfungen", "✓", false),
+                new ModuleTileItem("M204", "Lager", "▦", true, "/business/inventory"),
+                new ModuleTileItem("M205", "Energie", "⚡", false),
+                new ModuleTileItem("M206", "Einkauf", "🛒", false),
+                new ModuleTileItem("M207", "Qualität", "◉", false),
+                new ModuleTileItem("M208", "Sicherheit", "🔒", false),
+                new ModuleTileItem("M209", "Projekte", "⇲", false),
+                new ModuleTileItem("M210", "Kunden", "👥", false),
+                new ModuleTileItem("M211", "Analytik", "◔", false)
+            }),
+
+        new ModuleGroupItem(
+            "presentation",
+            "Präsentation",
+            new[]
+            {
+                new ModuleTileItem("M301", "Persistenz", "💾", false),
+                new ModuleTileItem("M302", "Berichte", "▥", false),
+                new ModuleTileItem("M303", "Benachrichtigungen", "🔔", false),
+                new ModuleTileItem("M304", "Suche", "⌕", false),
+                new ModuleTileItem("M305", "AppShell", "◌", false)
+            }),
+
+        new ModuleGroupItem(
+            "integration",
+            "Integration",
+            new[]
+            {
+                new ModuleTileItem("M401", "Excel / CSV", "⇩", false),
+                new ModuleTileItem("M402", "API", "⇄", false),
+                new ModuleTileItem("M403", "ERP", "▤", false),
+                new ModuleTileItem("M404", "IoT / Maschinen", "◌", false)
+            }),
+
+        new ModuleGroupItem(
+            "runtime",
+            "Laufzeit",
+            new[]
+            {
+                new ModuleTileItem("M501", "Planer", "◷", false),
+                new ModuleTileItem("M502", "Kommunikation", "✉", false),
+                new ModuleTileItem("M503", "Automatisierung", "⚙", false),
+                new ModuleTileItem("M504", "Updater", "↻", false),
+                new ModuleTileItem("M505", "Versionierung", "⌘", false)
+            }),
+
+        new ModuleGroupItem(
+            "planning",
+            "Planung",
+            new[]
+            {
+                new ModuleTileItem("M601", "Roadmap", "→", false),
+                new ModuleTileItem("M602", "Konzepte", "✎", false),
+                new ModuleTileItem("M603", "Prototypen", "◈", false)
+            }),
+
+        new ModuleGroupItem(
+            "support",
+            "Support",
+            new[]
+            {
+                new ModuleTileItem("M701", "BugTracking", "⚑", false),
+                new ModuleTileItem("M702", "ChangeRequests", "✎", false),
+                new ModuleTileItem("M703", "SupportCases", "☰", false)
+            }),
+
+        new ModuleGroupItem(
+            "intelligence",
+            "Intelligenz",
+            new[]
+            {
+                new ModuleTileItem("M901", "KI", "✦", false),
+                new ModuleTileItem("M902", "Monitoring", "◉", false),
+                new ModuleTileItem("M903", "Incident", "⚠", false),
+                new ModuleTileItem("M904", "Integrations-Governance", "⌘", false),
+                new ModuleTileItem("M905", "Regelwerk", "◇", false)
+            }),
+
+        new ModuleGroupItem(
+            "platform",
+            "Plattform",
+            new[]
+            {
+                new ModuleTileItem("M1001", "Plugin-System", "◫", false),
+                new ModuleTileItem("M1002", "Entwicklerplattform", "⌘", false),
+                new ModuleTileItem("M1003", "Erweiterungen", "⇄", false),
+                new ModuleTileItem("M1004", "Marktplatz", "▤", false),
+                new ModuleTileItem("M1005", "Externe Security", "🛡", false)
+            })
+    };
+
+    private void ToggleGroup(string groupKey)
+    {
+        OpenGroupKey = OpenGroupKey == groupKey ? null : groupKey;
+    }
+
+    private sealed record ModuleGroupItem(
+        string Key,
+        string DisplayName,
+        IReadOnlyList<ModuleTileItem> Modules);
+
+    private sealed record ModuleTileItem(
+        string Code,
+        string DisplayName,
+        string Icon,
+        bool IsActive,
+        string Route = "#");
+}

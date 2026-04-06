@@ -25,6 +25,7 @@ public sealed class GetUsersHandler : IUseCaseHandler<GetUsersQuery, IReadOnlyLi
             .Select(x => new UserListItem(
                 x.Id,
                 x.IdentityKey.Value,
+                x.Username.Value,
                 x.DisplayName.Value,
                 x.IsActive))
             .ToList();

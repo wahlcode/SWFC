@@ -17,6 +17,7 @@ public sealed class UserReadRepository : IUserReadRepository
     public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return _dbContext.Users
+            .AsNoTracking()
             .Include(x => x.Roles)
             .Include(x => x.OrganizationUnits)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -24,23 +25,40 @@ public sealed class UserReadRepository : IUserReadRepository
 
     public Task<User?> GetByIdentityKeyAsync(string identityKey, CancellationToken cancellationToken = default)
     {
+        var normalizedIdentityKey = identityKey.Trim();
+
         var user = _dbContext.Users
+            .AsNoTracking()
             .Include(x => x.Roles)
             .Include(x => x.OrganizationUnits)
             .AsEnumerable()
-            .FirstOrDefault(x => string.Equals(x.IdentityKey.Value, identityKey, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(
+                x => string.Equals(x.IdentityKey.Value, normalizedIdentityKey, StringComparison.OrdinalIgnoreCase));
 
         return Task.FromResult(user);
     }
 
-    public Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
+    public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
     {
-        IReadOnlyList<User> users = _dbContext.Users
-            .AsNoTracking()
-            .AsEnumerable()
-            .OrderBy(x => x.DisplayName.Value, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var normalizedUsername = username.Trim();
 
-        return Task.FromResult(users);
+        var user = _dbContext.Users
+            .AsNoTracking()
+            .Include(x => x.Roles)
+            .Include(x => x.OrganizationUnits)
+            .AsEnumerable()
+            .FirstOrDefault(
+                x => string.Equals(x.Username.Value, normalizedUsername, StringComparison.OrdinalIgnoreCase));
+
+        return Task.FromResult(user);
+    }
+
+    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Include(x => x.Roles)
+            .Include(x => x.OrganizationUnits)
+            .ToListAsync(cancellationToken);
     }
 }

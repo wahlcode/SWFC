@@ -7,4 +7,6 @@ public sealed class AuthenticationOptions
     public string Mode { get; set; } = "Local";
 
     public LocalAuthenticationOptions Local { get; set; } = new();
+
+    public InitialAdminOptions InitialAdmin { get; set; } = new();
 }

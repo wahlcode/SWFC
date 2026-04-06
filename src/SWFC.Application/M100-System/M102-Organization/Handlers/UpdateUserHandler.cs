@@ -43,25 +43,41 @@ public sealed class UpdateUserHandler : IUseCaseHandler<UpdateUserCommand, bool>
                     ErrorCategory.NotFound));
         }
 
+        var conflictingUser = await _userWriteRepository.GetByUsernameAsync(
+            command.Username.Trim(),
+            cancellationToken);
+
+        if (conflictingUser is not null && conflictingUser.Id != user.Id)
+        {
+            return Result<bool>.Failure(
+                new Error(
+                    "m102.user.username.exists",
+                    "A user with the same username already exists.",
+                    ErrorCategory.Conflict));
+        }
+
         var oldValues = JsonSerializer.Serialize(new
         {
             user.Id,
             IdentityKey = user.IdentityKey.Value,
+            Username = user.Username.Value,
             DisplayName = user.DisplayName.Value,
             user.IsActive
         });
 
+        var username = Username.Create(command.Username);
         var displayName = UserDisplayName.Create(command.DisplayName);
         var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
 
         user.UpdateDetails(
+            username,
             displayName,
             command.IsActive,
             changeContext);
 
         await _auditService.WriteAsync(
             userId: securityContext.UserId,
-            username: securityContext.Username,
+            username: securityContext.DisplayName,
             action: "UpdateUser",
             entity: "User",
             entityId: user.Id.ToString(),
@@ -71,6 +87,7 @@ public sealed class UpdateUserHandler : IUseCaseHandler<UpdateUserCommand, bool>
             {
                 user.Id,
                 IdentityKey = user.IdentityKey.Value,
+                Username = user.Username.Value,
                 DisplayName = user.DisplayName.Value,
                 user.IsActive,
                 command.Reason

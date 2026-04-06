@@ -1,0 +1,150 @@
+@page "/m100/users/{Id:guid}/edit"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M100_System.M102_Organization.Commands
+@using SWFC.Application.M100_System.M102_Organization.Queries
+@using SWFC.Application.M100_System.M102_Organization.DTOs
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetUserByIdQuery, UserDetailsDto> GetPipeline
+@inject IExecutionPipeline<UpdateUserCommand, bool> UpdatePipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit User</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Edit User</h2>
+        <p class="m305-page__description">Bestehenden Benutzer fachlich bearbeiten.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            @if (_isLoading)
+            {
+                <p>Lade Daten...</p>
+            }
+            else
+            {
+                @if (!string.IsNullOrWhiteSpace(_error))
+                {
+                    <div class="m201-alert m201-alert--error">@_error</div>
+                }
+
+                <div class="m201-form-field">
+                    <label class="m201-form-label">Identity Key</label>
+                    <div>@_identityKey</div>
+                </div>
+
+                <EditForm Model="_model" OnValidSubmit="HandleValidSubmitAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="m201-validation-summary" />
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="username">Username</label>
+                        <InputText id="username" class="m201-form-input" @bind-Value="_model.Username" />
+                        <ValidationMessage For="@(() => _model.Username)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="displayName">Display Name</label>
+                        <InputText id="displayName" class="m201-form-input" @bind-Value="_model.DisplayName" />
+                        <ValidationMessage For="@(() => _model.DisplayName)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="isActive">Active</label>
+                        <InputCheckbox id="isActive" @bind-Value="_model.IsActive" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="reason">Reason</label>
+                        <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="_model.Reason" />
+                        <ValidationMessage For="@(() => _model.Reason)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-actions">
+                        <button type="submit" class="m201-button" disabled="@_isSubmitting">
+                            @(_isSubmitting ? "Speichert..." : "Änderungen speichern")
+                        </button>
+                        <a class="m201-button m201-button--secondary" href="@($"/m100/users/{Id}")">Zurück</a>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private readonly EditUserInput _model = new();
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private string? _error;
+    private string? _identityKey;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _error = null;
+
+        var result = await GetPipeline.ExecuteAsync(new GetUserByIdQuery(Id));
+
+        if (result.IsSuccess)
+        {
+            var user = result.Value;
+            _identityKey = user.IdentityKey;
+            _model.Username = user.Username;
+            _model.DisplayName = user.DisplayName;
+            _model.IsActive = user.IsActive;
+        }
+        else
+        {
+            _error = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task HandleValidSubmitAsync()
+    {
+        _error = null;
+        _isSubmitting = true;
+
+        var command = new UpdateUserCommand(
+            Id,
+            _model.Username,
+            _model.DisplayName,
+            _model.IsActive,
+            _model.Reason);
+
+        var result = await UpdatePipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo($"/m100/users/{Id}");
+            return;
+        }
+
+        _error = result.Error?.Message;
+        _isSubmitting = false;
+    }
+
+    private sealed class EditUserInput
+    {
+        [Required(ErrorMessage = "Username ist erforderlich.")]
+        [MinLength(3, ErrorMessage = "Username muss mindestens 3 Zeichen lang sein.")]
+        [MaxLength(100, ErrorMessage = "Username darf maximal 100 Zeichen lang sein.")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Display Name ist erforderlich.")]
+        public string DisplayName { get; set; } = string.Empty;
+
+        public bool IsActive { get; set; }
+
+        [Required(ErrorMessage = "Grund ist erforderlich.")]
+        public string Reason { get; set; } = string.Empty;
+    }
+}

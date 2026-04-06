@@ -20,13 +20,24 @@ public sealed class GetOrganizationUnitsHandler : IUseCaseHandler<GetOrganizatio
         CancellationToken cancellationToken = default)
     {
         var organizationUnits = await _organizationUnitReadRepository.GetAllAsync(cancellationToken);
+        var organizationUnitsById = organizationUnits.ToDictionary(x => x.Id);
 
         var items = organizationUnits
-            .Select(x => new OrganizationUnitListItem(
-                x.Id,
-                x.Name.Value,
-                x.Code.Value,
-                x.ParentOrganizationUnitId))
+            .Select(x =>
+            {
+                var parent = x.ParentOrganizationUnitId.HasValue &&
+                             organizationUnitsById.TryGetValue(x.ParentOrganizationUnitId.Value, out var parentOrganizationUnit)
+                    ? parentOrganizationUnit
+                    : null;
+
+                return new OrganizationUnitListItem(
+                    x.Id,
+                    x.Name.Value,
+                    x.Code.Value,
+                    x.ParentOrganizationUnitId,
+                    parent?.Name.Value,
+                    parent?.Code.Value);
+            })
             .ToList();
 
         return Result<IReadOnlyList<OrganizationUnitListItem>>.Success(items);

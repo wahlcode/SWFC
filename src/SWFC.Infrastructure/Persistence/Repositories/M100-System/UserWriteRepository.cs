@@ -29,11 +29,28 @@ public sealed class UserWriteRepository : IUserWriteRepository
 
     public Task<User?> GetByIdentityKeyAsync(string identityKey, CancellationToken cancellationToken = default)
     {
+        var normalizedIdentityKey = identityKey.Trim();
+
         var user = _dbContext.Users
             .Include(x => x.Roles)
             .Include(x => x.OrganizationUnits)
             .AsEnumerable()
-            .FirstOrDefault(x => string.Equals(x.IdentityKey.Value, identityKey, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(
+                x => string.Equals(x.IdentityKey.Value, normalizedIdentityKey, StringComparison.OrdinalIgnoreCase));
+
+        return Task.FromResult(user);
+    }
+
+    public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+    {
+        var normalizedUsername = username.Trim();
+
+        var user = _dbContext.Users
+            .Include(x => x.Roles)
+            .Include(x => x.OrganizationUnits)
+            .AsEnumerable()
+            .FirstOrDefault(
+                x => string.Equals(x.Username.Value, normalizedUsername, StringComparison.OrdinalIgnoreCase));
 
         return Task.FromResult(user);
     }

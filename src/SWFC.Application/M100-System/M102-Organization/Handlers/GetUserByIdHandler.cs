@@ -9,14 +9,10 @@ namespace SWFC.Application.M100_System.M102_Organization.Handlers;
 public sealed class GetUserByIdHandler : IUseCaseHandler<GetUserByIdQuery, UserDetailsDto>
 {
     private readonly IUserReadRepository _userReadRepository;
-    private readonly IRoleReadRepository _roleReadRepository;
 
-    public GetUserByIdHandler(
-        IUserReadRepository userReadRepository,
-        IRoleReadRepository roleReadRepository)
+    public GetUserByIdHandler(IUserReadRepository userReadRepository)
     {
         _userReadRepository = userReadRepository;
-        _roleReadRepository = roleReadRepository;
     }
 
     public async Task<Result<UserDetailsDto>> HandleAsync(
@@ -34,25 +30,14 @@ public sealed class GetUserByIdHandler : IUseCaseHandler<GetUserByIdQuery, UserD
                     ErrorCategory.NotFound));
         }
 
-        var roles = new List<string>();
-
-        foreach (var userRole in user.Roles)
-        {
-            var role = await _roleReadRepository.GetByIdAsync(userRole.RoleId, cancellationToken);
-
-            if (role is not null)
-            {
-                roles.Add(role.Name.Value);
-            }
-        }
-
         var dto = new UserDetailsDto(
             user.Id,
             user.IdentityKey.Value,
+            user.Username.Value,
             user.DisplayName.Value,
             user.IsActive,
-            roles,
-            user.OrganizationUnits.Select(x => x.OrganizationUnitId).ToArray());
+            Array.Empty<string>(),
+            Array.Empty<OrganizationUnitReference>());
 
         return Result<UserDetailsDto>.Success(dto);
     }

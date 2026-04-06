@@ -1,0 +1,96 @@
+@page "/m100/roles/create"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M100_System.M102_Organization.Commands
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<CreateRoleCommand, Guid> Pipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Role</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Create Role</h2>
+        <p class="m305-page__description">Neue Rolle im M102-Organisationsmodell anlegen.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            @if (!string.IsNullOrWhiteSpace(_error))
+            {
+                <div class="m201-alert m201-alert--error">@_error</div>
+            }
+
+            <EditForm Model="_model" OnValidSubmit="HandleValidSubmitAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="m201-validation-summary" />
+
+                <div class="m201-form-field">
+                    <label class="m201-form-label" for="name">Name</label>
+                    <InputText id="name" class="m201-form-input" @bind-Value="_model.Name" />
+                    <ValidationMessage For="@(() => _model.Name)" class="m201-validation-message" />
+                </div>
+
+                <div class="m201-form-field">
+                    <label class="m201-form-label" for="description">Description</label>
+                    <InputTextArea id="description" class="m201-form-textarea" @bind-Value="_model.Description" />
+                </div>
+
+                <div class="m201-form-field">
+                    <label class="m201-form-label" for="reason">Reason</label>
+                    <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="_model.Reason" />
+                    <ValidationMessage For="@(() => _model.Reason)" class="m201-validation-message" />
+                </div>
+
+                <div class="m201-form-actions">
+                    <button type="submit" class="m201-button" disabled="@_isSubmitting">
+                        @(_isSubmitting ? "Speichert..." : "Role anlegen")
+                    </button>
+                    <a class="m201-button m201-button--secondary" href="/m100/roles">Zur Liste</a>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+@code {
+    private readonly CreateRoleInput _model = new();
+
+    private bool _isSubmitting;
+    private string? _error;
+
+    private async Task HandleValidSubmitAsync()
+    {
+        _error = null;
+        _isSubmitting = true;
+
+        var command = new CreateRoleCommand(
+            _model.Name,
+            _model.Description,
+            _model.Reason);
+
+        var result = await Pipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo($"/m100/roles/{result.Value}");
+            return;
+        }
+
+        _error = result.Error?.Message;
+        _isSubmitting = false;
+    }
+
+    private sealed class CreateRoleInput
+    {
+        [Required(ErrorMessage = "Name ist erforderlich.")]
+        public string Name { get; set; } = string.Empty;
+
+        public string? Description { get; set; }
+
+        [Required(ErrorMessage = "Grund ist erforderlich.")]
+        public string Reason { get; set; } = string.Empty;
+    }
+}

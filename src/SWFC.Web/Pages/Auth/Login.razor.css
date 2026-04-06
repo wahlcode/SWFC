@@ -1,0 +1,39 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 32px;
+    border-radius: var(--radius-m);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-m);
+}
+
+    .form-card .mb-3:not(.form-check) {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-card input {
+        width: 100%;
+    }
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-check-input {
+    margin: 0;
+}
+
+.form-check-label {
+    margin: 0;
+}

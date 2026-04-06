@@ -20,6 +20,13 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(200);
 
+        entity.Property(x => x.Username)
+            .HasConversion(
+                x => x.Value,
+                v => Username.Create(v))
+            .IsRequired()
+            .HasMaxLength(100);
+
         entity.Property(x => x.DisplayName)
             .HasConversion(
                 x => x.Value,
@@ -31,6 +38,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         entity.HasIndex(x => x.IdentityKey)
+            .IsUnique();
+
+        entity.HasIndex(x => x.Username)
             .IsUnique();
 
         entity.OwnsOne(x => x.AuditInfo, audit =>
