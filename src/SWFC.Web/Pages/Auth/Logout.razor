@@ -1,4 +1,4 @@
-@page "/auth/logout"
+@page "/auth/logged-out"
 @rendermode InteractiveServer
 @attribute [Authorize]
 
@@ -9,9 +9,13 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 
-<PageTitle>Abmelden</PageTitle>
+<PageTitle>Login</PageTitle>
 
-<p>Sie werden abgemeldet...</p>
+<div class="form-container">
+    <div class="form-card">
+        <h1>Abmeldung läuft ...</h1>
+    </div>
+</div>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)

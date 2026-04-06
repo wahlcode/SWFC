@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using SWFC.Application;
@@ -6,6 +7,7 @@ using SWFC.Infrastructure.DependencyInjection;
 using SWFC.Infrastructure.M800_Security.Auth;
 using SWFC.Infrastructure.M800_Security.Auth.Configuration;
 using SWFC.Infrastructure.Services.System;
+using SwfcAuthenticationOptions = SWFC.Infrastructure.M800_Security.Auth.Configuration.AuthenticationOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +22,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 var authenticationOptions = builder.Configuration
-    .GetSection(AuthenticationOptions.SectionName)
-    .Get<AuthenticationOptions>() ?? new AuthenticationOptions();
+    .GetSection(SwfcAuthenticationOptions.SectionName)
+    .Get<SwfcAuthenticationOptions>() ?? new SwfcAuthenticationOptions();
 
 if (string.Equals(authenticationOptions.Mode, AuthenticationModes.Local, StringComparison.OrdinalIgnoreCase))
 {
@@ -82,5 +84,13 @@ app.UseAuthorization();
 
 app.MapRazorComponents<global::SWFC.Web.App>()
     .AddInteractiveServerRenderMode();
+
+app.MapPost("/auth/logout", async (HttpContext httpContext) =>
+{
+    await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    return Results.Redirect("/auth/login");
+})
+.RequireAuthorization()
+.DisableAntiforgery();
 
 app.Run();
