@@ -30,11 +30,22 @@ public sealed class GetOrganizationUnitByIdHandler : IUseCaseHandler<GetOrganiza
                     ErrorCategory.NotFound));
         }
 
+        SWFC.Domain.M100_System.M102_Organization.Entities.OrganizationUnit? parentOrganizationUnit = null;
+
+        if (organizationUnit.ParentOrganizationUnitId.HasValue)
+        {
+            parentOrganizationUnit = await _organizationUnitReadRepository.GetByIdAsync(
+                organizationUnit.ParentOrganizationUnitId.Value,
+                cancellationToken);
+        }
+
         var dto = new OrganizationUnitDetailsDto(
             organizationUnit.Id,
             organizationUnit.Name.Value,
             organizationUnit.Code.Value,
-            organizationUnit.ParentOrganizationUnitId);
+            organizationUnit.ParentOrganizationUnitId,
+            parentOrganizationUnit?.Name.Value,
+            parentOrganizationUnit?.Code.Value);
 
         return Result<OrganizationUnitDetailsDto>.Success(dto);
     }

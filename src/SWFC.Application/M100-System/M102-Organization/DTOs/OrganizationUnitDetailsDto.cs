@@ -4,4 +4,6 @@ public sealed record OrganizationUnitDetailsDto(
     Guid Id,
     string Name,
     string Code,
-    Guid? ParentOrganizationUnitId);
+    Guid? ParentOrganizationUnitId,
+    string? ParentName,
+    string? ParentCode);

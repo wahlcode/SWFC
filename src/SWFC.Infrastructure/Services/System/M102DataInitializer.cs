@@ -3,6 +3,9 @@ using Microsoft.Extensions.Options;
 using SWFC.Domain.Common.ValueObjects;
 using SWFC.Domain.M100_System.M102_Organization.Entities;
 using SWFC.Domain.M100_System.M102_Organization.ValueObjects;
+using SWFC.Infrastructure.M800_Security.Auth.Configuration;
+using SWFC.Infrastructure.M800_Security.Auth.Entities;
+using SWFC.Infrastructure.M800_Security.Auth.Services;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Services.System;
@@ -12,13 +15,18 @@ public sealed class M102DataInitializer : IM102DataInitializer
     private const string InitializationUserId = "system-initializer";
     private readonly AppDbContext _dbContext;
     private readonly M102InitializationOptions _options;
+    private readonly AuthenticationOptions _authenticationOptions;
+    private readonly PasswordHasher _passwordHasher;
 
     public M102DataInitializer(
         AppDbContext dbContext,
-        IOptions<M102InitializationOptions> options)
+        IOptions<M102InitializationOptions> options,
+        IOptions<AuthenticationOptions> authenticationOptions)
     {
         _dbContext = dbContext;
         _options = options.Value;
+        _authenticationOptions = authenticationOptions.Value;
+        _passwordHasher = new PasswordHasher();
     }
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -49,6 +57,8 @@ public sealed class M102DataInitializer : IM102DataInitializer
                 changeContext,
                 cancellationToken);
         }
+
+        await EnsureInitialAdminLocalCredentialAsync(developerUser.Id, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
@@ -97,8 +107,9 @@ public sealed class M102DataInitializer : IM102DataInitializer
 
         var user = User.Create(
             UserIdentityKey.Create(identityKey),
+            Username.Create(identityKey),
             UserDisplayName.Create(_options.DeveloperDisplayName),
-            isActive: true,
+            true,
             changeContext);
 
         await _dbContext.Users.AddAsync(user, cancellationToken);
@@ -197,5 +208,34 @@ public sealed class M102DataInitializer : IM102DataInitializer
             changeContext);
 
         await _dbContext.UserOrganizationUnits.AddAsync(userOrganizationUnit, cancellationToken);
+    }
+
+    private async Task EnsureInitialAdminLocalCredentialAsync(
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var existingCredential = await _dbContext.LocalCredentials
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+
+        if (existingCredential is not null)
+        {
+            return;
+        }
+
+        var initialPassword = _authenticationOptions.InitialAdmin.Password?.Trim();
+
+        if (string.IsNullOrWhiteSpace(initialPassword))
+        {
+            return;
+        }
+
+        var passwordHash = _passwordHasher.HashPassword(initialPassword);
+
+        var credential = LocalCredential.Create(
+            userId,
+            passwordHash,
+            DateTimeOffset.UtcNow);
+
+        await _dbContext.LocalCredentials.AddAsync(credential, cancellationToken);
     }
 }

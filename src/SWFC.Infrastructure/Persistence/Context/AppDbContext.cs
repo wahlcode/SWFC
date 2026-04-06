@@ -5,7 +5,9 @@ using SWFC.Domain.M200_Business.M201_Assets.Entities;
 using SWFC.Domain.M200_Business.M201_Assets.ValueObjects;
 using SWFC.Domain.M200_Business.M204_Inventory.Entities;
 using SWFC.Domain.M200_Business.M204_Inventory.ValueObjects;
+using SWFC.Infrastructure.M800_Security.Auth.Entities;
 using SWFC.Infrastructure.Persistence.Configurations.M100_System;
+using SWFC.Infrastructure.Persistence.Configurations.M103_Authentication;
 
 namespace SWFC.Infrastructure.Persistence.Context;
 
@@ -24,6 +26,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<UserRole> UserRoles => Set<UserRole>();
     public DbSet<UserOrganizationUnit> UserOrganizationUnits => Set<UserOrganizationUnit>();
 
+    public DbSet<LocalCredential> LocalCredentials => Set<LocalCredential>();
+
     public DbSet<Machine> Machines => Set<Machine>();
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<Stock> Stocks => Set<Stock>();
@@ -40,6 +44,8 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new OrganizationUnitConfiguration());
         modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserOrganizationUnitConfiguration());
+
+        modelBuilder.ApplyConfiguration(new LocalCredentialConfiguration());
 
         modelBuilder.Entity<Machine>(entity =>
         {

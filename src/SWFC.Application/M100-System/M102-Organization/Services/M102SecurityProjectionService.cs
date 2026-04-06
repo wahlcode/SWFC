@@ -51,6 +51,7 @@ public sealed class M102SecurityProjectionService : IM102SecurityProjectionServi
         return new M102SecurityProjection(
             user.Id,
             user.IdentityKey.Value,
+            user.Username.Value,
             user.DisplayName.Value,
             user.IsActive,
             resolvedRoles,

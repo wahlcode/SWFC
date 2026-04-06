@@ -1,15 +1,17 @@
 @inherits LayoutComponentBase
 
 <div class="m305-shell">
-    <aside class="m305-shell__sidebar">
-        <Sidebar />
-    </aside>
 
-    <div class="m305-shell__main">
-        <Header />
+    <Header />
+
+    <div class="m305-shell__body">
+        <aside class="m305-shell__sidebar">
+            <Sidebar />
+        </aside>
 
         <main class="m305-shell__content">
             @Body
         </main>
     </div>
+
 </div>

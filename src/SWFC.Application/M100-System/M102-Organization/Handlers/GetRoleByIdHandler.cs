@@ -9,10 +9,14 @@ namespace SWFC.Application.M100_System.M102_Organization.Handlers;
 public sealed class GetRoleByIdHandler : IUseCaseHandler<GetRoleByIdQuery, RoleDetailsDto>
 {
     private readonly IRoleReadRepository _roleReadRepository;
+    private readonly IRolePermissionMapper _rolePermissionMapper;
 
-    public GetRoleByIdHandler(IRoleReadRepository roleReadRepository)
+    public GetRoleByIdHandler(
+        IRoleReadRepository roleReadRepository,
+        IRolePermissionMapper rolePermissionMapper)
     {
         _roleReadRepository = roleReadRepository;
+        _rolePermissionMapper = rolePermissionMapper;
     }
 
     public async Task<Result<RoleDetailsDto>> HandleAsync(
@@ -30,10 +34,13 @@ public sealed class GetRoleByIdHandler : IUseCaseHandler<GetRoleByIdQuery, RoleD
                     ErrorCategory.NotFound));
         }
 
+        var permissions = _rolePermissionMapper.Map(new[] { role.Name.Value });
+
         var dto = new RoleDetailsDto(
             role.Id,
             role.Name.Value,
-            role.Description);
+            role.Description,
+            permissions);
 
         return Result<RoleDetailsDto>.Success(dto);
     }

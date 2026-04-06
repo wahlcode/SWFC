@@ -1,0 +1,140 @@
+@page "/m100/organization-units/create"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M100_System.M102_Organization.Commands
+@using SWFC.Application.M100_System.M102_Organization.Queries
+@using SWFC.Application.M100_System.M102_Organization.DTOs
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<CreateOrganizationUnitCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>> GetPipeline
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Organization Unit</PageTitle>
+
+<section class="m305-page">
+    <div class="m305-page__header">
+        <h2 class="m305-page__title">Create Organization Unit</h2>
+        <p class="m305-page__description">Neue Organisationseinheit anlegen und optional in die Hierarchie einordnen.</p>
+    </div>
+
+    <div class="m305-card">
+        <div class="m305-card__body">
+            @if (_isLoading)
+            {
+                <p>Lade Daten...</p>
+            }
+            else
+            {
+                @if (!string.IsNullOrWhiteSpace(_error))
+                {
+                    <div class="m201-alert m201-alert--error">@_error</div>
+                }
+
+                <EditForm Model="_model" OnValidSubmit="HandleValidSubmitAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="m201-validation-summary" />
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="name">Name</label>
+                        <InputText id="name" class="m201-form-input" @bind-Value="_model.Name" />
+                        <ValidationMessage For="@(() => _model.Name)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="code">Code</label>
+                        <InputText id="code" class="m201-form-input" @bind-Value="_model.Code" />
+                        <ValidationMessage For="@(() => _model.Code)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="parent">Parent Organization Unit</label>
+                        <InputSelect id="parent" class="m201-form-select" @bind-Value="_model.ParentOrganizationUnitId">
+                            <option value="">-- none --</option>
+                            @foreach (var item in _organizationUnits)
+                            {
+                                <option value="@item.Id">@item.Name (@item.Code)</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="m201-form-field">
+                        <label class="m201-form-label" for="reason">Reason</label>
+                        <InputTextArea id="reason" class="m201-form-textarea" @bind-Value="_model.Reason" />
+                        <ValidationMessage For="@(() => _model.Reason)" class="m201-validation-message" />
+                    </div>
+
+                    <div class="m201-form-actions">
+                        <button type="submit" class="m201-button" disabled="@_isSubmitting">
+                            @(_isSubmitting ? "Speichert..." : "Organization Unit anlegen")
+                        </button>
+                        <a class="m201-button m201-button--secondary" href="/m100/organization-units">Zur Liste</a>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private readonly CreateOrganizationUnitInput _model = new();
+
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private string? _error;
+    private IReadOnlyList<OrganizationUnitListItem> _organizationUnits = Array.Empty<OrganizationUnitListItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await GetPipeline.ExecuteAsync(new GetOrganizationUnitsQuery());
+
+        if (result.IsSuccess)
+        {
+            _organizationUnits = result.Value;
+        }
+        else
+        {
+            _error = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task HandleValidSubmitAsync()
+    {
+        _error = null;
+        _isSubmitting = true;
+
+        var command = new CreateOrganizationUnitCommand(
+            _model.Name,
+            _model.Code,
+            _model.ParentOrganizationUnitId,
+            _model.Reason);
+
+        var result = await CreatePipeline.ExecuteAsync(command);
+
+        if (result.IsSuccess)
+        {
+            NavigationManager.NavigateTo($"/m100/organization-units/{result.Value}");
+            return;
+        }
+
+        _error = result.Error?.Message;
+        _isSubmitting = false;
+    }
+
+    private sealed class CreateOrganizationUnitInput
+    {
+        [Required(ErrorMessage = "Name ist erforderlich.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Code ist erforderlich.")]
+        public string Code { get; set; } = string.Empty;
+
+        public Guid? ParentOrganizationUnitId { get; set; }
+
+        [Required(ErrorMessage = "Grund ist erforderlich.")]
+        public string Reason { get; set; } = string.Empty;
+    }
+}

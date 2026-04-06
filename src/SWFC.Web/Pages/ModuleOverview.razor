@@ -4,46 +4,61 @@
 <PageTitle>Modulübersicht</PageTitle>
 
 <div class="module-overview-page">
-    <div class="module-overview-header">
-        <div>
-            <h1 class="page-title">Modulübersicht</h1>
-            <p class="page-subtitle">
-                SWFC Modulstatus mit Status- und Level-Trennung.
-            </p>
-        </div>
-    </div>
+    <section class="module-overview-hero">
+        <div class="module-overview-header">
+            <div class="module-overview-header__copy">
+                <p class="module-overview-eyebrow">SWFC</p>
+                <h1 class="page-title">Modulübersicht</h1>
+                <p class="page-subtitle">
+                    Strukturübersicht für M100 bis M1000 mit klarer Trennung von Status, Level und Umsetzungsstand.
+                </p>
+            </div>
 
-    <div class="summary-grid summary-grid--six">
-        <div class="summary-card">
-            <div class="summary-label">Gesamt</div>
-            <div class="summary-value">@Modules.Count</div>
-        </div>
+            <div class="module-overview-header__meta">
+                <div class="overview-highlight">
+                    <span class="overview-highlight__label">Modulgruppen</span>
+                    <span class="overview-highlight__value">@GroupedModules.Count()</span>
+                </div>
 
-        <div class="summary-card summary-card--done">
-            <div class="summary-label">Done</div>
-            <div class="summary-value">@DoneCount</div>
-        </div>
-
-        <div class="summary-card summary-card--progress">
-            <div class="summary-label">In Progress</div>
-            <div class="summary-value">@InProgressCount</div>
+                <div class="overview-highlight">
+                    <span class="overview-highlight__label">Workitems</span>
+                    <span class="overview-highlight__value">@TotalWorkItems</span>
+                </div>
+            </div>
         </div>
 
-        <div class="summary-card summary-card--open">
-            <div class="summary-label">Open</div>
-            <div class="summary-value">@OpenCount</div>
-        </div>
+        <div class="summary-grid summary-grid--six">
+            <div class="summary-card">
+                <div class="summary-label">Gesamt</div>
+                <div class="summary-value">@Modules.Count</div>
+            </div>
 
-        <div class="summary-card summary-card--core">
-            <div class="summary-label">Core</div>
-            <div class="summary-value">@CoreCount</div>
-        </div>
+            <div class="summary-card summary-card--done">
+                <div class="summary-label">Done</div>
+                <div class="summary-value">@DoneCount</div>
+            </div>
 
-        <div class="summary-card summary-card--optional">
-            <div class="summary-label">Optional / Extension</div>
-            <div class="summary-value">@(OptionalCoreCount + ExtensionCount)</div>
+            <div class="summary-card summary-card--progress">
+                <div class="summary-label">In Progress</div>
+                <div class="summary-value">@InProgressCount</div>
+            </div>
+
+            <div class="summary-card summary-card--open">
+                <div class="summary-label">Open</div>
+                <div class="summary-value">@OpenCount</div>
+            </div>
+
+            <div class="summary-card summary-card--core">
+                <div class="summary-label">Core</div>
+                <div class="summary-value">@CoreCount</div>
+            </div>
+
+            <div class="summary-card summary-card--optional">
+                <div class="summary-label">Optional / Extension</div>
+                <div class="summary-value">@(OptionalCoreCount + ExtensionCount)</div>
+            </div>
         </div>
-    </div>
+    </section>
 
     @foreach (var group in GroupedModules)
     {
@@ -62,19 +77,19 @@
             <button type="button"
                     class="module-section-toggle"
                     @onclick="() => ToggleGroup(groupKey)">
-                <div>
+                <div class="module-section-heading">
                     <h2 class="module-section-title">@group.Key.Code – @group.Key.Title</h2>
-                    <p class="module-section-subtitle">@groupModules.Count Module</p>
+                    <p class="module-section-subtitle">@groupModules.Count Module in dieser Gruppe</p>
                 </div>
 
                 <div class="module-section-header-right">
                     <div class="module-section-summary">
-                        <span>Done @groupDone</span>
-                        <span>In Progress @groupInProgress</span>
-                        <span>Open @groupOpen</span>
-                        <span>Core @groupCore</span>
-                        <span>Optional @groupOptional</span>
-                        <span>Extension @groupExtension</span>
+                        <span class="section-pill section-pill--done">Done @groupDone</span>
+                        <span class="section-pill section-pill--progress">In Progress @groupInProgress</span>
+                        <span class="section-pill section-pill--open">Open @groupOpen</span>
+                        <span class="section-pill">Core @groupCore</span>
+                        <span class="section-pill">Optional @groupOptional</span>
+                        <span class="section-pill">Extension @groupExtension</span>
                     </div>
 
                     <span class="module-section-chevron">
@@ -105,8 +120,10 @@
                                         <ThemeStatusBadge Status="@module.Status" />
                                     </div>
 
-                                    <span class="module-card-v1__progress">@module.ProgressPercent%</span>
-                                    <span class="module-card-v1__chevron">@(IsModuleExpanded(moduleKey) ? "▼" : "▶")</span>
+                                    <div class="module-card-v1__meta">
+                                        <span class="module-card-v1__progress">@module.ProgressPercent%</span>
+                                        <span class="module-card-v1__chevron">@(IsModuleExpanded(moduleKey) ? "▼" : "▶")</span>
+                                    </div>
                                 </div>
                             </button>
 
@@ -118,9 +135,9 @@
                             }
 
                             <div class="module-card-v1__bar">
-                                <div class="bar-done" style="@GetWidth(module.DoneCount, module.TotalCount)"></div>
-                                <div class="bar-progress" style="@GetWidth(module.InProgressCount, module.TotalCount)"></div>
-                                <div class="bar-open" style="@GetWidth(module.OpenCount, module.TotalCount)"></div>
+                                <div class="bar-segment bar-segment--done" style="@GetWidth(module.DoneCount, module.TotalCount)"></div>
+                                <div class="bar-segment bar-segment--progress" style="@GetWidth(module.InProgressCount, module.TotalCount)"></div>
+                                <div class="bar-segment bar-segment--open" style="@GetWidth(module.OpenCount, module.TotalCount)"></div>
                             </div>
 
                             <div class="module-card-v1__stats">
@@ -164,6 +181,12 @@
                                             }
                                         </div>
                                     }
+                                    else
+                                    {
+                                        <div class="workitem-empty">
+                                            Keine Workitems vorhanden.
+                                        </div>
+                                    }
                                 </div>
                             }
                         </article>
@@ -177,11 +200,13 @@
 @code {
     private readonly List<ModuleOverviewItem> Modules = ModuleOverviewData.GetModules();
     private readonly HashSet<string> _expandedModules = new();
-    private readonly HashSet<string> _expandedGroups = new();
+    private string? _expandedGroupCode;
 
     private IEnumerable<IGrouping<(string Code, string Title), ModuleOverviewItem>> GroupedModules =>
         Modules.GroupBy(x => (Code: x.GroupCode, Title: x.GroupTitle))
                .OrderBy(x => GetModuleOrder(x.Key.Code));
+
+    private int TotalWorkItems => Modules.Sum(x => x.WorkItems.Count);
 
     private int DoneCount => Modules.Count(x => x.Status == "Done");
     private int InProgressCount => Modules.Count(x => x.Status == "InProgress");
@@ -190,19 +215,6 @@
     private int CoreCount => Modules.Count(x => x.Level == "Core");
     private int OptionalCoreCount => Modules.Count(x => x.Level == "OptionalCore");
     private int ExtensionCount => Modules.Count(x => x.Level == "Extension");
-
-    protected override void OnInitialized()
-    {
-        foreach (var module in Modules)
-        {
-            
-        }
-
-        foreach (var group in GroupedModules)
-        {
-            
-        }
-    }
 
     private bool IsModuleExpanded(string code) => _expandedModules.Contains(code);
 
@@ -214,14 +226,19 @@
         }
     }
 
-    private bool IsGroupExpanded(string code) => _expandedGroups.Contains(code);
+    private bool IsGroupExpanded(string code) => _expandedGroupCode == code;
 
     private void ToggleGroup(string code)
     {
-        if (!_expandedGroups.Add(code))
+        if (_expandedGroupCode == code)
         {
-            _expandedGroups.Remove(code);
+            _expandedGroupCode = null;
+            _expandedModules.Clear();
+            return;
         }
+
+        _expandedGroupCode = code;
+        _expandedModules.Clear();
     }
 
     private static int GetModuleOrder(string code)

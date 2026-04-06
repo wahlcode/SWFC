@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.Negotiate;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Authorization;
 using SWFC.Application;
-using SWFC.Application.M800_Security.M802_ApplicationSecurity;
 using SWFC.Infrastructure.DependencyInjection;
 using SWFC.Infrastructure.M800_Security.Auth;
 using SWFC.Infrastructure.M800_Security.Auth.Configuration;
-using SWFC.Infrastructure.M800_Security.Auth.Providers.Sso;
 using SWFC.Infrastructure.Services.System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,23 +12,45 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddCascadingAuthenticationState();
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
 
 var authenticationOptions = builder.Configuration
     .GetSection(AuthenticationOptions.SectionName)
     .Get<AuthenticationOptions>() ?? new AuthenticationOptions();
 
-if (string.Equals(authenticationOptions.Mode, AuthenticationModes.Sso, StringComparison.OrdinalIgnoreCase))
+if (string.Equals(authenticationOptions.Mode, AuthenticationModes.Local, StringComparison.OrdinalIgnoreCase))
 {
-    builder.Services.AddHttpContextAccessor();
-
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.Cookie.Name = authenticationOptions.Local.CookieName;
+            options.LoginPath = "/auth/login";
+            options.AccessDeniedPath = "/auth/access-denied";
+            options.LogoutPath = "/auth/logout";
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(authenticationOptions.Local.SessionTimeoutMinutes);
+            options.SlidingExpiration = true;
+        });
+}
+else if (string.Equals(authenticationOptions.Mode, AuthenticationModes.Sso, StringComparison.OrdinalIgnoreCase))
+{
     builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
         .AddNegotiate();
-
-    builder.Services.AddAuthorization();
-    builder.Services.AddScoped<ICurrentUserService, SsoCurrentUserService>();
 }
+else
+{
+    throw new InvalidOperationException(
+        $"Unsupported authentication mode '{authenticationOptions.Mode}'.");
+}
+
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
 
 builder.Services.AddScoped(_ =>
 {
@@ -55,12 +77,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
-
-if (string.Equals(authenticationOptions.Mode, AuthenticationModes.Sso, StringComparison.OrdinalIgnoreCase))
-{
-    app.UseAuthentication();
-    app.UseAuthorization();
-}
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<global::SWFC.Web.App>()
     .AddInteractiveServerRenderMode();

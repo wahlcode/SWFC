@@ -1,0 +1,115 @@
+/* =========================
+   APP SHELL LAYOUT
+   ========================= */
+
+.m305-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--color-bg);
+}
+
+.m305-shell__body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    flex: 1;
+}
+/* =========================
+   SIDEBAR
+   ========================= */
+
+.m305-shell__sidebar {
+    border-right: 1px solid var(--color-border);
+    background: var(--color-surface-1);
+}
+
+/* =========================
+   MAIN AREA
+   ========================= */
+
+.m305-shell__main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* =========================
+   CONTENT AREA
+   ========================= */
+
+.m305-shell__content {
+    flex: 1;
+    padding: 20px 28px;
+    overflow: auto;
+}
+
+/* =========================
+   PAGE BASE (existing reuse)
+   ========================= */
+
+.m305-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.m305-page__header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.m305-page__title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+}
+
+.m305-page__description {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+/* =========================
+   CARD
+   ========================= */
+
+.m305-card {
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        rgba(255,255,255,0.02);
+    backdrop-filter: blur(10px);
+}
+
+.m305-card__body {
+    padding: 18px 20px;
+}
+
+.m305-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.m305-card__text {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1024px) {
+    .m305-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .m305-shell__sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+    }
+}

@@ -22,19 +22,30 @@ public sealed class M102SecurityContextResolver
         {
             return new SecurityContext(
                 userId: string.Empty,
+                identityKey: string.Empty,
                 username: string.Empty,
+                displayName: string.Empty,
                 isAuthenticated: false,
                 roles: Array.Empty<string>(),
                 permissions: Array.Empty<string>());
         }
 
-        var projection = await _projectionService.GetByIdentityKeyAsync(identityKey, cancellationToken);
+        var normalizedIdentityKey = identityKey.Trim();
+        var normalizedFallbackUsername = string.IsNullOrWhiteSpace(fallbackUsername)
+            ? normalizedIdentityKey
+            : fallbackUsername.Trim();
+
+        var projection = await _projectionService.GetByIdentityKeyAsync(
+            normalizedIdentityKey,
+            cancellationToken);
 
         if (projection is null || !projection.IsActive)
         {
             return new SecurityContext(
-                userId: identityKey,
-                username: fallbackUsername,
+                userId: string.Empty,
+                identityKey: normalizedIdentityKey,
+                username: normalizedFallbackUsername,
+                displayName: normalizedFallbackUsername,
                 isAuthenticated: true,
                 roles: Array.Empty<string>(),
                 permissions: Array.Empty<string>());
@@ -42,7 +53,9 @@ public sealed class M102SecurityContextResolver
 
         return new SecurityContext(
             userId: projection.UserId.ToString(),
-            username: projection.DisplayName,
+            identityKey: projection.IdentityKey,
+            username: projection.Username,
+            displayName: projection.DisplayName,
             isAuthenticated: true,
             roles: projection.Roles,
             permissions: projection.Permissions);

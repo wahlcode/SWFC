@@ -1,0 +1,31 @@
+@page "/auth/logout"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authorization
+
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
+
+<PageTitle>Abmelden</PageTitle>
+
+<p>Sie werden abgemeldet...</p>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var httpContext = HttpContextAccessor.HttpContext
+            ?? throw new InvalidOperationException("HttpContext is unavailable.");
+
+        await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        NavigationManager.NavigateTo("/auth/login", forceLoad: true);
+    }
+}

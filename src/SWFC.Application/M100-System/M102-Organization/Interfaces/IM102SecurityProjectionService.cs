@@ -10,6 +10,7 @@ public interface IM102SecurityProjectionService
 public sealed record M102SecurityProjection(
     Guid UserId,
     string IdentityKey,
+    string Username,
     string DisplayName,
     bool IsActive,
     IReadOnlyCollection<string> Roles,

@@ -26,6 +26,7 @@ using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
 using SWFC.Infrastructure.M800_Security.Audit;
+using SWFC.Infrastructure.M800_Security.Auth.Configuration;
 using SWFC.Infrastructure.M800_Security.Auth.DependencyInjection;
 using SWFC.Infrastructure.Persistence.Context;
 using SWFC.Infrastructure.Persistence.Repositories.M100_System;
@@ -61,6 +62,11 @@ public static class ServiceCollectionExtensions
             options.CreateRootOrganizationUnit = true;
             options.RootOrganizationUnitCode = "ROOT";
             options.RootOrganizationUnitName = "ROOT";
+        });
+
+        services.Configure<AuthenticationOptions>(options =>
+        {
+            configuration.GetSection(AuthenticationOptions.SectionName).Bind(options);
         });
 
         services.AddScoped<IM102DataInitializer, M102DataInitializer>();

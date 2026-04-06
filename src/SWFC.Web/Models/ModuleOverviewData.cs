@@ -32,8 +32,8 @@ public static class ModuleOverviewData
             Level = "Core",
             WorkItems =
             [
-                new() { Title = "Standorte", Status = "Open", Level = "Core" },
-                new() { Title = "Abteilungen", Status = "Open", Level = "Core" },
+                new() { Title = "Standorte", Status = "Done", Level = "Core" },
+                new() { Title = "Abteilungen", Status = "Done", Level = "Core" },
                 new() { Title = "Kostenstellen", Status = "Open", Level = "OptionalCore" },
                 new() { Title = "Bereichslogik", Status = "Open", Level = "OptionalCore" }
             ]

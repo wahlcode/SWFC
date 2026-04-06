@@ -33,11 +33,11 @@ public sealed class CreateUserHandler : IUseCaseHandler<CreateUserCommand, Guid>
     {
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
 
-        var existingUser = await _userWriteRepository.GetByIdentityKeyAsync(
+        var existingIdentityKeyUser = await _userWriteRepository.GetByIdentityKeyAsync(
             command.IdentityKey.Trim(),
             cancellationToken);
 
-        if (existingUser is not null)
+        if (existingIdentityKeyUser is not null)
         {
             return Result<Guid>.Failure(
                 new Error(
@@ -46,12 +46,27 @@ public sealed class CreateUserHandler : IUseCaseHandler<CreateUserCommand, Guid>
                     ErrorCategory.Conflict));
         }
 
+        var existingUsernameUser = await _userWriteRepository.GetByUsernameAsync(
+            command.Username.Trim(),
+            cancellationToken);
+
+        if (existingUsernameUser is not null)
+        {
+            return Result<Guid>.Failure(
+                new Error(
+                    "m102.user.username.exists",
+                    "A user with the same username already exists.",
+                    ErrorCategory.Conflict));
+        }
+
         var identityKey = UserIdentityKey.Create(command.IdentityKey);
+        var username = Username.Create(command.Username);
         var displayName = UserDisplayName.Create(command.DisplayName);
         var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
 
         var user = User.Create(
             identityKey,
+            username,
             displayName,
             command.IsActive,
             changeContext);
@@ -60,7 +75,7 @@ public sealed class CreateUserHandler : IUseCaseHandler<CreateUserCommand, Guid>
 
         await _auditService.WriteAsync(
             userId: securityContext.UserId,
-            username: securityContext.Username,
+            username: securityContext.DisplayName,
             action: "CreateUser",
             entity: "User",
             entityId: user.Id.ToString(),
@@ -70,6 +85,7 @@ public sealed class CreateUserHandler : IUseCaseHandler<CreateUserCommand, Guid>
             {
                 user.Id,
                 IdentityKey = user.IdentityKey.Value,
+                Username = user.Username.Value,
                 DisplayName = user.DisplayName.Value,
                 user.IsActive,
                 command.Reason

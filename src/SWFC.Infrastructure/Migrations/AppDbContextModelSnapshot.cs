@@ -92,9 +92,17 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdentityKey")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users", "core");
@@ -339,6 +347,40 @@ namespace SWFC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AuditLogs", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Infrastructure.M800_Security.Auth.Entities.LocalCredential", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("FailedAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("LastPasswordChangedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("LockoutUntilUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("LocalCredentials", "core");
                 });
 
             modelBuilder.Entity("SWFC.Domain.M100_System.M102_Organization.Entities.OrganizationUnit", b =>
@@ -698,6 +740,15 @@ namespace SWFC.Infrastructure.Migrations
                         });
 
                     b.Navigation("AuditInfo")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Infrastructure.M800_Security.Auth.Entities.LocalCredential", b =>
+                {
+                    b.HasOne("SWFC.Domain.M100_System.M102_Organization.Entities.User", null)
+                        .WithOne()
+                        .HasForeignKey("SWFC.Infrastructure.M800_Security.Auth.Entities.LocalCredential", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
