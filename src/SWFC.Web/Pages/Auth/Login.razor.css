@@ -2,38 +2,131 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
+    min-height: 100%;
+    padding: var(--space-xl);
 }
 
 .form-card {
     width: 100%;
     max-width: 400px;
-    padding: 32px;
-    border-radius: var(--radius-m);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-m);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
 }
 
-    .form-card .mb-3:not(.form-check) {
-        display: flex;
-        flex-direction: column;
+    .form-card h1 {
+        margin: 0 0 var(--space-xl) 0;
+        padding: 0;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        background: transparent;
+        text-align: center;
+        color: var(--color-text-primary);
     }
 
-    .form-card input {
-        width: 100%;
+    .form-card form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
     }
+
+    .form-card .mb-3:not(.form-check),
+    .form-card .mb-4:not(.form-check) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        margin: 0;
+    }
+
+    .form-card .form-label {
+        color: var(--color-text-primary);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .form-card .form-control {
+        width: 100%;
+        min-height: var(--size-button-height-md);
+        padding: 0 var(--space-md);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-1);
+        color: var(--color-text-primary);
+        box-sizing: border-box;
+        display: block;
+    }
+
+        .form-card .form-control::placeholder {
+            color: var(--color-text-muted);
+        }
 
 .form-check {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
+    margin: 0;
 }
 
 .form-check-input {
     margin: 0;
+    flex: 0 0 auto;
 }
 
 .form-check-label {
     margin: 0;
+    color: var(--color-text-primary);
+}
+
+.form-card .btn,
+.form-card .btn-primary {
+    width: 100%;
+    min-height: var(--size-button-height-md);
+    margin-top: var(--space-sm);
+    padding: 0 var(--space-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary);
+    background: var(--gradient-surface-primary);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+    box-shadow: var(--shadow-inset-soft);
+    cursor: pointer;
+}
+
+    .form-card .btn:hover,
+    .form-card .btn-primary:hover {
+        border-color: var(--color-primary-hover);
+        background: var(--gradient-surface-primary-hover);
+        box-shadow: var(--shadow-focus-primary);
+    }
+
+    .form-card .btn:disabled,
+    .form-card .btn-primary:disabled {
+        opacity: var(--opacity-disabled);
+        cursor: not-allowed;
+    }
+
+.form-card .alert {
+    margin: 0;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+}
+
+.form-card .alert-danger {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger-text);
+}
+
+.form-card .alert-warning {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger-text);
+}
+
+.form-card .validation-summary-errors,
+.form-card .validation-message {
+    color: var(--color-danger-text);
 }

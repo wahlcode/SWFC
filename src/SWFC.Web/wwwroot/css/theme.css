@@ -54,6 +54,72 @@
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.22);
     --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.24);
     --shadow-lg: 0 16px 42px rgba(0, 0, 0, 0.28);
+    /* =====================================================
+       Generic reusable tokens
+       ===================================================== */
+
+    --color-surface: var(--color-surface-1);
+    --color-surface-subtle: rgba(255, 255, 255, 0.02);
+    --color-surface-soft: rgba(255, 255, 255, 0.03);
+    --color-surface-soft-2: rgba(255, 255, 255, 0.04);
+    --color-surface-soft-3: rgba(255, 255, 255, 0.05);
+    --color-surface-soft-4: rgba(255, 255, 255, 0.06);
+    --color-surface-soft-5: rgba(255, 255, 255, 0.08);
+    --color-surface-clear: rgba(255, 255, 255, 0);
+    --color-surface-faint: rgba(255, 255, 255, 0.01);
+    --color-text-on-danger: var(--color-danger-text);
+    --opacity-soft: 0.9;
+    --opacity-disabled: 0.5;
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-md: 13px;
+    --font-size-base: 14px;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --line-height-tight: 1;
+    --line-height-snug: 1.15;
+    --letter-spacing-wide: 0.12em;
+    --size-icon-sm: 18px;
+    --size-logo-md: 120px;
+    --size-control-height-sm: 30px;
+    --size-button-height-md: 44px;
+    --size-tile-min-height-md: 92px;
+    --size-text-block-md: 32px;
+    --space-stack-2xs: 6px;
+    --space-stack-xs: 8px;
+    --space-stack-sm: 10px;
+    --space-stack-md: 14px;
+    --space-stack-lg: 16px;
+    --space-inline-xs: 8px;
+    --space-inline-sm: 10px;
+    --space-inline-md: 12px;
+    --space-inline-lg: 14px;
+    --space-inline-xl: 16px;
+    --space-inset-xs: 8px;
+    --space-inset-sm: 10px;
+    --space-inset-md: 12px;
+    --space-inset-lg: 16px;
+    --space-panel-padding-top: 10px;
+    --space-panel-padding-bottom: 16px;
+    --space-panel-section-offset: 16px;
+    --radius-control: var(--radius-md);
+    --radius-card: 12px;
+    --radius-button: var(--radius-md);
+    --border-width-default: 1px;
+    --duration-fast: 0.15s;
+    --ease-standard: ease;
+    --motion-lift-xs: -1px;
+    --gradient-surface-panel: linear-gradient(180deg, var(--color-surface-faint), var(--color-surface-clear));
+    --gradient-surface-interactive: linear-gradient(180deg, var(--color-surface-soft-5), var(--color-surface-soft-3));
+    --gradient-surface-tile: linear-gradient(180deg, var(--color-surface-soft-2), var(--color-surface-subtle)), var(--color-surface-subtle);
+    --gradient-surface-tile-hover: linear-gradient(180deg, var(--color-surface-soft-4), var(--color-surface-soft)), var(--color-surface-soft);
+    --gradient-surface-primary: linear-gradient(180deg, var(--color-primary-soft), var(--color-surface-soft)), var(--color-surface-soft);
+    --gradient-surface-primary-hover: linear-gradient(180deg, var(--color-primary-soft), var(--color-surface-soft-2)), var(--color-surface-soft-2);
+    --shadow-inset-soft: inset 0 1px 0 var(--color-surface-soft);
+    --shadow-inset-softer: inset 0 1px 0 var(--color-surface-soft-2);
+    --shadow-focus-primary: 0 0 0 1px var(--color-focus-ring);
+    --shadow-focus-danger: 0 0 0 1px var(--color-focus-ring);
 }
 
 /* =========================================================
