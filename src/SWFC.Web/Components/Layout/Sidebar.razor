@@ -1,3 +1,14 @@
+@using Microsoft.AspNetCore.Components
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject NavigationManager NavigationManager
+@inject SidebarConfigService SidebarConfigService
+@inject ICurrentUserService CurrentUserService
+@inject LocalizationTextProvider TextProvider
+
+@implements IDisposable
 @rendermode InteractiveServer
 
 <div class="app-sidebar">
@@ -6,7 +17,7 @@
     </div>
 
     <div class="app-sidebar__groups">
-        @foreach (var group in ModuleGroups)
+        @foreach (var group in _visibleModuleGroups)
         {
             var isOpen = OpenGroupKey == group.Key;
 
@@ -22,12 +33,18 @@
                     <div class="app-sidebar__tiles">
                         @foreach (var module in group.Modules)
                         {
+                            var isCurrent = IsCurrentRoute(module.Route);
+
                             if (module.IsActive)
                             {
-                                <a class="app-sidebar__tile app-sidebar__tile--active-module"
-                                   href="@module.Route">
+                                <a class="app-sidebar__tile @(isCurrent ? "app-sidebar__tile--current-module" : "app-sidebar__tile--available-module")"
+                                   href="@module.Route"
+                                   aria-current="@(isCurrent ? "page" : null)">
                                     <div class="app-sidebar__tile-icon">@module.Icon</div>
                                     <div class="app-sidebar__tile-title">@module.DisplayName</div>
+                                    <div class="app-sidebar__tile-status">
+                                        @(isCurrent ? _openedText : _activeText)
+                                    </div>
                                 </a>
                             }
                             else
@@ -36,7 +53,7 @@
                                      aria-disabled="true">
                                     <div class="app-sidebar__tile-icon">@module.Icon</div>
                                     <div class="app-sidebar__tile-title">@module.DisplayName</div>
-                                    <div class="app-sidebar__tile-status">ComingSoon</div>
+                                    <div class="app-sidebar__tile-status">@_disabledText</div>
                                 </div>
                             }
                         }
@@ -47,145 +64,252 @@
     </div>
 
     <div class="app-sidebar__footer">
+        @if (_securityContext.CanUseDeveloperMode)
+        {
+            <div class="app-sidebar__mode-card">
+                <div class="app-sidebar__mode-title">@_developerModeText</div>
+                <div class="app-sidebar__mode-text">
+                    @(_securityContext.IsDeveloperMode
+                        ? _developerModeVisibleText
+                        : _developerModeProtectedText)
+                </div>
+                <form method="post"
+                      action="@(_securityContext.IsDeveloperMode ? "/security/developer-mode/disable" : "/security/developer-mode/enable")"
+                      class="app-sidebar__mode-form">
+                    <AntiforgeryToken />
+                    <button type="submit"
+                            class="app-sidebar__mode-button @(_securityContext.IsDeveloperMode ? "app-sidebar__mode-button--active" : null)">
+                        @(_securityContext.IsDeveloperMode ? _developerModeDisableText : _developerModeEnableText)
+                    </button>
+                </form>
+            </div>
+        }
+
         <form method="post" action="/auth/logout" class="app-sidebar__logout-form">
+            <AntiforgeryToken />
             <button type="submit" class="app-sidebar__logout">
-                Abmelden
+                @_logoutText
             </button>
         </form>
     </div>
 </div>
 
 @code {
-    private string? OpenGroupKey;
+    private string _currentCultureName = LocalizationTextProvider.DefaultCultureName;
 
-    private IReadOnlyList<ModuleGroupItem> ModuleGroups => new[]
+    private string? OpenGroupKey = null;
+    private IReadOnlyList<SidebarGroupItem> _moduleGroups = Array.Empty<SidebarGroupItem>();
+    private IReadOnlyList<SidebarGroupItem> _visibleModuleGroups = Array.Empty<SidebarGroupItem>();
+    private SecurityContext _securityContext = new(string.Empty, string.Empty, string.Empty, string.Empty, false);
+
+    private string _openedText = "Opened";
+    private string _activeText = "Active";
+    private string _disabledText = "Disabled";
+    private string _logoutText = "Logout";
+    private string _developerModeText = "Developer Mode";
+    private string _developerModeVisibleText = "All modules and disabled areas are visible.";
+    private string _developerModeProtectedText = "Only the protected SuperAdmin can enable this mode.";
+    private string _developerModeEnableText = "Enable developer mode";
+    private string _developerModeDisableText = "Disable developer mode";
+
+    protected override async Task OnInitializedAsync()
     {
-        new ModuleGroupItem(
-            "system",
-            "System",
-            new[]
-            {
-                new ModuleTileItem("M100", "Modulübersicht", "▤", true, "/modules"),
-                new ModuleTileItem("M102", "Organisation", "◫", true, "/system/organization"),
-                new ModuleTileItem("M103", "Authentifizierung", "🔑", true, "/auth/change-password"),
-                new ModuleTileItem("M104", "Dokumente", "📂", false),
-                new ModuleTileItem("M105", "Konfiguration", "⚙", false),
-                new ModuleTileItem("M106", "Theme", "◌", false),
-                new ModuleTileItem("M800", "Security", "🛡", false)
-            }),
+        _moduleGroups = await SidebarConfigService.GetGroupsAsync();
+        await LoadSecurityContextAsync();
 
-        new ModuleGroupItem(
-            "business",
-            "Geschäft",
-            new[]
-            {
-                new ModuleTileItem("M201", "Assets", "▥", true, "/business/assets"),
-                new ModuleTileItem("M202", "Wartung", "🛠", false),
-                new ModuleTileItem("M203", "Prüfungen", "✓", false),
-                new ModuleTileItem("M204", "Lager", "▦", true, "/business/inventory"),
-                new ModuleTileItem("M205", "Energie", "⚡", false),
-                new ModuleTileItem("M206", "Einkauf", "🛒", false),
-                new ModuleTileItem("M207", "Qualität", "◉", false),
-                new ModuleTileItem("M208", "Sicherheit", "🔒", false),
-                new ModuleTileItem("M209", "Projekte", "⇲", false),
-                new ModuleTileItem("M210", "Kunden", "👥", false),
-                new ModuleTileItem("M211", "Analytik", "◔", false)
-            }),
+        _currentCultureName = string.IsNullOrWhiteSpace(_securityContext.PreferredCultureName)
+            ? LocalizationTextProvider.DefaultCultureName
+            : _securityContext.PreferredCultureName.Trim();
 
-        new ModuleGroupItem(
-            "presentation",
-            "Präsentation",
-            new[]
-            {
-                new ModuleTileItem("M301", "Persistenz", "💾", false),
-                new ModuleTileItem("M302", "Berichte", "▥", false),
-                new ModuleTileItem("M303", "Benachrichtigungen", "🔔", false),
-                new ModuleTileItem("M304", "Suche", "⌕", false),
-                new ModuleTileItem("M305", "AppShell", "◌", false)
-            }),
+        await LocalizeSidebarAsync();
+        ApplyVisibility();
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
 
-        new ModuleGroupItem(
-            "integration",
-            "Integration",
-            new[]
-            {
-                new ModuleTileItem("M401", "Excel / CSV", "⇩", false),
-                new ModuleTileItem("M402", "API", "⇄", false),
-                new ModuleTileItem("M403", "ERP", "▤", false),
-                new ModuleTileItem("M404", "IoT / Maschinen", "◌", false)
-            }),
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
 
-        new ModuleGroupItem(
-            "runtime",
-            "Laufzeit",
-            new[]
-            {
-                new ModuleTileItem("M501", "Planer", "◷", false),
-                new ModuleTileItem("M502", "Kommunikation", "✉", false),
-                new ModuleTileItem("M503", "Automatisierung", "⚙", false),
-                new ModuleTileItem("M504", "Updater", "↻", false),
-                new ModuleTileItem("M505", "Versionierung", "⌘", false)
-            }),
+    private async Task LoadSecurityContextAsync()
+    {
+        _securityContext = await CurrentUserService.GetSecurityContextAsync();
+    }
 
-        new ModuleGroupItem(
-            "planning",
-            "Planung",
-            new[]
-            {
-                new ModuleTileItem("M601", "Roadmap", "→", false),
-                new ModuleTileItem("M602", "Konzepte", "✎", false),
-                new ModuleTileItem("M603", "Prototypen", "◈", false)
-            }),
+    private async Task LocalizeSidebarAsync()
+    {
+        _openedText = await TextProvider.GetTextAsync("Sidebar.Status.Opened", _currentCultureName);
+        _activeText = await TextProvider.GetTextAsync("Sidebar.Status.Active", _currentCultureName);
+        _disabledText = await TextProvider.GetTextAsync("Sidebar.Status.Disabled", _currentCultureName);
+        _logoutText = await TextProvider.GetTextAsync("Sidebar.Logout", _currentCultureName);
+        _developerModeText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.Title", _currentCultureName);
+        _developerModeVisibleText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.VisibleText", _currentCultureName);
+        _developerModeProtectedText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.ProtectedText", _currentCultureName);
+        _developerModeEnableText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.Enable", _currentCultureName);
+        _developerModeDisableText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.Disable", _currentCultureName);
 
-        new ModuleGroupItem(
-            "support",
-            "Support",
-            new[]
-            {
-                new ModuleTileItem("M701", "BugTracking", "⚑", false),
-                new ModuleTileItem("M702", "ChangeRequests", "✎", false),
-                new ModuleTileItem("M703", "SupportCases", "☰", false)
-            }),
+        foreach (var group in _moduleGroups)
+        {
+            group.DisplayName = await TextProvider.GetTextAsync(group.DisplayNameKey, _currentCultureName);
 
-        new ModuleGroupItem(
-            "intelligence",
-            "Intelligenz",
-            new[]
+            foreach (var module in group.Modules)
             {
-                new ModuleTileItem("M901", "KI", "✦", false),
-                new ModuleTileItem("M902", "Monitoring", "◉", false),
-                new ModuleTileItem("M903", "Incident", "⚠", false),
-                new ModuleTileItem("M904", "Integrations-Governance", "⌘", false),
-                new ModuleTileItem("M905", "Regelwerk", "◇", false)
-            }),
+                module.DisplayName = await TextProvider.GetTextAsync(module.DisplayNameKey, _currentCultureName);
+            }
+        }
+    }
 
-        new ModuleGroupItem(
-            "platform",
-            "Plattform",
-            new[]
+    private void ApplyVisibility()
+    {
+        var visibleGroups = new List<SidebarGroupItem>();
+
+        foreach (var group in _moduleGroups)
+        {
+            var visibleModules = group.Modules
+                .Where(CanSeeModule)
+                .ToList();
+
+            if (visibleModules.Count == 0)
             {
-                new ModuleTileItem("M1001", "Plugin-System", "◫", false),
-                new ModuleTileItem("M1002", "Entwicklerplattform", "⌘", false),
-                new ModuleTileItem("M1003", "Erweiterungen", "⇄", false),
-                new ModuleTileItem("M1004", "Marktplatz", "▤", false),
-                new ModuleTileItem("M1005", "Externe Security", "🛡", false)
-            })
-    };
+                continue;
+            }
+
+            visibleGroups.Add(new SidebarGroupItem
+            {
+                Key = group.Key,
+                DisplayNameKey = group.DisplayNameKey,
+                DisplayName = group.DisplayName,
+                Modules = visibleModules
+            });
+        }
+
+        _visibleModuleGroups = visibleGroups;
+    }
+
+    private bool CanSeeModule(SidebarModuleItem module)
+    {
+        if (!_securityContext.IsAuthenticated)
+        {
+            return false;
+        }
+
+        if (_securityContext.IsDeveloperMode)
+        {
+            return true;
+        }
+
+        if (!module.IsActive)
+        {
+            return false;
+        }
+
+        return module.AccessMode switch
+        {
+            SidebarAccessModes.Authenticated => true,
+            _ => module.AccessModuleCodes.Any(_securityContext.HasModuleAccess)
+        };
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private bool IsCurrentRoute(string route)
+    {
+        if (string.IsNullOrWhiteSpace(route) || route == "#")
+        {
+            return false;
+        }
+
+        var currentPath = NormalizePath(NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
+        var targetPath = NormalizePath(route);
+
+        if (string.Equals(currentPath, targetPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return targetPath switch
+        {
+            "business/assets" => currentPath.StartsWith("business/assets", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("machines", StringComparison.OrdinalIgnoreCase),
+
+            "business/maintenance" => currentPath.StartsWith("business/maintenance", StringComparison.OrdinalIgnoreCase),
+
+            "business/inventory" => currentPath.StartsWith("business/inventory", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/inventory-item", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/location", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/stock-reservation", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/stock-movement", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/inventory-items", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/locations", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/stock-reservations", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("business/stock-movements", StringComparison.OrdinalIgnoreCase),
+
+            "business/energy" => currentPath.StartsWith("business/energy", StringComparison.OrdinalIgnoreCase),
+
+            "system/organization" => currentPath.StartsWith("system/organization", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("system/organization-units", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("system/users", StringComparison.OrdinalIgnoreCase),
+
+            "security/roles" => currentPath.StartsWith("security/roles", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("system/roles", StringComparison.OrdinalIgnoreCase),
+
+            "security/users" => currentPath.StartsWith("security/users", StringComparison.OrdinalIgnoreCase),
+
+            "security/audit" => currentPath.StartsWith("security/audit", StringComparison.OrdinalIgnoreCase),
+
+            "system/audit" => currentPath.StartsWith("system/audit", StringComparison.OrdinalIgnoreCase),
+
+            "auth/change-password" => currentPath.StartsWith("auth/change-password", StringComparison.OrdinalIgnoreCase),
+
+            "system/documents" => currentPath.StartsWith("system/documents", StringComparison.OrdinalIgnoreCase),
+
+            "system/configuration" => currentPath.StartsWith("system/configuration", StringComparison.OrdinalIgnoreCase),
+
+            "m100/theme" => currentPath.StartsWith("m100/theme", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/reports" => currentPath.StartsWith("presentation/reports", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/notifications" => currentPath.StartsWith("presentation/notifications", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/search" => currentPath.StartsWith("presentation/search", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/forms" => currentPath.StartsWith("presentation/forms", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/localization" => currentPath.StartsWith("presentation/localization", StringComparison.OrdinalIgnoreCase),
+
+            "presentation/personalization" => currentPath.StartsWith("presentation/personalization", StringComparison.OrdinalIgnoreCase),
+
+            "planning/modules" => currentPath.StartsWith("planning/modules", StringComparison.OrdinalIgnoreCase),
+
+            "dashboard" => string.IsNullOrWhiteSpace(currentPath)
+                || currentPath.StartsWith("dashboard", StringComparison.OrdinalIgnoreCase),
+
+            _ => false
+        };
+    }
+
+    private static string NormalizePath(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalized = value.Trim();
+
+        if (normalized.StartsWith("/"))
+        {
+            normalized = normalized[1..];
+        }
+
+        return normalized.TrimEnd('/');
+    }
 
     private void ToggleGroup(string groupKey)
     {
         OpenGroupKey = OpenGroupKey == groupKey ? null : groupKey;
     }
-
-    private sealed record ModuleGroupItem(
-        string Key,
-        string DisplayName,
-        IReadOnlyList<ModuleTileItem> Modules);
-
-    private sealed record ModuleTileItem(
-        string Code,
-        string DisplayName,
-        string Icon,
-        bool IsActive,
-        string Route = "#");
 }

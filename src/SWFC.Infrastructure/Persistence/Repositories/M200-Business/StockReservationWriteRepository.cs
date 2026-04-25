@@ -1,6 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M200_Business.M204_Inventory.Interfaces;
-using SWFC.Domain.M200_Business.M204_Inventory.Entities;
+using SWFC.Application.M200_Business.M204_Inventory.Items;
+using SWFC.Application.M200_Business.M204_Inventory.Locations;
+using SWFC.Application.M200_Business.M204_Inventory.Reservations;
+using SWFC.Application.M200_Business.M204_Inventory.Stock;
+using SWFC.Application.M200_Business.M204_Inventory.Shared;
+using SWFC.Domain.M200_Business.M204_Inventory.Items;
+using SWFC.Domain.M200_Business.M204_Inventory.Locations;
+using SWFC.Domain.M200_Business.M204_Inventory.Stock;
+using SWFC.Domain.M200_Business.M204_Inventory.Reservations;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M200_Business;
@@ -18,6 +25,7 @@ public sealed class StockReservationWriteRepository : IStockReservationWriteRepo
     {
         return _dbContext.Stocks
             .Include(x => x.Reservations)
+            .Include(x => x.Movements)
             .FirstOrDefaultAsync(x => x.Id == stockId, cancellationToken);
     }
 
@@ -27,13 +35,14 @@ public sealed class StockReservationWriteRepository : IStockReservationWriteRepo
             .FirstOrDefaultAsync(x => x.Id == reservationId, cancellationToken);
     }
 
-    public async Task AddAsync(StockReservation reservation, CancellationToken cancellationToken = default)
+    public Task AddAsync(StockReservation reservation, CancellationToken cancellationToken = default)
     {
-        await _dbContext.StockReservations.AddAsync(reservation, cancellationToken);
+        return _dbContext.StockReservations.AddAsync(reservation, cancellationToken).AsTask();
     }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+

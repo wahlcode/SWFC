@@ -1,0 +1,110 @@
+﻿.m205-page {
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.m205-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.m205-page__title-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.m205-page__eyebrow {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+.m205-page__subtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.m205-page__actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.m205-card {
+    background: var(--color-surface-2);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+}
+
+.m205-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .m205-table th,
+    .m205-table td {
+        padding: var(--space-sm);
+        border-bottom: 1px solid var(--color-border);
+        text-align: left;
+    }
+
+.m205-table__actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.m205-badge {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.m205-badge--active {
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+}
+
+.m205-badge--inactive {
+    background: var(--color-surface-4);
+}
+
+.m205-button {
+    background: var(--color-surface-3);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: var(--space-sm) var(--space-md);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    cursor: pointer;
+}
+
+    .m205-button:hover {
+        background: var(--color-surface-4);
+    }
+
+.m205-link {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+.m205-alert--error {
+    background: var(--color-danger-bg);
+    padding: var(--space-sm);
+}
+
+.m205-loading {
+    text-align: center;
+}
+
+

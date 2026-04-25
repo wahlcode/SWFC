@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M213",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7819579+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M213 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M213 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "T\u00C3\u0192\u00C2\u00A4tigkeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Arbeitszuordnungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zeitbezug",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Einsatzinformationen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Einsatzplanung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung zu Aufgaben",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "R\u00C3\u0192\u00C2\u00BCckmeldungen von T\u00C3\u0192\u00C2\u00A4tigkeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M209",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schichtbezug aus M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Option B \u00C3\u00A2\u00E2\u201A\u00AC\u00E2\u20AC\u0153 Einsatzplanung \u002B R\u00C3\u0192\u00C2\u00BCckmeldung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine HR- oder Gehaltslogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

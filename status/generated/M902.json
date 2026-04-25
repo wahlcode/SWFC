@@ -1,0 +1,71 @@
+{
+  "ModuleCode": "M902",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2476234+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M902 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M902 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Prognosen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Trends",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorhersagen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Energieverbrauch",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wartungsbedarf",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Produktionsentwicklung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorhersagen sind Empfehlungen, keine Entscheidungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Unsicherheiten ber\u00C3\u0192\u00C2\u00BCcksichtigen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

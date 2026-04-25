@@ -1,22 +1,142 @@
-@page "/theme-preview"
+@page "/m100/theme"
+@attribute [Authorize]
 
-<h3 class="theme-title">Theme Preview</h3>
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M100_System.M106_Theme.Models
+@using SWFC.Web.Pages.M100_System.M106_Theme.Services
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services
 
-<div class="theme-grid">
+@inject ICurrentUserService CurrentUserService
+@inject LocalizationTextProvider TextProvider
+@inject ThemeCatalogService ThemeCatalog
+@inject UserUiPreferenceService PreferenceService
 
-    <div class="theme-card">
-        <div class="theme-title">Offen</div>
-        <ThemeStatusBadge Status="Open" />
+<PageTitle>@_pageTitle</PageTitle>
+
+<section class="m106-theme">
+    <header class="m106-theme__header">
+        <div class="m106-theme__overline">M106</div>
+        <h1 class="m106-theme__title">@_pageTitle</h1>
+        <p class="m106-theme__description">@_subtitle</p>
+    </header>
+
+    <div class="m106-theme__active" data-swfc-theme="@_preferences.ThemeName">
+        <div>
+            <div class="m106-theme__active-label">@_activeThemeText</div>
+            <div class="m106-theme__active-value">@_activeThemeLabel</div>
+        </div>
+        <a class="m106-theme__preferences" href="/presentation/personalization">@_editPreferencesText</a>
     </div>
 
-    <div class="theme-card">
-        <div class="theme-title">In Arbeit</div>
-        <ThemeStatusBadge Status="InProgress" />
+    <div class="m106-theme__grid">
+        @foreach (var theme in _themeOptions)
+        {
+            <article class="m106-theme__card" data-swfc-theme="@theme.Name">
+                <div class="m106-theme__card-top">
+                    <h2>@GetThemeLabel(theme)</h2>
+                    @if (IsActiveTheme(theme.Name))
+                    {
+                        <span class="m106-theme__selected">@_selectedText</span>
+                    }
+                </div>
+                <p class="m106-theme__text">@GetThemeDescription(theme)</p>
+                <div class="m106-theme__swatches" aria-hidden="true">
+                    <span class="m106-theme__swatch m106-theme__swatch--primary"></span>
+                    <span class="m106-theme__swatch m106-theme__swatch--success"></span>
+                    <span class="m106-theme__swatch m106-theme__swatch--warning"></span>
+                    <span class="m106-theme__swatch m106-theme__swatch--danger"></span>
+                </div>
+            </article>
+        }
     </div>
 
-    <div class="theme-card">
-        <div class="theme-title">Erledigt</div>
-        <ThemeStatusBadge Status="Done" />
-    </div>
+    <div class="m106-theme__status-grid">
+        <div class="m106-theme__card">
+            <h2>@_statusOpenText</h2>
+            <ThemeStatusBadge Status="Open" />
+        </div>
 
-</div>
+        <div class="m106-theme__card">
+            <h2>@_statusProgressText</h2>
+            <ThemeStatusBadge Status="InProgress" />
+        </div>
+
+        <div class="m106-theme__card">
+            <h2>@_statusDoneText</h2>
+            <ThemeStatusBadge Status="Done" />
+        </div>
+    </div>
+</section>
+
+@code {
+    private string _cultureName = LocalizationTextProvider.DefaultCultureName;
+    private UserUiPreferences _preferences = UserUiPreferences.Default;
+    private IReadOnlyList<ThemeOption> _themeOptions = Array.Empty<ThemeOption>();
+    private readonly Dictionary<string, string> _themeLabels = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _themeDescriptions = new(StringComparer.OrdinalIgnoreCase);
+
+    private string _pageTitle = "M106 Theme";
+    private string _subtitle = "Theme tokens and user theme";
+    private string _activeThemeText = "Active theme";
+    private string _activeThemeLabel = ThemeCatalogService.DefaultThemeName;
+    private string _editPreferencesText = "Edit preferences";
+    private string _selectedText = "Selected";
+    private string _statusOpenText = "Open";
+    private string _statusProgressText = "In progress";
+    private string _statusDoneText = "Done";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var securityContext = await CurrentUserService.GetSecurityContextAsync();
+        _cultureName = string.IsNullOrWhiteSpace(securityContext.PreferredCultureName)
+            ? LocalizationTextProvider.DefaultCultureName
+            : securityContext.PreferredCultureName.Trim();
+
+        _preferences = await PreferenceService.GetCurrentAsync();
+        _themeOptions = ThemeCatalog.GetThemeOptions();
+
+        await LocalizeAsync();
+        _activeThemeLabel = GetThemeLabel(
+            _themeOptions.FirstOrDefault(option => IsActiveTheme(option.Name))
+            ?? _themeOptions.First());
+    }
+
+    private async Task LocalizeAsync()
+    {
+        _pageTitle = await TextProvider.GetTextAsync("Theme.Title", _cultureName);
+        _subtitle = await TextProvider.GetTextAsync("Theme.Subtitle", _cultureName);
+        _activeThemeText = await TextProvider.GetTextAsync("Theme.ActiveTheme", _cultureName);
+        _editPreferencesText = await TextProvider.GetTextAsync("Forms.EditPreferences", _cultureName);
+        _selectedText = await TextProvider.GetTextAsync("Theme.Selected", _cultureName);
+        _statusOpenText = await TextProvider.GetTextAsync("Roadmap.Status.Open", _cultureName);
+        _statusProgressText = await TextProvider.GetTextAsync("Roadmap.Status.InProgress", _cultureName);
+        _statusDoneText = await TextProvider.GetTextAsync("Roadmap.StatusBadge.Done", _cultureName);
+
+        foreach (var theme in _themeOptions)
+        {
+            _themeLabels[theme.Name] = await TextProvider.GetTextAsync(theme.DisplayNameKey, _cultureName);
+            _themeDescriptions[theme.Name] = await TextProvider.GetTextAsync(theme.DescriptionKey, _cultureName);
+        }
+    }
+
+    private bool IsActiveTheme(string themeName)
+    {
+        return string.Equals(_preferences.ThemeName, themeName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string GetThemeLabel(ThemeOption theme)
+    {
+        return _themeLabels.TryGetValue(theme.Name, out var label)
+            ? label
+            : theme.Name;
+    }
+
+    private string GetThemeDescription(ThemeOption theme)
+    {
+        return _themeDescriptions.TryGetValue(theme.Name, out var description)
+            ? description
+            : theme.DescriptionKey;
+    }
+}

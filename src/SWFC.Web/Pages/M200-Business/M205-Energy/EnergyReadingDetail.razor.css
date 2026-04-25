@@ -1,0 +1,134 @@
+﻿.m205-detail {
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.m205-detail__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.m205-detail__eyebrow {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+.m205-detail__subtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.m205-detail__actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.m205-detail__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-lg);
+}
+
+.m205-card {
+    background: var(--color-surface-2);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+}
+
+.m205-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+}
+
+.m205-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.m205-form-field--full {
+    grid-column: span 2;
+}
+
+.m205-input {
+    padding: var(--space-sm);
+    background: var(--color-surface-3);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.m205-textarea {
+    min-height: 88px;
+}
+
+.m205-actions {
+    margin-top: var(--space-md);
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.m205-button {
+    background: var(--color-primary);
+    color: white;
+    padding: 6px 12px;
+    text-decoration: none;
+    border: 0;
+}
+
+.m205-button-secondary {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 6px 12px;
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+.m205-summary {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .m205-summary li {
+        margin-bottom: 6px;
+    }
+
+.m205-alert--error {
+    background: var(--color-danger-bg);
+    padding: var(--space-sm);
+}
+
+.m205-alert--success {
+    background: var(--color-success-bg);
+    padding: var(--space-sm);
+}
+
+.m205-loading {
+    text-align: center;
+}
+
+@media (max-width: 1100px) {
+    .m205-detail__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .m205-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .m205-form-field--full {
+        grid-column: span 1;
+    }
+}
+
+

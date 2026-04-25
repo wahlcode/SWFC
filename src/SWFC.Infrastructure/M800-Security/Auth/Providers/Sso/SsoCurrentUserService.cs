@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity;
 using SWFC.Infrastructure.Services.Security;
 
-namespace SWFC.Infrastructure.M800_Security.Auth.Providers.Sso;
+namespace SWFC.Infrastructure.M100_System.M103_Authentication.Providers.Sso;
 
 public sealed class SsoCurrentUserService : ICurrentUserService
 {
@@ -24,32 +24,39 @@ public sealed class SsoCurrentUserService : ICurrentUserService
 
         if (principal?.Identity?.IsAuthenticated != true)
         {
-            return Task.FromResult(
-                new SecurityContext(
-                    userId: string.Empty,
-                    identityKey: string.Empty,
-                    username: string.Empty,
-                    displayName: string.Empty,
-                    isAuthenticated: false,
-                    roles: Array.Empty<string>(),
-                    permissions: Array.Empty<string>()));
+            return _securityContextResolver.ResolveAsync(
+                userId: string.Empty,
+                identityKey: string.Empty,
+                fallbackUsername: string.Empty,
+                isAuthenticated: false,
+                isDeveloperMode: false,
+                cancellationToken: cancellationToken);
         }
 
+        var userId =
+            principal.FindFirstValue(ClaimTypes.NameIdentifier) ??
+            principal.FindFirstValue("sub") ??
+            string.Empty;
+
         var identityKey =
-            principal.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? principal.FindFirstValue("sub")
-            ?? principal.Identity?.Name
-            ?? string.Empty;
+            principal.FindFirstValue(SecurityClaimTypes.IdentityKey) ??
+            principal.FindFirstValue(ClaimTypes.Email) ??
+            principal.FindFirstValue(ClaimTypes.Upn) ??
+            principal.FindFirstValue(ClaimTypes.NameIdentifier) ??
+            string.Empty;
 
         var fallbackUsername =
-            principal.Identity?.Name
-            ?? principal.FindFirstValue(ClaimTypes.Name)
-            ?? identityKey;
+            principal.FindFirstValue(ClaimTypes.Name) ??
+            principal.Identity?.Name ??
+            identityKey;
 
         return _securityContextResolver.ResolveAsync(
+            userId: userId,
             identityKey: identityKey,
             fallbackUsername: fallbackUsername,
             isAuthenticated: true,
+            isDeveloperMode: false,
             cancellationToken: cancellationToken);
     }
 }
+

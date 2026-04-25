@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M106",
+  "ScorePercent": 58,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.43587+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "3 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Theme",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Farben",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Statusfarben",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Layout Tokens",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Dark Mode",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Benutzer-Theme",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

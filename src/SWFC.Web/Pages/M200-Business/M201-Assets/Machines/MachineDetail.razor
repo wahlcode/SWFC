@@ -1,0 +1,298 @@
+@page "/machines/new"
+@page "/machines/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M201_Assets.Machines
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components
+
+@inject IExecutionPipeline<GetVisibleMachineByIdQuery, MachineDetailsDto> GetMachinePipeline
+@inject IExecutionPipeline<CreateMachineCommand, Guid> CreateMachinePipeline
+@inject IExecutionPipeline<UpdateMachineCommand, bool> UpdateMachinePipeline
+@inject IExecutionPipeline<DeactivateMachineCommand, bool> DeactivateMachinePipeline
+@inject IExecutionPipeline<GetMachineSelectionOptionsQuery, IReadOnlyList<MachineSelectionOptionDto>> MachineOptionsPipeline
+@inject IExecutionPipeline<GetOrganizationUnitSelectionOptionsQuery, IReadOnlyList<OrganizationUnitSelectionOptionDto>> OrganizationUnitOptionsPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m201-machine-detail">
+
+    <div class="m201-machine-detail__header">
+        <div class="m201-machine-detail__title-block">
+            <h1>@(IsNew ? "Neue Machine" : "Machine Detail")</h1>
+            <p class="m201-machine-detail__subtitle">
+                @(IsNew
+                    ? "Neue Maschine strukturiert anlegen."
+                    : "Stammdaten, Komponenten und Sichtbarkeit verwalten.")
+            </p>
+        </div>
+
+        <div class="m201-machine-detail__actions">
+            <a href="/machines" class="m201-link">Zurück</a>
+
+            @if (!IsNew)
+             {
+                 <button class="m201-button m201-button--danger"
+                         @onclick="DeactivateAsync"
+                         disabled="@_isBusy">
+                     Löschen
+                 </button>
+             }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m201-alert m201-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m201-alert m201-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m201-loading">Lade Maschine...</div>
+    }
+    else
+    {
+        <div class="m201-machine-detail__layout">
+            <div class="m201-card">
+                <MachineEditorForm Model="_model"
+                                   MachineOptions="_machineOptions"
+                                   OrganizationUnitOptions="_organizationUnitOptions"
+                                   IsBusy="_isBusy"
+                                   OnSave="SaveAsync" />
+            </div>
+
+            <div class="m201-machine-detail__side-column">
+                <div class="m201-card">
+                    @if (_machine is null)
+                    {
+                        <div class="m201-machine-summary">
+                            <div class="m201-machine-summary__empty">Neue Maschine</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="m201-machine-summary">
+                            <div class="m201-machine-summary__item">
+                                <span class="m201-machine-summary__label">Name</span>
+                                <strong>@_machine.Name</strong>
+                            </div>
+
+                            <div class="m201-machine-summary__item">
+                                <span class="m201-machine-summary__label">Inventarnummer</span>
+                                <strong>@_machine.InventoryNumber</strong>
+                            </div>
+
+                            <div class="m201-machine-summary__item">
+                                <span class="m201-machine-summary__label">Status</span>
+                                <strong>@_machine.Status</strong>
+                            </div>
+
+                            <div class="m201-machine-summary__item">
+                                <span class="m201-machine-summary__label">Standort</span>
+                                <strong>@DisplayOrDash(_machine.Location)</strong>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (!IsNew && Id.HasValue)
+        {
+            <div class="m201-card">
+                <MachineComponentsSection MachineId="Id.Value" />
+            </div>
+        }
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _error;
+    private string? _success;
+
+    private MachineDetailsDto? _machine;
+    private IReadOnlyList<MachineSelectionOptionDto> _machineOptions = [];
+    private IReadOnlyList<OrganizationUnitSelectionOptionDto> _organizationUnitOptions = [];
+    private MachineEditorModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _error = null;
+        _success = null;
+        _isLoading = true;
+
+        var machineOptionsResult = await MachineOptionsPipeline.ExecuteAsync(
+            new GetMachineSelectionOptionsQuery(Id));
+
+        if (machineOptionsResult.IsSuccess && machineOptionsResult.Value is not null)
+        {
+            _machineOptions = machineOptionsResult.Value;
+        }
+
+        var organizationUnitOptionsResult = await OrganizationUnitOptionsPipeline.ExecuteAsync(
+            new GetOrganizationUnitSelectionOptionsQuery());
+
+        if (organizationUnitOptionsResult.IsSuccess && organizationUnitOptionsResult.Value is not null)
+        {
+            _organizationUnitOptions = organizationUnitOptionsResult.Value;
+        }
+
+        if (IsNew)
+        {
+            _machine = null;
+            _model = new MachineEditorModel();
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetMachinePipeline.ExecuteAsync(new GetVisibleMachineByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _machine = result.Value;
+            ResetModel();
+        }
+        else
+        {
+            _error = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ResetModel()
+    {
+        if (_machine is null)
+        {
+            return;
+        }
+
+        _model = new MachineEditorModel
+        {
+            Name = _machine.Name,
+            InventoryNumber = _machine.InventoryNumber,
+            Location = _machine.Location,
+            Status = _machine.Status,
+            Manufacturer = _machine.Manufacturer,
+            MachineModel = _machine.Model,
+            SerialNumber = _machine.SerialNumber,
+            Description = _machine.Description,
+            ParentMachineId = _machine.ParentMachineId,
+            OrganizationUnitId = _machine.OrganizationUnitId
+        };
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _success = null;
+        _isBusy = true;
+
+        try
+        {
+            if (IsNew)
+            {
+                var createResult = await CreateMachinePipeline.ExecuteAsync(
+                    new CreateMachineCommand(
+                        _model.Name,
+                        _model.InventoryNumber,
+                        _model.Location,
+                        _model.Status,
+                        _model.Manufacturer,
+                        _model.MachineModel,
+                        _model.SerialNumber,
+                        _model.Description,
+                        _model.ParentMachineId,
+                        _model.OrganizationUnitId,
+                        _model.Reason));
+
+                if (!createResult.IsSuccess)
+                {
+                    _error = createResult.Error?.Message;
+                    return;
+                }
+
+                NavigationManager.NavigateTo($"/machines/{createResult.Value}");
+                return;
+            }
+
+            var updateResult = await UpdateMachinePipeline.ExecuteAsync(
+                new UpdateMachineCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.InventoryNumber,
+                    _model.Location,
+                    _model.Status,
+                    _model.Manufacturer,
+                    _model.MachineModel,
+                    _model.SerialNumber,
+                    _model.Description,
+                    _model.ParentMachineId,
+                    _model.OrganizationUnitId,
+                    _model.Reason));
+
+            if (!updateResult.IsSuccess)
+            {
+                _error = updateResult.Error?.Message;
+                return;
+            }
+
+            _success = "Gespeichert";
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private async Task DeactivateAsync()
+    {
+        if (Id is null)
+        {
+            return;
+        }
+
+        _error = null;
+        _success = null;
+        _isBusy = true;
+
+        try
+        {
+            var result = await DeactivateMachinePipeline.ExecuteAsync(
+                new DeactivateMachineCommand(Id.Value, _model.Reason));
+
+            if (!result.IsSuccess)
+            {
+                _error = result.Error?.Message;
+                return;
+            }
+
+            NavigationManager.NavigateTo("/machines");
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+
+
+

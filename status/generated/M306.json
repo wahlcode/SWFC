@@ -1,0 +1,39 @@
+{
+  "ModuleCode": "M306",
+  "ScorePercent": 100,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8444431+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
+  "WorkItems": [
+    {
+      "Title": "UI Text Resources",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Culture \u0026 Formatting",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Language Selection",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Validation \u0026 Messages Localization",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Navigation \u0026 Module Labels",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

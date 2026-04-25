@@ -1,0 +1,86 @@
+{
+  "ModuleCode": "M605",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9384524+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M605 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M605 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Naming-Konventionen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "UI-Richtlinien",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "API-Regeln",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Datenstandards",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Strukturvorgaben",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Benennung von Modulen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "UI-Aufbau",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "API-Struktur",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Datenformate",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Standards einhalten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abweichungen begr\u00C3\u0192\u00C2\u00BCnden",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

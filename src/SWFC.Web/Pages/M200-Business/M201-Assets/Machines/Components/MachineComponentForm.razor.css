@@ -1,0 +1,17 @@
+﻿.m201-component-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.m201-component-form__header h3 {
+    margin: 0;
+}
+
+.m201-component-form__actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+

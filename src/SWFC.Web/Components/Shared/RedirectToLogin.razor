@@ -1,14 +1,14 @@
 @inject NavigationManager NavigationManager
 
-@code
-{
+@code {
     protected override void OnAfterRender(bool firstRender)
     {
         if (!firstRender)
-        {
             return;
-        }
 
-        NavigationManager.NavigateTo("/auth/login", forceLoad: true);
+        var returnUrl = Uri.EscapeDataString(NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
+        NavigationManager.NavigateTo($"/auth/login?returnUrl=/{returnUrl}", forceLoad: true);
     }
 }
+
+

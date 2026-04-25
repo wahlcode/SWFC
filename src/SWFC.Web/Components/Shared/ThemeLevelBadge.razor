@@ -1,19 +1,44 @@
-<span class="@CssClass">@Label</span>
+<span class="@BuildClass()">
+    @BuildLabel()
+</span>
 
 @code {
-    [Parameter] public string Level { get; set; } = "Core";
+    [Parameter]
+    public string? Level { get; set; }
 
-    private string CssClass => Level switch
+    private string BuildClass()
     {
-        "OptionalCore" => "theme-level theme-level--optional",
-        "Extension" => "theme-level theme-level--extension",
-        _ => "theme-level theme-level--core"
-    };
+        var baseClass = "theme-level";
+        var normalized = Normalize(Level);
 
-    private string Label => Level switch
+        var modifier = normalized switch
+        {
+            "core" => "theme-level--core",
+            "optionalcore" => "theme-level--optional",
+            "optional" => "theme-level--optional",
+            "extension" => "theme-level--extension",
+            _ => string.Empty
+        };
+
+        return string.IsNullOrWhiteSpace(modifier)
+            ? baseClass
+            : $"{baseClass} {modifier}";
+    }
+
+    private string BuildLabel()
     {
-        "OptionalCore" => "Optional Core",
-        "Extension" => "Extension",
-        _ => "Core"
-    };
+        var normalized = Normalize(Level);
+
+        return normalized switch
+        {
+            "" => "Unbekannt",
+            "optionalcore" => "Optionaler Kern",
+            "optional" => "Optionaler Kern",
+            "extension" => "Erweiterung",
+            _ => "Kern"
+        };
+    }
+
+    private static string Normalize(string? value)
+        => (value ?? string.Empty).Trim().ToLowerInvariant();
 }

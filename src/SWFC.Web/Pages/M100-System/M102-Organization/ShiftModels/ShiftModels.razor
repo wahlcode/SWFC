@@ -1,0 +1,255 @@
+@page "/system/shift-models"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.ShiftModels
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetShiftModelsQuery, IReadOnlyList<ShiftModelListItem>> GetShiftModelsPipeline
+@inject IExecutionPipeline<CreateShiftModelCommand, Guid> CreateShiftModelPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou">
+
+    <div class="m100-ou__header">
+        <div>
+            <h1>Shift Models</h1>
+            <p>Overview of all shift models</p>
+        </div>
+
+        <div class="m100-ou__actions">
+            <input class="m100-input"
+                   placeholder="Search name or code"
+                   value="@_searchText"
+                   @oninput="OnSearchChanged" />
+
+            <button class="m100-button" @onclick="OpenCreatePanel">
+                New shift model
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    <div class="m100-ou__layout">
+
+        <div class="m100-card">
+
+            @if (_isLoading)
+            {
+                <div class="m100-loading">Loading shift models...</div>
+            }
+            else if (_filteredItems.Count == 0)
+            {
+                <div class="m100-empty">No shift models found</div>
+            }
+            else
+            {
+                <table class="m100-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Active</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in _filteredItems)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Code</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.Description) ? "-" : item.Description)</td>
+                                <td>@(item.IsActive ? "Yes" : "No")</td>
+                                <td class="m100-table__actions">
+                                    <a href="@($"/system/shift-models/{item.Id}")">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+
+        @if (_showCreatePanel)
+        {
+            <div class="m100-card m100-ou__create">
+
+                <h3>New shift model</h3>
+
+                <input class="m100-input"
+                       placeholder="Name"
+                       @bind="_createModel.Name" />
+
+                <input class="m100-input"
+                       placeholder="Code"
+                       @bind="_createModel.Code" />
+
+                <textarea class="m100-textarea"
+                          placeholder="Description"
+                          @bind="_createModel.Description"></textarea>
+
+                <textarea class="m100-textarea"
+                          placeholder="Reason"
+                          @bind="_createModel.Reason"></textarea>
+
+                 <div class="m100-actions">
+                     <button class="m100-button"
+                             @onclick="CreateAsync"
+                             disabled="@_isSubmitting">
+                         Save
+                     </button>
+
+                    <button class="m100-button m100-button--secondary"
+                            @onclick="CloseCreatePanel">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private bool _showCreatePanel;
+
+    private string? _error;
+    private string? _success;
+    private string _searchText = string.Empty;
+
+    private IReadOnlyList<ShiftModelListItem> _items = [];
+    private List<ShiftModelListItem> _filteredItems = [];
+
+    private CreateShiftModelInputModel _createModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            var result = await GetShiftModelsPipeline.ExecuteAsync(new GetShiftModelsQuery());
+
+            if (!result.IsSuccess || result.Value is null)
+            {
+                _error = result.Error.Message;
+                return;
+            }
+
+            _items = result.Value;
+            ApplyFilter();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<ShiftModelListItem> query = _items;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var s = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.Name.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                x.Code.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrWhiteSpace(x.Description) && x.Description.Contains(s, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        _filteredItems = query
+            .OrderBy(x => x.Name)
+            .ThenBy(x => x.Code)
+            .ToList();
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? string.Empty;
+        ApplyFilter();
+    }
+
+    private void OpenCreatePanel()
+    {
+        _createModel = new();
+        _showCreatePanel = true;
+        _error = null;
+        _success = null;
+    }
+
+    private void CloseCreatePanel()
+    {
+        if (!_isSubmitting)
+        {
+            _showCreatePanel = false;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        _error = null;
+        _success = null;
+        _isSubmitting = true;
+
+        try
+        {
+            var result = await CreateShiftModelPipeline.ExecuteAsync(
+                new CreateShiftModelCommand(
+                    _createModel.Name,
+                    _createModel.Code,
+                    _createModel.Description,
+                    _createModel.Reason));
+
+            if (!result.IsSuccess)
+            {
+                _error = result.Error.Message;
+                return;
+            }
+
+            _success = "Shift model created";
+            _showCreatePanel = false;
+
+            await LoadAsync();
+
+            NavigationManager.NavigateTo($"/system/shift-models/{result.Value}");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private sealed class CreateShiftModelInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string Reason { get; set; } = string.Empty;
+    }
+}

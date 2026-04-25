@@ -1,0 +1,73 @@
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<div class="roadmap-module-links">
+    @foreach (var moduleCode in ModuleCodes)
+    {
+        var module = FindModule(moduleCode);
+
+        <a class="roadmap-module-link" href="/planning/modules">
+            <span class="roadmap-module-link__code">@moduleCode</span>
+            <span class="roadmap-module-link__title">@(module?.Title ?? _moduleFallbackText)</span>
+
+            @if (ShowStatus && module is not null)
+            {
+                <span class="roadmap-module-link__status">@FormatStatus(module.Status)</span>
+            }
+        </a>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<string> ModuleCodes { get; set; } = Array.Empty<string>();
+
+    [Parameter]
+    public IReadOnlyList<ModuleOverviewModuleDto> Modules { get; set; } = Array.Empty<ModuleOverviewModuleDto>();
+
+    [Parameter]
+    public bool ShowStatus { get; set; }
+
+    private string _moduleFallbackText = "Module";
+    private string _statusOpenText = "Open";
+    private string _statusInProgressText = "In progress";
+    private string _statusCoreCompleteText = "Core complete";
+    private string _statusExtendedCompleteText = "Extended complete";
+    private string _statusFullCompleteText = "Fully complete";
+    private string _statusUnknownText = "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _moduleFallbackText = await TextProvider.GetTextAsync("Roadmap.ModuleFallback", culture);
+        _statusOpenText = await TextProvider.GetTextAsync("Roadmap.Status.Open", culture);
+        _statusInProgressText = await TextProvider.GetTextAsync("Roadmap.Status.InProgress", culture);
+        _statusCoreCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.CoreComplete", culture);
+        _statusExtendedCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.ExtendedComplete", culture);
+        _statusFullCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.FullComplete", culture);
+        _statusUnknownText = await TextProvider.GetTextAsync("Roadmap.Status.Unknown", culture);
+    }
+
+    private ModuleOverviewModuleDto? FindModule(string code)
+    {
+        return Modules.FirstOrDefault(x => string.Equals(x.Code, code, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string FormatStatus(string? status)
+    {
+        var normalized = (status ?? string.Empty).Trim().Replace(" ", string.Empty).ToLowerInvariant();
+
+        return normalized switch
+        {
+            "open" => _statusOpenText,
+            "inprogress" => _statusInProgressText,
+            "corecomplete" => _statusCoreCompleteText,
+            "extendedcomplete" => _statusExtendedCompleteText,
+            "fullcomplete" => _statusFullCompleteText,
+            _ => string.IsNullOrWhiteSpace(status) ? _statusUnknownText : status!
+        };
+    }
+}

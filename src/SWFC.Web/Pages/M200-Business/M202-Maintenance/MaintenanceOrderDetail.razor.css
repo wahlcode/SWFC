@@ -1,0 +1,11 @@
+﻿.m202-detail-page {
+    display: grid;
+    gap: 1rem;
+}
+
+.m202-detail-page__header {
+    display: grid;
+    gap: 0.35rem;
+}
+
+

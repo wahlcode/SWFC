@@ -1,0 +1,56 @@
+{
+  "ModuleCode": "M701",
+  "ScorePercent": 25,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9520946+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M701 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "6 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Bugs",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Fehlerbeschreibungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Reproduzierbarkeit",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Status (offen / in Arbeit / gel\u00C3\u0192\u00C2\u00B6st)",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Nachvollziehbarkeit jedes Bugs",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Keine Vermischung mit Supportf\u00C3\u0192\u00C2\u00A4llen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+@page "/system/cost-centers/{Id:guid?}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.CostCenters
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetCostCenterByIdQuery, CostCenterDetailsDto> GetCostCenterPipeline
+@inject IExecutionPipeline<GetCostCentersQuery, IReadOnlyList<CostCenterListItem>> GetCostCentersPipeline
+@inject IExecutionPipeline<CreateCostCenterCommand, Guid> CreateCostCenterPipeline
+@inject IExecutionPipeline<UpdateCostCenterCommand, bool> UpdateCostCenterPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou-detail">
+
+    <div class="m100-ou-detail__header">
+        <h1>@(IsNew ? "New cost center" : "Edit cost center")</h1>
+
+        <a href="/system/cost-centers" class="m100-link">
+            Back
+        </a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m100-loading">Loading data...</div>
+    }
+    else
+    {
+        <div class="m100-ou-detail__layout">
+
+            <div class="m100-card">
+
+                <input class="m100-input"
+                       placeholder="Name"
+                       @bind="_model.Name" />
+
+                <input class="m100-input"
+                       placeholder="Code"
+                       @bind="_model.Code" />
+
+                <select class="m100-input"
+                        @bind="_model.ParentId">
+                    <option value="">-- no parent --</option>
+                    @foreach (var item in _parentOptions)
+                    {
+                        <option value="@item.Id">@item.Name (@item.Code)</option>
+                    }
+                </select>
+
+                <label class="m100-checkbox">
+                    <input type="checkbox" @bind="_model.IsActive" />
+                    Active
+                </label>
+
+                <textarea class="m100-textarea"
+                          placeholder="Reason"
+                          @bind="_model.Reason"></textarea>
+
+                <button class="m100-button"
+                        @onclick="SaveAsync"
+                        disabled="@_isBusy">
+                    Save
+                </button>
+
+            </div>
+
+            <div class="m100-card m100-ou-detail__side">
+
+                @if (IsNew)
+                {
+                    <div class="m100-muted">New cost center</div>
+                }
+                else if (_costCenter is not null)
+                {
+                    <ul class="m100-list">
+                        <li><strong>Name:</strong> @_costCenter.Name</li>
+                        <li><strong>Code:</strong> @_costCenter.Code</li>
+                        <li><strong>Parent:</strong> @BuildParentLabel(_costCenter)</li>
+                        <li><strong>Active:</strong> @(_costCenter.IsActive ? "Yes" : "No")</li>
+                    </ul>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _error;
+    private string? _success;
+
+    private CostCenterDetailsDto? _costCenter;
+    private IReadOnlyList<CostCenterListItem> _allItems = [];
+    private List<CostCenterListItem> _parentOptions = [];
+    private CostCenterInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+        _success = null;
+
+        var itemsResult = await GetCostCentersPipeline.ExecuteAsync(new GetCostCentersQuery());
+
+        if (itemsResult.IsSuccess && itemsResult.Value is not null)
+        {
+            _allItems = itemsResult.Value;
+            _parentOptions = _allItems
+                .Where(x => !Id.HasValue || x.Id != Id.Value)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Code)
+                .ToList();
+        }
+        else if (!itemsResult.IsSuccess)
+        {
+            _error = itemsResult.Error?.Message ?? "Cost centers could not be loaded.";
+        }
+
+        if (IsNew)
+        {
+            _costCenter = null;
+            _model = new CostCenterInputModel();
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetCostCenterPipeline.ExecuteAsync(new GetCostCenterByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _costCenter = result.Value;
+            _model = new CostCenterInputModel
+            {
+                Name = result.Value.Name,
+                Code = result.Value.Code,
+                ParentId = result.Value.ParentId,
+                IsActive = result.Value.IsActive,
+                Reason = string.Empty
+            };
+        }
+        else
+        {
+            _error = result.Error?.Message ?? "Could not be loaded.";
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _success = null;
+        _isBusy = true;
+
+        try
+        {
+            if (IsNew)
+            {
+                var createResult = await CreateCostCenterPipeline.ExecuteAsync(
+                    new CreateCostCenterCommand(
+                        _model.Name,
+                        _model.Code,
+                        _model.ParentId,
+                        _model.Reason));
+
+                if (!createResult.IsSuccess)
+                {
+                    _error = createResult.Error?.Message;
+                    return;
+                }
+
+                _success = "Created";
+                NavigationManager.NavigateTo($"/system/cost-centers/{createResult.Value}");
+                return;
+            }
+
+            var updateResult = await UpdateCostCenterPipeline.ExecuteAsync(
+                new UpdateCostCenterCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.Code,
+                    _model.ParentId,
+                    _model.IsActive,
+                    _model.Reason));
+
+            if (!updateResult.IsSuccess)
+            {
+                _error = updateResult.Error?.Message;
+                return;
+            }
+
+            _success = "Updated";
+            await LoadAsync();
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string BuildParentLabel(CostCenterDetailsDto item)
+    {
+        if (!string.IsNullOrWhiteSpace(item.ParentName) && !string.IsNullOrWhiteSpace(item.ParentCode))
+        {
+            return $"{item.ParentName} ({item.ParentCode})";
+        }
+
+        return item.ParentName ?? item.ParentCode ?? "-";
+    }
+
+    private sealed class CostCenterInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public Guid? ParentId { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string Reason { get; set; } = string.Empty;
+    }
+}

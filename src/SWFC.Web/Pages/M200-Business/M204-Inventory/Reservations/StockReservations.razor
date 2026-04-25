@@ -1,0 +1,153 @@
+@page "/business/stock-reservations"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Components
+@using SWFC.Application.M200_Business.M204_Inventory.Reservations
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M204_Inventory.Reservations
+
+@inject IExecutionPipeline<GetStockReservationsQuery, IReadOnlyList<StockReservationListItem>> Pipeline
+
+<section class="m204-list-page">
+
+    <div class="m204-header">
+        <div>
+            <h1>Stock Reservations</h1>
+            <p class="m204-subtitle">
+                Reservierungen anzeigen und verwalten.
+            </p>
+        </div>
+
+        <a href="@CreateHref" class="m204-button">
+            Reservierung anlegen
+        </a>
+    </div>
+
+    @if (HasAssetFilter)
+    {
+        <div class="m204-alert m204-alert--info">
+            Gefiltert für Asset: @TargetReference
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">
+            @_errorMessage
+        </div>
+    }
+
+    <div class="m204-card">
+
+        @if (_isLoading)
+        {
+            <div class="m204-loading">Lade Reservierungen...</div>
+        }
+        else if (FilteredReservations.Count == 0)
+        {
+            <p>Keine Reservierungen gefunden.</p>
+        }
+        else
+        {
+            <table class="m204-table">
+
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Location</th>
+                        <th>Bin</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Target</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var r in FilteredReservations)
+                    {
+                        <tr>
+                            <td>@r.InventoryItemName</td>
+
+                            <td>
+                                @r.LocationName (@r.LocationCode)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(r.Bin) ? "-" : r.Bin)
+                            </td>
+
+                            <td>@r.Quantity</td>
+
+                            <td>
+                                <span class="m204-status">@r.Status</span>
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(r.TargetReference) ? "-" : r.TargetReference)
+                            </td>
+
+                            <td class="m204-table-actions">
+                                <a href="@($"/business/stock-reservation/{r.Id}")"
+                                   class="m204-link">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "targetType")]
+    public string? TargetType { get; set; }
+
+    [SupplyParameterFromQuery(Name = "targetReference")]
+    public string? TargetReference { get; set; }
+
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private IReadOnlyList<StockReservationListItem> _reservations = [];
+
+    private bool HasAssetFilter =>
+        string.Equals(TargetType, InventoryTargetType.Asset.ToString(), StringComparison.OrdinalIgnoreCase)
+        && !string.IsNullOrWhiteSpace(TargetReference);
+
+    private IReadOnlyList<StockReservationListItem> FilteredReservations =>
+        HasAssetFilter
+            ? _reservations.Where(x =>
+                x.TargetType.HasValue &&
+                x.TargetType.Value == (int)InventoryTargetType.Asset &&
+                string.Equals(x.TargetReference, TargetReference, StringComparison.OrdinalIgnoreCase)).ToList()
+            : _reservations;
+
+    private string CreateHref =>
+        HasAssetFilter && Guid.TryParse(TargetReference, out var machineId)
+            ? $"/business/stock-reservation/new?machineId={machineId}"
+            : "/business/stock-reservation/new";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        var result = await Pipeline.ExecuteAsync(new GetStockReservationsQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+            _reservations = result.Value;
+        else
+            _errorMessage = result.Error?.Message ?? "Failed to load reservations.";
+
+        _isLoading = false;
+    }
+}
+
+

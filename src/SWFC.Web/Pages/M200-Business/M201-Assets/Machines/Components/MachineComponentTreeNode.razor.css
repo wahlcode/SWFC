@@ -1,0 +1,83 @@
+﻿.m201-component-tree-node {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.m201-component-tree-node__button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--color-surface-3), var(--color-surface-2));
+    color: var(--color-text-primary);
+    text-align: left;
+    cursor: pointer;
+    transition: transform var(--duration-fast) ease, border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+    .m201-component-tree-node__button:hover {
+        transform: translateY(-1px);
+        border-color: var(--color-border-strong);
+        box-shadow: var(--shadow-sm);
+    }
+
+.m201-component-tree-node__button--selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary-soft);
+}
+
+.m201-component-tree-node__main {
+    min-width: 0;
+    flex: 1;
+}
+
+.m201-component-tree-node__name-wrap {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: var(--space-xs);
+}
+
+.m201-component-tree-node__indent {
+    width: 1rem;
+    flex: 0 0 1rem;
+}
+
+.m201-component-tree-node__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-link);
+    flex: 0 0 8px;
+    opacity: 0.9;
+}
+
+.m201-component-tree-node__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.m201-component-tree-node__meta {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.m201-component-tree-node__children {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-left: var(--space-md);
+    padding-left: var(--space-sm);
+    border-left: 1px solid var(--color-border);
+}
+
+

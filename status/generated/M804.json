@@ -1,0 +1,66 @@
+{
+  "ModuleCode": "M804",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.1676315+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M804 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M804 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "6 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "CI/CD-Sicherheitsregeln",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Pipeline-Sicherheit",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen im Entwicklungsprozess",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sichere Bereitstellung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen als Teil des Entwicklungsprozesses",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kein unsicheres Deployment",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

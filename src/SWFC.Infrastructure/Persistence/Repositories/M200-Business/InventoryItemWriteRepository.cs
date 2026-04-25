@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M200_Business.M204_Inventory.Interfaces;
-using SWFC.Domain.M200_Business.M204_Inventory.Entities;
+using SWFC.Application.M200_Business.M204_Inventory.Items;
+using SWFC.Domain.M100_System.M101_Foundation.ValueObjects;
+using SWFC.Domain.M200_Business.M204_Inventory.Items;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M200_Business;
@@ -22,17 +23,17 @@ public sealed class InventoryItemWriteRepository : IInventoryItemWriteRepository
     public Task<InventoryItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return _dbContext.InventoryItems
-            .Include(x => x.Stock)
+            .Include(x => x.Stocks)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public void Remove(InventoryItem inventoryItem)
+    public void Deactivate(InventoryItem inventoryItem, ChangeContext changeContext)
     {
-        _dbContext.InventoryItems.Remove(inventoryItem);
+        inventoryItem.Deactivate(changeContext);
     }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

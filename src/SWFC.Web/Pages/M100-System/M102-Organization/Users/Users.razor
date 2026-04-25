@@ -1,0 +1,322 @@
+@page "/system/users"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using SWFC.Application.M100_System.M102_Organization.CostCenters
+@using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
+@using SWFC.Application.M100_System.M102_Organization.ShiftModels
+@using SWFC.Application.M100_System.M102_Organization.Users
+@using SWFC.Domain.M100_System.M102_Organization.Users
+
+<section class="m102-users-page">
+    <header class="m102-users-hero m201-card">
+        <div class="m102-users-hero__main">
+            <div class="m102-users-hero__text">
+                <a class="m102-users-back" href="/system/organization">
+                    <span aria-hidden="true">←</span>
+                    <span>@_backText</span>
+                </a>
+
+                <p class="m102-users-hero__eyebrow">@_eyebrowText</p>
+                <h1>@_titleText</h1>
+                <p class="m102-users-hero__subtitle">@_subtitleText</p>
+            </div>
+
+            <div class="m102-users-hero__summary">
+                <div class="m102-users-summary-item">
+                    <span class="m102-users-summary-item__label">@_filteredText</span>
+                    <strong class="m102-users-summary-item__value">@_filteredUsers.Count</strong>
+                </div>
+
+                <div class="m102-users-summary-item">
+                    <span class="m102-users-summary-item__label">@_activeText</span>
+                    <strong class="m102-users-summary-item__value">@_filteredUsers.Count(x => x.Status == UserStatus.Active)</strong>
+                </div>
+
+                <div class="m102-users-summary-item">
+                    <span class="m102-users-summary-item__label">@_externalText</span>
+                    <strong class="m102-users-summary-item__value">@_filteredUsers.Count(x => x.UserType == UserType.External)</strong>
+                </div>
+
+                <div class="m102-users-summary-item">
+                    <span class="m102-users-summary-item__label">@_withShiftModelText</span>
+                    <strong class="m102-users-summary-item__value">@_filteredUsers.Count(x => !string.IsNullOrWhiteSpace(x.ShiftModelName) || !string.IsNullOrWhiteSpace(x.ShiftModelCode))</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m201-alert m201-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m201-alert m201-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m201-loading">@_loadingText</div>
+    }
+    else
+    {
+        <section class="m102-users-layout">
+            <aside class="m102-users-sidebar m201-card">
+                <div class="m102-users-sidebar__controls">
+                    <div class="m102-users-sidebar__search">
+                        <input class="m201-input"
+                               placeholder="@_searchPlaceholderText"
+                               @bind="_searchText"
+                               @bind:event="oninput"
+                               @bind:after="ApplyFilterAsync" />
+                    </div>
+
+                    <label class="m102-users-filter-toggle">
+                        <input type="checkbox" @bind="_onlyActive" @bind:after="ApplyFilterAsync" />
+                        <span>@_onlyActiveText</span>
+                    </label>
+
+                    <button type="button"
+                            class="m201-button"
+                            @onclick="OpenCreatePanel">
+                        @_createUserText
+                    </button>
+                </div>
+
+                <div class="m102-users-sidebar__listhead">
+                    <div>
+                        <h2 class="m102-users-sidebar__title">@_userListText</h2>
+                        <p class="m102-users-sidebar__subtitle">@_userListSubtitleText</p>
+                    </div>
+
+                    <span class="m201-badge">@_filteredUsers.Count</span>
+                </div>
+
+                @if (_filteredUsers.Count == 0)
+                {
+                    <div class="m102-users-empty">
+                        <h3>@_noUsersTitleText</h3>
+                        <p>@_noUsersText</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="m102-users-group-list">
+                        @foreach (var group in GroupedUsers)
+                        {
+                            var isExpanded = _expandedGroups.Contains(group.Key);
+
+                            <section class="m102-users-group">
+                                <button type="button"
+                                        class="@($"m102-users-group__toggle{(isExpanded ? " is-expanded" : string.Empty)}")"
+                                        @onclick="() => ToggleGroup(group.Key)">
+                                    <span class="m102-users-group__title">@group.Key</span>
+                                    <span class="m102-users-group__meta">
+                                        <span class="m201-badge">@group.Users.Count</span>
+                                        <span class="m102-users-group__chevron">▾</span>
+                                    </span>
+                                </button>
+
+                                @if (isExpanded)
+                                {
+                                    <div class="m102-users-group__items">
+                                        @foreach (var user in group.Users)
+                                        {
+                                            <button type="button"
+                                                    class="@($"m102-users-listitem{(_selectedUserId == user.Id ? " is-selected" : string.Empty)}")"
+                                                    @onclick="() => SelectUserAsync(user.Id)">
+                                                <div class="m102-users-listitem__main">
+                                                    <div class="m102-users-listitem__title">@user.DisplayName</div>
+                                                    <div class="m102-users-listitem__subtitle">@user.Username</div>
+                                                    <div class="m102-users-listitem__function">@BuildListItemContext(user)</div>
+                                                </div>
+
+                                                <div class="m102-users-listitem__meta">
+                                                    <span class="@($"m102-users-badge m102-users-badge--status m102-users-badge--status-{user.Status.ToString().ToLowerInvariant()}")">
+                                                        @user.Status
+                                                    </span>
+
+                                                    <span class="m102-users-badge m102-users-badge--type">
+                                                        @user.UserType
+                                                    </span>
+                                                </div>
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            </section>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m102-users-content">
+                <aside class="m102-users-detail m201-card">
+                    @if (SelectedUser is null)
+                    {
+                        <div class="m102-users-detail__empty">
+                            <h3>@_noSelectedUserTitleText</h3>
+                            <p>@_noSelectedUserText</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="m102-users-detail__header">
+                            <div class="m102-users-detail__titleblock">
+                                <p class="m102-users-detail__eyebrow">@_userDetailsText</p>
+                                <h2>@SelectedUser.DisplayName</h2>
+                                <p class="m102-users-detail__subtitle">@SelectedUser.Username</p>
+                            </div>
+
+                            <div class="m102-users-detail__badges">
+                                <span class="@($"m102-users-badge m102-users-badge--status m102-users-badge--status-{SelectedUser.Status.ToString().ToLowerInvariant()}")">
+                                    @SelectedUser.Status
+                                </span>
+
+                                <span class="m102-users-badge m102-users-badge--type">
+                                    @SelectedUser.UserType
+                                </span>
+                            </div>
+                        </div>
+
+                        @if (_isDetailLoading)
+                        {
+                            <div class="m102-users-detail__state m201-loading">@_detailLoadingText</div>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(_detailError))
+                        {
+                            <div class="m102-users-detail__state m201-alert m201-alert--error">@_detailError</div>
+                        }
+                        else if (_selectedUserDetails is null)
+                        {
+                            <div class="m102-users-detail__state">
+                                @_detailUnavailableText
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="m102-users-detail__sections">
+                                <section class="m102-users-detail-section">
+                                    <h3>@_masterDataText</h3>
+
+                                    <dl class="m102-users-detail-grid">
+                                        <div>
+                                            <dt>@_displayNameText</dt>
+                                            <dd>@_selectedUserDetails.DisplayName</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_usernameText</dt>
+                                            <dd>@_selectedUserDetails.Username</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_employeeNumberText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.EmployeeNumber)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_emailText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.BusinessEmail)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_businessPhoneText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.BusinessPhone)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_jobFunctionText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.JobFunction)</dd>
+                                        </div>
+                                    </dl>
+                                </section>
+
+                                <section class="m102-users-detail-section">
+                                    <h3>@_organizationText</h3>
+
+                                    <dl class="m102-users-detail-grid">
+                                        <div>
+                                            <dt>@_plantText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.Plant)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_locationText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.Location)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_teamText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.Team)</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_costCenterText</dt>
+                                            <dd>@DisplayOrFallback(BuildReferenceLabel(_selectedUserDetails.CostCenter?.Name, _selectedUserDetails.CostCenter?.Code))</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_shiftModelText</dt>
+                                            <dd>@DisplayOrFallback(BuildReferenceLabel(_selectedUserDetails.ShiftModel?.Name, _selectedUserDetails.ShiftModel?.Code))</dd>
+                                        </div>
+
+                                        <div>
+                                            <dt>@_identityKeyText</dt>
+                                            <dd>@DisplayOrFallback(_selectedUserDetails.IdentityKey)</dd>
+                                        </div>
+                                    </dl>
+                                </section>
+
+                                <section class="m102-users-detail-section">
+                                    <h3>@_organizationUnitsText</h3>
+
+                                    @if (_selectedUserDetails.OrganizationUnits.Count == 0)
+                                    {
+                                        <p class="m102-users-detail__state">@_noOrganizationUnitText</p>
+                                    }
+                                    else
+                                    {
+                                        <div class="m102-users-reference-list">
+                                            @foreach (var organizationUnit in _selectedUserDetails.OrganizationUnits)
+                                            {
+                                                <div class="m102-users-reference-list__item">
+                                                    <div class="m102-users-reference-list__title">@organizationUnit.Name</div>
+                                                    <div class="m102-users-reference-list__meta">@BuildOrganizationUnitLabel(organizationUnit)</div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </section>
+                            </div>
+                        }
+
+                        <div class="m102-users-detail__actions">
+                            <a class="m201-button m201-button--secondary"
+                               href="@($"/system/users/{SelectedUser.Id}")">
+                                @_fullDetailPageText
+                            </a>
+                        </div>
+                    }
+                </aside>
+
+                @if (_showCreatePanel)
+                {
+                    <UserCreatePanel EditContext="_createEditContext"
+                                     Model="_createModel"
+                                     CostCenters="_costCenters"
+                                     ShiftModels="_shiftModels"
+                                     OrganizationUnits="_organizationUnits"
+                                     IsSubmitting="_isSubmitting"
+                                     OnValidSubmit="CreateUserAsync"
+                                     OnCancel="CloseCreatePanel" />
+                }
+            </section>
+        </section>
+    }
+</section>

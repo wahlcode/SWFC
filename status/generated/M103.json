@@ -1,0 +1,54 @@
+{
+  "ModuleCode": "M103",
+  "ScorePercent": 100,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.4191926+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
+  "WorkItems": [
+    {
+      "Title": "Login",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Auth Provider",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "SSO",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Session",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Current User",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Claims",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Passwortregeln",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "MFA (vorbereitet)",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

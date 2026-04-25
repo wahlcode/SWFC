@@ -1,6 +1,6 @@
-using SWFC.Domain.Common.Rules;
+using SWFC.Domain.M100_System.M101_Foundation.Rules;
 
-namespace SWFC.Domain.Common.ValueObjects;
+namespace SWFC.Domain.M100_System.M101_Foundation.ValueObjects;
 
 public sealed class ChangeContext
 {
@@ -8,7 +8,7 @@ public sealed class ChangeContext
     {
         UserId = userId;
         Reason = reason;
-        ChangedAtUtc = DateTime.UtcNow;
+        ChangedAtUtc = UtcTimestamp.Now().UtcDateTime;
     }
 
     public string UserId { get; }
@@ -23,3 +23,4 @@ public sealed class ChangeContext
         return new ChangeContext(userId.Trim(), reason.Trim());
     }
 }
+

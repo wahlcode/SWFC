@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M406",
+  "ScorePercent": 42,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8808455+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "4 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "SSO Integration",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Active Directory / Azure AD",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Benutzerabgleich",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zusammenarbeit mit M103",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Externe Systeme liefern Identit\u00C3\u0192\u00C2\u00A4t",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine eigene Auth-Logik",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

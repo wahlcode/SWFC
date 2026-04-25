@@ -1,0 +1,56 @@
+.m305-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+}
+
+.m305-field__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.m305-field__required {
+    color: var(--color-warning);
+}
+
+.m305-field__control :is(input, select, textarea) {
+    width: 100%;
+    min-height: var(--size-control-height-md);
+    box-sizing: border-box;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    background: var(--gradient-field-surface);
+    color: var(--color-text-primary);
+    padding: 0 var(--space-md);
+    font: inherit;
+}
+
+.m305-field__control textarea {
+    min-height: 96px;
+    padding-top: var(--space-sm);
+}
+
+.m305-field__control :is(input, select, textarea):focus {
+    outline: none;
+    border-color: var(--color-focus-border);
+    box-shadow: var(--shadow-focus-primary);
+}
+
+.m305-field[data-invalid="true"] .m305-field__control :is(input, select, textarea) {
+    border-color: var(--color-danger-border);
+}
+
+.m305-field__hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.m305-field__error {
+    color: var(--color-danger-text);
+    font-size: var(--font-size-xs);
+}

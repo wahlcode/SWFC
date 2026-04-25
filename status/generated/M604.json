@@ -1,0 +1,81 @@
+{
+  "ModuleCode": "M604",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9342806+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M604 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M604 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Architekturentscheidungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modulgrenzen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Systemregeln",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Begr\u00C3\u0192\u00C2\u00BCndungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Entscheidungsverl\u00C3\u0192\u00C2\u00A4ufe",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Versionierbarkeit",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Dokumentationspflicht",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungen begr\u00C3\u0192\u00C2\u00BCnden",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Keine impliziten Entscheidungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

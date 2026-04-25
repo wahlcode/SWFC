@@ -1,0 +1,28 @@
+.roadmap-status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-soft-3);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+}
+
+.roadmap-status-badge--done {
+    border-color: var(--color-success-border);
+    color: var(--color-success, #198754);
+}
+
+.roadmap-status-badge--progress {
+    border-color: var(--status-progress-bg);
+    color: var(--color-warning, #fd7e14);
+}
+
+.roadmap-status-badge--planned {
+    border-color: var(--color-border-strong);
+    color: var(--color-text-muted);
+}

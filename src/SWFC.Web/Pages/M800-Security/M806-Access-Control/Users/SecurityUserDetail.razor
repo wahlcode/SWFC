@@ -1,0 +1,227 @@
+@page "/security/users/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M100_System.M103_Authentication
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M806_AccessControl.Assignments
+@using SWFC.Application.M800_Security.M806_AccessControl.Roles
+@using SWFC.Application.M800_Security.M806_AccessControl.Users
+
+@inject IExecutionPipeline<GetSecurityUsersQuery, IReadOnlyList<SecurityUserListItemDto>> GetSecurityUsersPipeline
+@inject IExecutionPipeline<GetSecurityUserByIdQuery, SecurityUserDetailsDto> GetSecurityUserPipeline
+@inject IExecutionPipeline<GetRolesQuery, IReadOnlyList<RoleListItem>> GetRolesPipeline
+@inject IExecutionPipeline<AssignRoleToUserCommand, bool> AssignRoleToUserPipeline
+@inject IExecutionPipeline<RemoveRoleFromUserCommand, bool> RemoveRoleFromUserPipeline
+@inject ICurrentUserService CurrentUserService
+@inject IUseCaseHandler<AdminSetUserPasswordCommand, bool> AdminSetUserPasswordHandler
+@inject NavigationManager NavigationManager
+
+<section class="m800-security-user-detail">
+    <div class="m800-security-user-detail__header">
+        <div>
+            <h1>Sicherheitsverwaltung</h1>
+            <p>Rollen und Zugangsschutz werden hier getrennt von den organisatorischen Stammdaten verwaltet.</p>
+        </div>
+
+        <a href="/security/users" class="m800-security-user-detail__back">Zurück zur Übersicht</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m800-security-user-detail__alert m800-security-user-detail__alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m800-security-user-detail__alert m800-security-user-detail__alert--success">@_success</div>
+    }
+
+    @if (_loading)
+    {
+        <div class="m800-security-user-detail__state">Lade Sicherheitsdaten...</div>
+    }
+    else if (_selectedUser is null)
+    {
+        <div class="m800-security-user-detail__state">Benutzer nicht gefunden.</div>
+    }
+    else
+    {
+        <div class="m800-security-user-detail__layout">
+            <aside class="m800-security-user-detail__sidebar">
+                <div class="m800-security-user-detail__card">
+                    <h3>Benutzer</h3>
+                    <div class="m800-security-user-detail__user-list">
+                        @foreach (var user in _users)
+                        {
+                            <a href="@($"/security/users/{user.Id}")"
+                               class="m800-security-user-detail__user-link @(user.Id == _selectedUser.Id ? "m800-security-user-detail__user-link--active" : null)">
+                                <span>@user.DisplayName</span>
+                                <span>@user.Username</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </aside>
+
+            <div class="m800-security-user-detail__content">
+                <div class="m800-security-user-detail__card">
+                    <div class="m800-security-user-detail__summary">
+                        <div>
+                            <div class="m800-security-user-detail__title">@_selectedUser.DisplayName</div>
+                            <div class="m800-security-user-detail__meta">@_selectedUser.Username · @_selectedUser.BusinessEmail</div>
+                            <div class="m800-security-user-detail__meta">@_selectedUser.FirstName @_selectedUser.LastName · @_selectedUser.EmployeeNumber</div>
+                        </div>
+
+                        <div class="m800-security-user-detail__flags">
+                            <span class="m800-security-user-detail__badge @(_selectedUser.Status == SWFC.Domain.M100_System.M102_Organization.Users.UserStatus.Active ? "m800-security-user-detail__badge--ok" : "m800-security-user-detail__badge--warn")">
+                                @_selectedUser.Status
+                            </span>
+                            <span class="m800-security-user-detail__badge m800-security-user-detail__badge--neutral">@_selectedUser.UserType</span>
+                            @if (_selectedUser.IsProtectedSuperAdmin)
+                            {
+                                <span class="m800-security-user-detail__badge m800-security-user-detail__badge--accent">Geschützter SuperAdmin</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="m800-security-user-detail__card">
+                    <div class="m800-security-user-detail__section-header">
+                        <div>
+                            <h3>Rollen</h3>
+                            <p>Rollenänderungen werden serverseitig gegen SuperAdmin- und Developer-Regeln geprüft.</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(RoleManagementNotice))
+                    {
+                        <div class="m800-security-user-detail__alert m800-security-user-detail__alert--info">@RoleManagementNotice</div>
+                    }
+
+                    <div class="m800-security-user-detail__roles">
+                        @if (_selectedUser.Roles.Count == 0)
+                        {
+                            <div class="m800-security-user-detail__state">Keine aktiven Rollen vorhanden.</div>
+                        }
+                        else
+                        {
+                            @foreach (var role in _selectedUser.Roles)
+                            {
+                                <div class="m800-security-user-detail__role-row">
+                                    <div>
+                                        <div class="m800-security-user-detail__role-name">@role</div>
+                                        <div class="m800-security-user-detail__role-text">Aktive Sicherheitsrolle</div>
+                                    </div>
+
+                                    <button type="button"
+                                            class="m800-security-user-detail__button m800-security-user-detail__button--secondary"
+                                            disabled="@(!CanManageRole(role) || _busy)"
+                                            @onclick="() => RemoveRoleAsync(role)">
+                                        Rolle entfernen
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="m800-security-user-detail__form-grid">
+                        <div class="m800-security-user-detail__field">
+                            <label for="role-select">Rolle zuweisen</label>
+                            <select id="role-select"
+                                    class="m800-security-user-detail__input"
+                                    disabled="@(!CanManageRoleAssignments || _busy)"
+                                    @bind="_roleAssignmentModel.RoleId">
+                                <option value="">Bitte Rolle wählen</option>
+                                @foreach (var role in _assignableRoles)
+                                {
+                                    <option value="@role.Id">@role.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="m800-security-user-detail__field m800-security-user-detail__field--full">
+                            <label for="role-reason">Begründung</label>
+                            <textarea id="role-reason"
+                                      class="m800-security-user-detail__textarea"
+                                      disabled="@(!CanManageRoleAssignments || _busy)"
+                                      @bind="_roleAssignmentModel.Reason"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="m800-security-user-detail__actions">
+                        <button type="button"
+                                class="m800-security-user-detail__button"
+                                disabled="@(!CanManageRoleAssignments || _busy || _assignableRoles.Count == 0)"
+                                @onclick="AssignRoleAsync">
+                            Rolle zuweisen
+                        </button>
+                    </div>
+                </div>
+
+                <div class="m800-security-user-detail__card">
+                    <div class="m800-security-user-detail__section-header">
+                        <div>
+                            <h3>Lokaler Zugang</h3>
+                            <p>Passwörter bleiben in M103, werden hier aber sicherheitsgeführt administriert.</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(PasswordManagementNotice))
+                    {
+                        <div class="m800-security-user-detail__alert m800-security-user-detail__alert--info">@PasswordManagementNotice</div>
+                    }
+
+                    <div class="m800-security-user-detail__credential-grid">
+                        <div class="m800-security-user-detail__credential-tile">
+                            <span class="m800-security-user-detail__label">Local Login</span>
+                            <strong>
+                                @(_selectedUser.CredentialStatus is null ? "Nicht vorhanden" : (_selectedUser.CredentialStatus.IsActive ? "Aktiv" : "Inaktiv"))
+                            </strong>
+                        </div>
+                        <div class="m800-security-user-detail__credential-tile">
+                            <span class="m800-security-user-detail__label">Fehlversuche</span>
+                            <strong>@(_selectedUser.CredentialStatus?.FailedAttempts ?? 0)</strong>
+                        </div>
+                        <div class="m800-security-user-detail__credential-tile">
+                            <span class="m800-security-user-detail__label">Sperre bis</span>
+                            <strong>@(_selectedUser.CredentialStatus?.LockoutUntilUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "Keine")</strong>
+                        </div>
+                    </div>
+
+                    <div class="m800-security-user-detail__form-grid">
+                        <div class="m800-security-user-detail__field">
+                            <label for="new-password">Neues Passwort</label>
+                            <input id="new-password"
+                                   type="password"
+                                   class="m800-security-user-detail__input"
+                                   disabled="@(!CanResetSelectedPassword || _busy)"
+                                   @bind="_passwordResetModel.NewPassword" />
+                        </div>
+
+                        <div class="m800-security-user-detail__field">
+                            <label for="confirm-password">Passwort bestätigen</label>
+                            <input id="confirm-password"
+                                   type="password"
+                                   class="m800-security-user-detail__input"
+                                   disabled="@(!CanResetSelectedPassword || _busy)"
+                                   @bind="_passwordResetModel.ConfirmPassword" />
+                        </div>
+                    </div>
+
+                    <div class="m800-security-user-detail__actions">
+                        <button type="button"
+                                class="m800-security-user-detail__button"
+                                disabled="@(!CanResetSelectedPassword || _busy)"
+                                @onclick="ResetPasswordAsync">
+                            Passwort setzen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</section>

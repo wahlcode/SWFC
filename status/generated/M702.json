@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M702",
+  "ScorePercent": 20,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9583835+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M702 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungsw\u00C3\u0192\u00C2\u00BCnsche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verbesserungsideen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Erweiterungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M606",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

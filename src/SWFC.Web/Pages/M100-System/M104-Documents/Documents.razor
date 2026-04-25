@@ -1,0 +1,134 @@
+@page "/system/documents"
+@attribute [Authorize]
+
+@using SWFC.Web.Pages.M100_System.M104_Documents.Models
+@using SWFC.Web.Pages.M100_System.M104_Documents.Services
+
+@inject DocumentWorkspaceService DocumentService
+
+<PageTitle>M104 Documents</PageTitle>
+
+<div class="m104-documents">
+    <header class="m104-documents__header">
+        <div>
+            <div class="m104-documents__eyebrow">M104</div>
+            <h1>Documents</h1>
+            <p>Versioned document records, immutable history and links to module objects.</p>
+        </div>
+    </header>
+
+    <section class="m104-documents__panel">
+        <h2>Register document</h2>
+        <form method="post" action="/system/documents/register" class="m104-documents__form">
+            <AntiforgeryToken />
+            <label>
+                <span>Title</span>
+                <input name="Title" required maxlength="160" />
+            </label>
+            <label>
+                <span>Category</span>
+                <input name="Category" maxlength="80" />
+            </label>
+            <label>
+                <span>Owner module</span>
+                <input name="OwnerModule" required maxlength="12" />
+            </label>
+            <label>
+                <span>Retention policy</span>
+                <input name="RetentionPolicy" maxlength="120" />
+            </label>
+            <label>
+                <span>Initial file name</span>
+                <input name="VersionFileName" required maxlength="180" />
+            </label>
+            <label>
+                <span>Content type</span>
+                <input name="VersionContentType" maxlength="120" />
+            </label>
+            <label>
+                <span>Size bytes</span>
+                <input name="VersionSizeBytes" type="number" min="1" required />
+            </label>
+            <label>
+                <span>Checksum</span>
+                <input name="VersionChecksum" maxlength="128" />
+            </label>
+            <label class="m104-documents__wide">
+                <span>Reason</span>
+                <input name="Reason" required maxlength="240" />
+            </label>
+            <button type="submit">Register</button>
+        </form>
+    </section>
+
+    <section class="m104-documents__grid">
+        @foreach (var document in _documents)
+        {
+            <article class="m104-documents__card">
+                <header>
+                    <div class="m104-documents__module">@document.OwnerModule</div>
+                    <h2>@document.Title</h2>
+                </header>
+                <dl>
+                    <div>
+                        <dt>Category</dt>
+                        <dd>@document.Category</dd>
+                    </div>
+                    <div>
+                        <dt>Versions</dt>
+                        <dd>@document.Versions.Count</dd>
+                    </div>
+                    <div>
+                        <dt>Links</dt>
+                        <dd>@document.Links.Count</dd>
+                    </div>
+                    <div>
+                        <dt>Retention</dt>
+                        <dd>@document.RetentionPolicy</dd>
+                    </div>
+                </dl>
+
+                <form method="post" action="/system/documents/version" class="m104-documents__inline-form">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="DocumentId" value="@document.Id" />
+                    <input name="FileName" required maxlength="180" />
+                    <input name="ContentType" maxlength="120" />
+                    <input name="SizeBytes" type="number" min="1" required />
+                    <input name="Checksum" maxlength="128" />
+                    <input name="Reason" required maxlength="240" />
+                    <button type="submit">Add version</button>
+                </form>
+
+                <form method="post" action="/system/documents/link" class="m104-documents__inline-form">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="DocumentId" value="@document.Id" />
+                    <input name="TargetModule" required maxlength="12" />
+                    <input name="TargetType" required maxlength="80" />
+                    <input name="TargetId" required maxlength="120" />
+                    <input name="Relationship" maxlength="80" />
+                    <button type="submit">Link</button>
+                </form>
+
+                <ol class="m104-documents__history">
+                    @foreach (var entry in document.History.OrderByDescending(x => x.TimestampUtc).Take(4))
+                    {
+                        <li>
+                            <strong>@entry.Action</strong>
+                            <span>@entry.TimestampUtc.ToString("u")</span>
+                            <p>@entry.Summary</p>
+                        </li>
+                    }
+                </ol>
+            </article>
+        }
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<SwfcDocumentRecord> _documents = Array.Empty<SwfcDocumentRecord>();
+
+    protected override void OnInitialized()
+    {
+        _documents = DocumentService.GetDocuments();
+    }
+}

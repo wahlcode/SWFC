@@ -1,0 +1,175 @@
+@page "/support/knowledge-base"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M705_Knowledge_Base
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M700_Support.M705_Knowledge_Base
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M705 · Knowledge Base"
+                    Title="Knowledge Base"
+                    Subtitle="Problemloesungen, Anleitungen und Best Practices fuer wiederverwendbares Supportwissen."
+                    BackHref="/support"
+                    BackLabel="Zurueck"
+                    CurrentCode="M705">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Gesamt</span>
+            <strong class="m700-summary-card__value">@_items.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Loesungen</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == KnowledgeEntryType.ProblemSolution)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Anleitungen</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == KnowledgeEntryType.Instruction)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Best Practices</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == KnowledgeEntryType.BestPractice)</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">Die Suche arbeitet auf vorhandenen KnowledgeEntry-Daten und schafft Wiederverwendbarkeit ohne externe Wissenslogik.</p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_success))
+        {
+            <div class="m700-state m700-state--success">@_success</div>
+        }
+
+        <section class="m700-workspace">
+            <aside class="m700-toolbar">
+                <div class="m700-toolbar__head">
+                    <div>
+                        <h2 class="m700-toolbar__title">Wissenseintraege</h2>
+                        <p class="m700-toolbar__text">Typ und Inhalt aus M705.</p>
+                    </div>
+                    <span class="m700-tag">@_filteredItems.Count</span>
+                </div>
+
+                <input class="m201-input m700-input"
+                       placeholder="Knowledge Base durchsuchen"
+                       value="@_searchText"
+                       @oninput="OnSearchChanged" />
+
+                <button type="button" class="m201-button" @onclick="OpenCreateForm">Eintrag erfassen</button>
+
+                @if (_isLoading)
+                {
+                    <div class="m700-state">Lade Knowledge Base...</div>
+                }
+                else if (_filteredItems.Count == 0)
+                {
+                    <div class="m700-state">Keine Eintraege gefunden.</div>
+                }
+                else
+                {
+                    <div class="m700-item-list">
+                        @foreach (var item in _filteredItems)
+                        {
+                            <button type="button"
+                                    class="@($"m700-item-button{(_selectedId == item.Id ? " is-selected" : string.Empty)}")"
+                                    @onclick="() => SelectItem(item.Id)">
+                                <span class="m700-item-button__top">
+                                    <span class="m700-item-button__title">@Preview(item.Content)</span>
+                                    <span class="m700-tag">@FormatType(item.Type)</span>
+                                </span>
+                                <span class="m700-item-button__text">@FormatDate(item.CreatedAtUtc)</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m700-detail">
+                @if (SelectedItem is null)
+                {
+                    <div class="m700-detail-card">
+                        <p class="m700-muted">Waehle einen Knowledge-Eintrag oder lege einen neuen Eintrag an.</p>
+                    </div>
+                }
+                else
+                {
+                    <article class="m700-detail-card">
+                        <div class="m700-detail-card__head">
+                            <div>
+                                <p class="m700-panel__eyebrow">Knowledge Details</p>
+                                <h2 class="m700-detail-card__title">@FormatType(SelectedItem.Type)</h2>
+                            </div>
+                            <span class="m700-tag">@FormatDate(SelectedItem.CreatedAtUtc)</span>
+                        </div>
+
+                        <dl class="m700-definition-list">
+                            <div>
+                                <dt>Typ</dt>
+                                <dd>@FormatType(SelectedItem.Type)</dd>
+                            </div>
+                            <div>
+                                <dt>Erstellt durch</dt>
+                                <dd>@SelectedItem.CreatedBy</dd>
+                            </div>
+                            <div class="m700-field--full">
+                                <dt>Inhalt</dt>
+                                <dd>@SelectedItem.Content</dd>
+                            </div>
+                        </dl>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="OpenEditForm">Bearbeiten</button>
+                        </div>
+                    </article>
+                }
+
+                @if (_showForm)
+                {
+                    <section class="m700-detail-card">
+                        <div class="m700-panel__header">
+                            <p class="m700-panel__eyebrow">@(_isEdit ? "Knowledge aktualisieren" : "Knowledge erfassen")</p>
+                            <h2 class="m700-panel__title">@(_isEdit ? "Bestehenden Eintrag bearbeiten" : "Neuen Knowledge-Eintrag anlegen")</h2>
+                        </div>
+
+                        <div class="m700-form-grid">
+                            <div class="m700-field">
+                                <label>Typ</label>
+                                <select class="m201-input m700-select" @bind="_form.Type">
+                                    @foreach (KnowledgeEntryType type in Enum.GetValues<KnowledgeEntryType>())
+                                    {
+                                        <option value="@type">@FormatType(type)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="m700-field">
+                                <label>Begruendung</label>
+                                <input class="m201-input m700-input" @bind="_form.Reason" />
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Inhalt</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Content"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="SaveAsync" disabled="@_isSubmitting">
+                                @(_isSubmitting ? "Speichert..." : "Speichern")
+                            </button>
+                            <button type="button" class="m201-button m201-button--secondary" @onclick="CloseForm" disabled="@_isSubmitting">Abbrechen</button>
+                        </div>
+                    </section>
+                }
+            </section>
+        </section>
+    </ChildContent>
+</SupportModuleShell>

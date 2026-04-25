@@ -1,0 +1,34 @@
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+<div class="m201-component-tree">
+    @if (RootItems.Count == 0)
+    {
+        <div class="m201-muted">Keine Komponenten vorhanden.</div>
+    }
+    else
+    {
+        @foreach (var root in RootItems)
+        {
+            <MachineComponentTreeNode Item="root"
+                                      ChildrenByParentId="ChildrenByParentId"
+                                      SelectedComponentId="SelectedComponentId"
+                                      OnSelectComponent="OnSelectComponent" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<MachineComponentVm> RootItems { get; set; } = Array.Empty<MachineComponentVm>();
+
+    [Parameter, EditorRequired]
+    public IReadOnlyDictionary<Guid, List<MachineComponentVm>> ChildrenByParentId { get; set; } = default!;
+
+    [Parameter]
+    public Guid? SelectedComponentId { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<Guid> OnSelectComponent { get; set; }
+}
+
+

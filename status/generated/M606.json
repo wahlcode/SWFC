@@ -1,0 +1,96 @@
+{
+  "ModuleCode": "M606",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.941727+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M606 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M606 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Feature-Anforderungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungsw\u00C3\u0192\u00C2\u00BCnsche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abteilungsanforderungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Externe Anforderungen (z. B. ISO)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Noch nicht umgesetzt",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Noch nicht bewertet",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Offen f\u00C3\u0192\u00C2\u00BCr Analyse",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M607",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Anforderungen sammeln, nicht direkt umsetzen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bewertung erforderlich",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    }
+  ]
+}

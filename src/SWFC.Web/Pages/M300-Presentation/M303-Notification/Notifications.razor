@@ -1,0 +1,128 @@
+@page "/presentation/notifications"
+@attribute [Authorize]
+
+@using SWFC.Web.Pages.M300_Presentation.M303_Notification.Models
+@using SWFC.Web.Pages.M300_Presentation.M303_Notification.Services
+
+@inject NotificationWorkspaceService NotificationService
+
+<PageTitle>M303 Notifications</PageTitle>
+
+<div class="m303-notifications">
+    <header class="m303-notifications__header">
+        <div>
+            <div class="m303-notifications__eyebrow">M303</div>
+            <h1>Notifications</h1>
+            <p>User communication, priorities, target groups, channels and notification states.</p>
+        </div>
+    </header>
+
+    <section class="m303-notifications__panel">
+        <h2>Publish notification</h2>
+        <form method="post" action="/presentation/notifications/publish" class="m303-notifications__form">
+            <AntiforgeryToken />
+            <label>
+                <span>Title</span>
+                <input name="Title" required maxlength="160" />
+            </label>
+            <label>
+                <span>Severity</span>
+                <select name="Severity">
+                    <option value="Info">Info</option>
+                    <option value="Warning">Warning</option>
+                    <option value="Critical">Critical</option>
+                </select>
+            </label>
+            <label>
+                <span>Priority</span>
+                <select name="Priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                </select>
+            </label>
+            <label>
+                <span>Channel</span>
+                <select name="Channel">
+                    <option value="UI">UI</option>
+                    <option value="Email">Email</option>
+                    <option value="Teams">Teams</option>
+                    <option value="Slack">Slack</option>
+                </select>
+            </label>
+            <label>
+                <span>Target kind</span>
+                <input name="TargetKind" required maxlength="80" />
+            </label>
+            <label>
+                <span>Target value</span>
+                <input name="TargetValue" required maxlength="120" />
+            </label>
+            <label>
+                <span>Related module</span>
+                <input name="RelatedModule" maxlength="12" />
+            </label>
+            <label>
+                <span>Related object</span>
+                <input name="RelatedObjectId" maxlength="120" />
+            </label>
+            <label class="m303-notifications__wide">
+                <span>Message</span>
+                <input name="Message" required maxlength="300" />
+            </label>
+            <button type="submit">Publish</button>
+        </form>
+    </section>
+
+    <section class="m303-notifications__list">
+        @foreach (var notification in _notifications)
+        {
+            <article class="m303-notifications__card">
+                <header>
+                    <div>
+                        <div class="m303-notifications__module">@notification.RelatedModule</div>
+                        <h2>@notification.Title</h2>
+                    </div>
+                    <span>@notification.State</span>
+                </header>
+                <p>@notification.Message</p>
+                <dl>
+                    <div>
+                        <dt>Priority</dt>
+                        <dd>@notification.Priority</dd>
+                    </div>
+                    <div>
+                        <dt>Target</dt>
+                        <dd>@notification.TargetKind: @notification.TargetValue</dd>
+                    </div>
+                    <div>
+                        <dt>Channel</dt>
+                        <dd>@notification.Channel</dd>
+                    </div>
+                </dl>
+                <div class="m303-notifications__actions">
+                    <form method="post" action="/presentation/notifications/mark-read">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="NotificationId" value="@notification.Id" />
+                        <button type="submit">Mark read</button>
+                    </form>
+                    <form method="post" action="/presentation/notifications/complete">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="NotificationId" value="@notification.Id" />
+                        <button type="submit">Done</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<NotificationRecord> _notifications = Array.Empty<NotificationRecord>();
+
+    protected override void OnInitialized()
+    {
+        _notifications = NotificationService.GetNotifications();
+    }
+}

@@ -1,0 +1,116 @@
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines
+
+<div class="m201-machine-form">
+    <div class="m201-machine-form__grid">
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Name</label>
+            <input class="m201-input" @bind="Model.Name" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Inventarnummer</label>
+            <input class="m201-input" @bind="Model.InventoryNumber" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Status</label>
+            <select class="m201-input" @bind="Model.Status">
+                @foreach (var status in StatusOptions)
+                {
+                    <option value="@status">@status</option>
+                }
+            </select>
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Standort</label>
+            <input class="m201-input" @bind="Model.Location" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Hersteller</label>
+            <input class="m201-input" @bind="Model.Manufacturer" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Modell</label>
+            <input class="m201-input" @bind="Model.MachineModel" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Seriennummer</label>
+            <input class="m201-input" @bind="Model.SerialNumber" />
+        </div>
+
+        <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Parent Machine</label>
+            <select class="m201-input" @bind="Model.ParentMachineId">
+                <option value="">-- Keine --</option>
+                @foreach (var option in MachineOptions)
+                {
+                    <option value="@option.Id">@option.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="m201-machine-form__field m201-machine-form__field--full">
+            <label class="m201-machine-form__label">Organisationseinheit</label>
+            <select class="m201-input" @bind="Model.OrganizationUnitId">
+                <option value="">-- Keine --</option>
+                @foreach (var option in OrganizationUnitOptions)
+                {
+                    <option value="@option.Id">@option.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="m201-machine-form__field m201-machine-form__field--full">
+            <label class="m201-machine-form__label">Beschreibung</label>
+            <textarea class="m201-textarea" @bind="Model.Description"></textarea>
+        </div>
+
+        <div class="m201-machine-form__field m201-machine-form__field--full">
+            <label class="m201-machine-form__label">Begründung</label>
+            <textarea class="m201-textarea m201-machine-form__textarea--reason" @bind="Model.Reason"></textarea>
+        </div>
+    </div>
+
+    <div class="m201-machine-form__actions">
+        <button class="m201-button"
+                @onclick="HandleSaveAsync"
+                disabled="IsBusy">
+            Speichern
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public MachineEditorModel Model { get; set; } = default!;
+
+    [Parameter]
+    public IReadOnlyList<MachineSelectionOptionDto> MachineOptions { get; set; } = Array.Empty<MachineSelectionOptionDto>();
+
+    [Parameter]
+    public IReadOnlyList<OrganizationUnitSelectionOptionDto> OrganizationUnitOptions { get; set; } = Array.Empty<OrganizationUnitSelectionOptionDto>();
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnSave { get; set; }
+
+    private static readonly string[] StatusOptions =
+    [
+        "Planned",
+        "Active",
+        "InMaintenance",
+        "Inactive",
+        "Retired"
+    ];
+
+    private Task HandleSaveAsync()
+        => OnSave.InvokeAsync();
+}
+
+

@@ -1,0 +1,40 @@
+@page "/business/maintenance/orders/{Id:guid}"
+@using SWFC.Web.Pages.M200_Business.M202_Maintenance.Components
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMaintenanceOrderByIdQuery, MaintenanceOrderDetailsDto> Pipeline
+
+<PageTitle>M202 Arbeitsauftrag</PageTitle>
+
+@if (_item is null)
+{
+    <p>Lade Arbeitsauftrag ...</p>
+}
+else
+{
+    <div class="m202-detail-page">
+        <header class="m202-detail-page__header">
+            <div class="m202-page__eyebrow">M202</div>
+            <h1>@_item.Number - @_item.Title</h1>
+            <p>Status: @_item.Status | Typ: @_item.Type</p>
+        </header>
+
+        <MaintenanceInlineHelp />
+        <MaintenanceOrderSummary Item="_item" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private MaintenanceOrderDetailsDto? _item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetMaintenanceOrderByIdQuery(Id), CancellationToken.None);
+        _item = result.Value;
+    }
+}
+
+

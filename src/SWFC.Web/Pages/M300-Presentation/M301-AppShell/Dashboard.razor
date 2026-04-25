@@ -1,0 +1,286 @@
+@page "/"
+@page "/dashboard"
+@attribute [Authorize]
+
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Components.Roadmap
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services
+
+@inject RoadmapService RoadmapService
+@inject ModuleStatusService ModuleStatusService
+@inject NavigationManager NavigationManager
+@inject UserUiPreferenceService PreferenceService
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="dashboard-page">
+    <section class="dashboard-hero">
+        <div class="dashboard-hero__copy">
+            <p class="dashboard-hero__eyebrow">M301</p>
+            <h1 class="dashboard-hero__title">App Dashboard</h1>
+            <p class="dashboard-hero__subtitle">
+                Zentrale Einstiegsseite der Anwendung mit schnellen Zugängen zu den wichtigsten Bereichen.
+            </p>
+        </div>
+
+        <div class="dashboard-hero__meta">
+            <div class="dashboard-highlight">
+                <span class="dashboard-highlight__label">Module</span>
+                <span class="dashboard-highlight__value">@Overview.Summary.TotalModules</span>
+            </div>
+
+            <div class="dashboard-highlight">
+                <span class="dashboard-highlight__label">Arbeitspunkte</span>
+                <span class="dashboard-highlight__value">@Overview.Summary.TotalWorkItems</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-main-grid">
+        @if (HasWidget("organization"))
+        {
+        <article class="dashboard-card dashboard-card--primary">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">System</div>
+                <div class="dashboard-card__badge">Core</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Organisation</h2>
+                <p class="dashboard-card__text">
+                    Benutzer, Rollen und Organisationseinheiten verwalten.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/system/organization">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("assets"))
+        {
+        <article class="dashboard-card">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Business</div>
+                <div class="dashboard-card__badge">Core</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Assets</h2>
+                <p class="dashboard-card__text">
+                    Maschinen und Anlagen strukturiert verwalten.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/business/assets">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("maintenance"))
+        {
+        <article class="dashboard-card">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Business</div>
+                <div class="dashboard-card__badge">Core</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Maintenance</h2>
+                <p class="dashboard-card__text">
+                    Wartungsaufträge, Wartungspläne und Materialbedarf verwalten.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/business/maintenance">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("inventory"))
+        {
+        <article class="dashboard-card">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Business</div>
+                <div class="dashboard-card__badge">Core</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Inventory</h2>
+                <p class="dashboard-card__text">
+                    Artikel, Lagerorte, Bewegungen und Reservierungen verwalten.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/business/inventory">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("energy"))
+        {
+        <article class="dashboard-card">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Business</div>
+                <div class="dashboard-card__badge">Core</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Energie</h2>
+                <p class="dashboard-card__text">
+                    Zähler, Medien und Energiehistorie strukturiert verwalten.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/business/energy">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("modules"))
+        {
+        <article class="dashboard-card dashboard-card--accent">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Projekt</div>
+                <div class="dashboard-card__badge">Übersicht</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Modulübersicht</h2>
+                <p class="dashboard-card__text">
+                    Überblick über alle Module, Status und Arbeitspunkte.
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/planning/modules">Öffnen</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("roadmap"))
+        {
+        <article class="dashboard-card dashboard-card--accent">
+            <div class="dashboard-card__top">
+                <div class="dashboard-card__code">Planung</div>
+                <div class="dashboard-card__badge">M601</div>
+            </div>
+
+            <div class="dashboard-card__body">
+                <h2 class="dashboard-card__title">Roadmap</h2>
+                <p class="dashboard-card__text">
+                    Aktuell: @(CurrentVersion?.AudienceTitle ?? "Keine Phase"). Nächster Schritt: @(NextVersion?.AudienceTitle ?? "nicht geplant").
+                </p>
+            </div>
+
+            <div class="dashboard-card__footer">
+                <a class="dashboard-button dashboard-button--primary" href="/roadmap">Öffnen</a>
+            </div>
+        </article>
+        }
+    </section>
+
+    <section class="dashboard-panel-grid">
+        @if (HasWidget("quicklinks"))
+        {
+        <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+                <p class="dashboard-panel__eyebrow">Direktzugriff</p>
+                <h2 class="dashboard-panel__title">Schnellzugriffe</h2>
+            </div>
+
+            <div class="dashboard-chip-list">
+                <a class="dashboard-button dashboard-button--secondary" href="/system/users">Benutzer</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/security/roles">Rollen</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/security/audit">Audit</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/system/organization-units">Organisationseinheiten</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/business/assets">Assets</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/business/maintenance">Maintenance</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/business/inventory">Inventory</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/business/energy">Energie</a>
+                <a class="dashboard-button dashboard-button--secondary" href="/roadmap">Roadmap</a>
+            </div>
+        </article>
+        }
+
+        @if (HasWidget("status"))
+        {
+        <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+                <p class="dashboard-panel__eyebrow">Systemstatus</p>
+                <h2 class="dashboard-panel__title">Status</h2>
+            </div>
+
+            <div class="dashboard-status-list">
+                <div class="dashboard-status-item">
+                    <span class="dashboard-status-item__dot dashboard-status-item__dot--success"></span>
+                    <span class="dashboard-status-item__text">AppShell aktiv</span>
+                </div>
+
+                <div class="dashboard-status-item">
+                    <span class="dashboard-status-item__dot dashboard-status-item__dot--success"></span>
+                    <span class="dashboard-status-item__text">M106 Theme aktiv</span>
+                </div>
+
+                <div class="dashboard-status-item">
+                    <span class="dashboard-status-item__dot dashboard-status-item__dot--neutral"></span>
+                    <span class="dashboard-status-item__text">Roadmap verbunden</span>
+                </div>
+            </div>
+        </article>
+        }
+    </section>
+
+    <section class="dashboard-note">
+        <p class="dashboard-note__eyebrow">Hinweis</p>
+        <h2 class="dashboard-note__title">Zentraler Einstieg</h2>
+        <p class="dashboard-note__text">
+            Diese Seite ist bewusst schlank gehalten und dient als zentraler Einstieg.
+            Fachlogik gehört nicht hierher, sondern in die jeweiligen Module.
+        </p>
+    </section>
+</div>
+
+@code {
+    private ModuleOverviewDto Overview = new();
+    private RoadmapVersion? CurrentVersion;
+    private RoadmapVersion? NextVersion;
+    private UserUiPreferences _preferences = UserUiPreferences.Default;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _preferences = await PreferenceService.GetCurrentAsync();
+
+        if (IsDashboardRoot() &&
+            !string.Equals(_preferences.StartPageRoute, "/dashboard", StringComparison.OrdinalIgnoreCase))
+        {
+            NavigationManager.NavigateTo(_preferences.StartPageRoute, replace: true);
+            return;
+        }
+
+        Overview = await ModuleStatusService.GetOverviewAsync();
+        CurrentVersion = await RoadmapService.GetCurrentVersionAsync();
+        NextVersion = await RoadmapService.GetNextVersionAsync();
+    }
+
+    private bool HasWidget(string key)
+    {
+        return _preferences.HasDashboardWidget(key);
+    }
+
+    private bool IsDashboardRoot()
+    {
+        var path = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Trim('/');
+
+        return string.IsNullOrWhiteSpace(path);
+    }
+}
+
+
+

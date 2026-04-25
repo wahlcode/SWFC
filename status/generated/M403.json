@@ -1,0 +1,76 @@
+{
+  "ModuleCode": "M403",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8639167+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M403 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M403 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Synchronisation von Stammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "\u00C3\u0192\u00C5\u201Cbergabe von Einkaufsdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Referenzierung von ERP-Objekten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Lieferanten aus ERP",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bestellungen aus M206",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kunden aus ERP",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "ERP kaufm\u00C3\u0192\u00C2\u00A4nnisch f\u00C3\u0192\u00C2\u00BChrend",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "SWFC operativ f\u00C3\u0192\u00C2\u00BChrend",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine doppelte Datenhaltung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "ModuleCode": "M802",
+  "ScorePercent": 100,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.1577057+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
+  "WorkItems": [
+    {
+      "Title": "Schutz gegen typische Web-/App-Angriffe",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Eingabeabsicherung",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Sichere Request-/Response-Verarbeitung",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Technische Autorisierungsdurchsetzung auf Anwendungsebene",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Schutz vor Injection",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Schutz vor Manipulation",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Schutz vor unsicheren Eingaben",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Keine Umgehung von Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

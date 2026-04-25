@@ -1,0 +1,96 @@
+{
+  "ModuleCode": "M207",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7562779+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M207 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M207 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Qualit\u00C3\u0192\u00C2\u00A4tsmeldungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abweichungen / Fehler / Beanstandungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ursachenanalysen (Root Cause)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Korrekturma\u00C3\u0192\u00C5\u00B8nahmen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorbeugema\u00C3\u0192\u00C5\u00B8nahmen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Statusmodell (offen / in Bearbeitung / gel\u00C3\u0192\u00C2\u00B6st / abgeschlossen)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eskalationslogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M203",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung zu M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Qualit\u00C3\u0192\u00C2\u00A4tsf\u00C3\u0192\u00C2\u00A4llen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

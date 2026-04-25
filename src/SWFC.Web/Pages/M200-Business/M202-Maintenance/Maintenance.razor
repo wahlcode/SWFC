@@ -1,0 +1,53 @@
+@page "/business/maintenance"
+@using SWFC.Web.Pages.M200_Business.M202_Maintenance.Components
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMaintenanceOrdersQuery, IReadOnlyList<MaintenanceOrderListItemDto>> OrdersPipeline
+@inject IExecutionPipeline<GetMaintenancePlansQuery, IReadOnlyList<MaintenancePlanListItemDto>> PlansPipeline
+
+<PageTitle>M202 Wartung</PageTitle>
+
+<div class="m202-page">
+    <header class="m202-page__header">
+        <div class="m202-page__title-block">
+            <div class="m202-page__eyebrow">M202</div>
+            <h1>Wartung / Instandhaltung</h1>
+            <p class="m202-page__subtitle">Arbeitsaufträge, Wartungspläne, Materialbedarf und Historie.</p>
+        </div>
+
+        <div class="m202-page__actions">
+            <a href="/business/maintenance/orders/new" class="m201-button">Neuer Auftrag</a>
+            <a href="/business/maintenance/plans/new" class="m201-button">Neuer Plan</a>
+        </div>
+    </header>
+
+    <section class="m202-page__help-row">
+        <MaintenanceHelp />
+    </section>
+
+    <section class="m202-page__inline-help-row">
+        <MaintenanceInlineHelp />
+    </section>
+
+    <div class="m202-page__grid">
+        <MaintenanceOrderList Items="_orders" />
+        <MaintenancePlanList Items="_plans" />
+    </div>
+</div>
+
+@code {
+    private IReadOnlyList<MaintenanceOrderListItemDto> _orders = Array.Empty<MaintenanceOrderListItemDto>();
+    private IReadOnlyList<MaintenancePlanListItemDto> _plans = Array.Empty<MaintenancePlanListItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var ordersResult = await OrdersPipeline.ExecuteAsync(new GetMaintenanceOrdersQuery(), CancellationToken.None);
+        var plansResult = await PlansPipeline.ExecuteAsync(new GetMaintenancePlansQuery(), CancellationToken.None);
+
+        _orders = ordersResult.Value ?? Array.Empty<MaintenanceOrderListItemDto>();
+        _plans = plansResult.Value ?? Array.Empty<MaintenancePlanListItemDto>();
+    }
+}
+
+

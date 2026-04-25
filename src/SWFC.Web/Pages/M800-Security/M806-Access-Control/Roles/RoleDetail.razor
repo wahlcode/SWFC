@@ -1,0 +1,246 @@
+@page "/security/roles/new"
+@page "/security/roles/{Id:guid}"
+@page "/system/roles/new"
+@page "/system/roles/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.Linq
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M806_AccessControl.Permissions
+@using SWFC.Application.M800_Security.M806_AccessControl.RolePermissions
+@using SWFC.Application.M800_Security.M806_AccessControl.Roles
+
+@inject IExecutionPipeline<GetRoleByIdQuery, RoleDetailsDto> GetRolePipeline
+@inject IExecutionPipeline<CreateRoleCommand, Guid> CreateRolePipeline
+@inject IExecutionPipeline<UpdateRoleCommand, bool> UpdateRolePipeline
+@inject IExecutionPipeline<GetPermissionsQuery, IReadOnlyList<PermissionListItemDto>> GetPermissionsPipeline
+@inject IExecutionPipeline<GetRolePermissionsQuery, IReadOnlyList<RolePermissionListItemDto>> GetRolePermissionsPipeline
+@inject IExecutionPipeline<SetRolePermissionsCommand, bool> SetRolePermissionsPipeline
+@inject NavigationManager Nav
+
+<section class="m100-role-detail">
+    <div class="m100-role-detail__header">
+        <div>
+            <h1>@(IsNew ? "Neue Rolle anlegen" : "Rolle bearbeiten")</h1>
+            <p class="m100-role-detail__intro">
+                Rollen werden im Modul `M806` gepflegt. Die Berechtigungen kommen aus der Datenbank und werden hier modulweise sichtbar und zuweisbar gemacht.
+            </p>
+        </div>
+
+        <button class="m100-button m100-button--secondary"
+                @onclick='() => Nav.NavigateTo("/security/roles")'>
+            Zurueck
+        </button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    @if (!CanEditRoleDefinition)
+    {
+        <div class="m100-alert m100-alert--info">
+            Rollen und Berechtigungen sind aktuell im Lesemodus. Aenderungen sind nur im Developer-Modus erlaubt.
+        </div>
+    }
+
+    @if (_loading)
+    {
+        <div class="m100-loading">Lade Rolle...</div>
+    }
+    else if (IsNew && !CanEditRoleDefinition)
+    {
+        <div class="m100-card">
+            <div class="m100-empty-state">
+                <h3>Neue Rolle gesperrt</h3>
+                <p>Die Anlage neuer Rollen ist nur im Developer-Modus moeglich.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="m100-card">
+            <form @onsubmit="Save">
+                @if (!IsNew && _role is not null)
+                {
+                    <div class="m100-role-summary">
+                        <div class="m100-role-summary__item">
+                            <span class="m100-role-summary__label">Rollenstatus</span>
+                            <span class="m100-role-summary__value">
+                                <span class="m100-badge @(_role.IsActive ? "m100-badge--active" : "m100-badge--inactive")">
+                                    @(_role.IsActive ? "Aktiv" : "Inaktiv")
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="m100-role-summary__item">
+                            <span class="m100-role-summary__label">Rollentyp</span>
+                            <span class="m100-role-summary__value">
+                                <span class="m100-badge @(_role.IsSystemRole ? "m100-badge--system" : "m100-badge--custom")">
+                                    @(_role.IsSystemRole ? "Systemrolle" : "Benutzerdefiniert")
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="m100-role-summary__item">
+                            <span class="m100-role-summary__label">Rechtezuordnung</span>
+                            <span class="m100-role-summary__value">
+                                @_permissionItems.Count(x => x.IsAssigned) von @_permissionItems.Count Rechten zugeordnet
+                            </span>
+                        </div>
+                    </div>
+                }
+
+                <div class="m100-form-grid">
+                    <div class="m100-form-field">
+                        <label class="m100-label">Rollenname</label>
+                        <input class="m100-input"
+                               readonly="@(!CanEditRoleDefinition || IsRoleMetadataReadOnly)"
+                               @bind="_model.Name" />
+                        @if (IsRoleMetadataReadOnly)
+                        {
+                            <div class="m100-field-hint">
+                                Systemrollen bleiben in ihrer Stammdatenbeschreibung stabil. Berechtigungen koennen weiterhin angepasst werden.
+                            </div>
+                        }
+                        else if (!CanEditRoleDefinition)
+                        {
+                            <div class="m100-field-hint">
+                                Rollenstammdaten sind ausserhalb des Developer-Modus schreibgeschuetzt.
+                            </div>
+                        }
+                    </div>
+
+                    <div class="m100-form-field m100-form-field--full">
+                        <label class="m100-label">Beschreibung</label>
+                        <textarea class="m100-textarea"
+                                  readonly="@(!CanEditRoleDefinition || IsRoleMetadataReadOnly)"
+                                  @bind="_model.Description"></textarea>
+                    </div>
+
+                    <div class="m100-form-field m100-form-field--full">
+                        <label class="m100-label">Begruendung</label>
+                        <textarea class="m100-textarea"
+                                  @bind="_model.Reason"></textarea>
+                        <div class="m100-field-hint">
+                            Die Begruendung wird fuer Audit und Nachvollziehbarkeit mitprotokolliert.
+                        </div>
+                    </div>
+                </div>
+
+                @if (!IsNew)
+                {
+                    <div class="m100-section">
+                        <div class="m100-section__header">
+                            <div>
+                                <h3>Berechtigungen</h3>
+                                <p class="m100-section__hint">
+                                    Die Zuordnung ist nach Modulen gruppiert. Jede Karte zeigt Anzeigename, technischen Code, Beschreibung und Aktivstatus der Permission.
+                                </p>
+                            </div>
+
+                            <div class="m100-section__summary">
+                                @_permissionItems.Count(x => x.IsAssigned) von @_permissionItems.Count Rechten aktiv zugeordnet
+                            </div>
+                        </div>
+
+                        @if (_permissionGroups.Count == 0)
+                        {
+                            <div class="m100-alert m100-alert--warning">
+                                Es sind noch keine Berechtigungen im System verfuegbar.
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var group in _permissionGroups)
+                            {
+                                <div class="m100-permission-module">
+                                    <div class="m100-permission-module__header">
+                                        <div>
+                                            <div class="m100-permission-module__eyebrow">@group.ModuleCode</div>
+                                            <div class="m100-permission-module__title">@group.DisplayName</div>
+                                            @if (!string.IsNullOrWhiteSpace(group.Description))
+                                            {
+                                                <div class="m100-permission-module__description">@group.Description</div>
+                                            }
+                                        </div>
+
+                                        <div class="m100-permission-module__count">
+                                            <span>@group.Items.Count Rechte</span>
+                                            <span class="m100-permission-module__count-sub">@group.Items.Count(x => x.IsAssigned) zugeordnet</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="m100-permission-list">
+                                        @foreach (var item in group.Items)
+                                        {
+                                            <label class="m100-permission-item @(item.IsPermissionActive ? null : "m100-permission-item--inactive")">
+                                                <div class="m100-permission-item__toggle">
+                                                    <input type="checkbox"
+                                                           checked="@item.IsAssigned"
+                                                           disabled="@(!CanEditPermission(item))"
+                                                           @onchange="args => OnPermissionChanged(item.PermissionId, args.Value)" />
+                                                </div>
+
+                                                <div class="m100-permission-item__content">
+                                                    <div class="m100-permission-item__top">
+                                                        <div class="m100-permission-item__name">@GetPermissionDisplayName(item)</div>
+                                                        <span class="m100-badge @(item.IsPermissionActive ? "m100-badge--active" : "m100-badge--inactive")">
+                                                            @(item.IsPermissionActive ? "Aktiv" : "Inaktiv")
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="m100-permission-item__description">
+                                                        @GetPermissionDescription(item)
+                                                    </div>
+
+                                                    <div class="m100-permission-item__footer">
+                                                        <code class="m100-permission-item__code">@item.PermissionCode</code>
+                                                        <span class="m100-permission-item__status">
+                                                            @GetPermissionAssignmentStatus(item)
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+
+                <div class="m100-actions">
+                    @if (CanEditRoleDefinition)
+                    {
+                        <button class="m100-button" type="submit">
+                            Speichern
+                        </button>
+                    }
+
+                    <button type="button"
+                            class="m100-button m100-button--secondary"
+                            @onclick="ResetAsync">
+                        @(CanEditRoleDefinition ? "Zuruecksetzen" : "Neu laden")
+                    </button>
+
+                    @if (!CanEditRoleDefinition)
+                    {
+                        <div class="m100-actions__note">
+                            Zum Bearbeiten zuerst den Developer-Modus aktivieren.
+                        </div>
+                    }
+                </div>
+            </form>
+        </div>
+    }
+</section>

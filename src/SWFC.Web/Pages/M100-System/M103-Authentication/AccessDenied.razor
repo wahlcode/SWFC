@@ -1,0 +1,28 @@
+@page "/auth/access-denied"
+@attribute [AllowAnonymous]
+
+<PageTitle>Zugriff verweigert</PageTitle>
+
+<section class="access-denied-page">
+    <div class="access-denied-card">
+
+        <h1 class="access-denied-card__title">Zugriff verweigert</h1>
+
+        <p class="access-denied-card__text">
+            Sie haben keine Berechtigung für diese Seite.
+        </p>
+
+        <div class="access-denied-card__actions">
+            <a href="/" class="access-denied-card__button">
+                Zur Startseite
+            </a>
+
+            <a href="/auth/login" class="access-denied-card__button access-denied-card__button--secondary">
+                Login
+            </a>
+        </div>
+
+    </div>
+</section>
+
+

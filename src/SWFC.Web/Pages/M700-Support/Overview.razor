@@ -1,0 +1,123 @@
+@page "/support"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M701_BugTracking
+@using SWFC.Application.M700_Support.M702_ChangeRequests
+@using SWFC.Application.M700_Support.M703_SupportCases
+@using SWFC.Application.M700_Support.M704_Incident_Management
+@using SWFC.Application.M700_Support.M705_Knowledge_Base
+@using SWFC.Application.M700_Support.M706_SLA_Service_Levels
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M700_Support.M701_BugTracking
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M700 · Support"
+                    Title="Support, Fehler und Betrieb"
+                    Subtitle="Operative Sicht auf Bugs, Change Requests, Supportfaelle, Incidents, Knowledge Base und Service Levels."
+                    CurrentCode="M700"
+                    ContextNote="M700 bleibt laut MD eine Support-, Fehler- und Betriebsmanagement-Ebene. Business-Prozesse, Runtime-Ausfuehrung und Integrationen werden hier nicht frei erfunden.">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Bugs offen</span>
+            <strong class="m700-summary-card__value">@_bugs.Count(x => x.Status != BugStatus.Resolved)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Supportfaelle</span>
+            <strong class="m700-summary-card__value">@_supportCases.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Incidents</span>
+            <strong class="m700-summary-card__value">@_incidents.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Service Levels</span>
+            <strong class="m700-summary-card__value">@_serviceLevels.Count</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">
+            Die Uebersicht nutzt echte Application-Queries. Links zu M601/M606/M303/M500 bleiben Referenzfelder, solange keine Ziel-UseCases als harte Verknuepfung vorhanden sind.
+        </p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (_isLoading)
+        {
+            <div class="m700-state">Lade M700-Daten...</div>
+        }
+        else
+        {
+            <section class="m700-card-grid">
+                <a class="m700-link-card" href="/support/bug-tracking">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M701</span>
+                        <span class="m700-tag">@_bugs.Count Eintraege</span>
+                    </div>
+                    <h2 class="m700-link-card__title">BugTracking</h2>
+                    <p class="m700-link-card__text">Fehlerbeschreibung, Reproduzierbarkeit und Statusfuehrung ohne Vermischung mit SupportCases.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+
+                <a class="m700-link-card" href="/support/change-requests">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M702</span>
+                        <span class="m700-tag">@_changeRequests.Count Eintraege</span>
+                    </div>
+                    <h2 class="m700-link-card__title">ChangeRequests</h2>
+                    <p class="m700-link-card__text">Aenderungswuensche, Verbesserungsideen und Erweiterungen mit Referenzen auf Requirements/Roadmap.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+
+                <a class="m700-link-card" href="/support/cases">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M703</span>
+                        <span class="m700-tag">@_supportCases.Count Faelle</span>
+                    </div>
+                    <h2 class="m700-link-card__title">SupportCases</h2>
+                    <p class="m700-link-card__text">User Requests und Problembeschreibungen; aus einem Fall kann ein Bug oder Incident entstehen.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+
+                <a class="m700-link-card" href="/support/incidents">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M704</span>
+                        <span class="m700-tag">@_incidents.Count Incidents</span>
+                    </div>
+                    <h2 class="m700-link-card__title">Incident Management</h2>
+                    <p class="m700-link-card__text">Betriebsstoerungen, Eskalation und Reaktionssteuerung mit dokumentierten Referenzen.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+
+                <a class="m700-link-card" href="/support/knowledge-base">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M705</span>
+                        <span class="m700-tag">@_knowledgeEntries.Count Eintraege</span>
+                    </div>
+                    <h2 class="m700-link-card__title">Knowledge Base</h2>
+                    <p class="m700-link-card__text">Problemloesungen, Anleitungen und Best Practices fuer wiederverwendbares Supportwissen.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+
+                <a class="m700-link-card" href="/support/service-levels">
+                    <div class="m700-link-card__top">
+                        <span class="m700-link-card__code">M706</span>
+                        <span class="m700-tag">@_serviceLevels.Count Levels</span>
+                    </div>
+                    <h2 class="m700-link-card__title">Service Levels</h2>
+                    <p class="m700-link-card__text">Prioritaeten, Reaktionszeiten und Bearbeitungszeiten fuer Support und Incident Management.</p>
+                    <span class="m700-link-card__footer">Oeffnen</span>
+                </a>
+            </section>
+        }
+    </ChildContent>
+</SupportModuleShell>

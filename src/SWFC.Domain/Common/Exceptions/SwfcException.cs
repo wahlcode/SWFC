@@ -1,4 +1,4 @@
-namespace SWFC.Domain.Common.Exceptions;
+namespace SWFC.Domain.M100_System.M101_Foundation.Exceptions;
 
 public abstract class SwfcException : Exception
 {
@@ -10,3 +10,4 @@ public abstract class SwfcException : Exception
     {
     }
 }
+

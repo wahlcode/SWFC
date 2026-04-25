@@ -1,0 +1,56 @@
+{
+  "ModuleCode": "M1106",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2938435+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M1106 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M1106 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Kundenbetriebsstatus",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Betriebsprofile",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Deployment-Profile",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Produktbezogene Health-Sicht",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Betriebsfaehigkeit im Produktkontext",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

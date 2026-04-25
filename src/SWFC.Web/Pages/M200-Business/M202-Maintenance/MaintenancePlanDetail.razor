@@ -1,0 +1,40 @@
+@page "/business/maintenance/plans/{Id:guid}"
+@using SWFC.Web.Pages.M200_Business.M202_Maintenance.Components
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<GetMaintenancePlanByIdQuery, MaintenancePlanDetailsDto> Pipeline
+
+<PageTitle>M202 Wartungsplan</PageTitle>
+
+@if (_item is null)
+{
+    <p>Lade Wartungsplan ...</p>
+}
+else
+{
+    <div class="m202-detail-page">
+        <header class="m202-detail-page__header">
+            <div class="m202-page__eyebrow">M202</div>
+            <h1>@_item.Name</h1>
+            <p>Intervall: @_item.IntervalValue @_item.IntervalUnit</p>
+        </header>
+
+        <MaintenanceInlineHelp />
+        <MaintenancePlanSummary Item="_item" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private MaintenancePlanDetailsDto? _item;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetMaintenancePlanByIdQuery(Id), CancellationToken.None);
+        _item = result.Value;
+    }
+}
+
+

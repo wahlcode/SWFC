@@ -1,0 +1,253 @@
+@using Microsoft.AspNetCore.Components.Forms
+@using SWFC.Application.M100_System.M102_Organization.CostCenters
+@using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
+@using SWFC.Application.M100_System.M102_Organization.ShiftModels
+@using SWFC.Domain.M100_System.M102_Organization.Users
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<section class="m102-users-panel m201-card">
+    <div class="m102-users-panel__header">
+        <div>
+            <h3>@_titleText</h3>
+            <p>@_subtitleText</p>
+        </div>
+    </div>
+
+    <EditForm EditContext="EditContext" OnValidSubmit="HandleValidSubmitAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="m102-users-validation-summary" />
+
+        <div class="m102-users-form-grid">
+
+            <div class="m102-users-form-field">
+                <label>@_identityKeyText</label>
+                <InputText class="m201-input" @bind-Value="Model.IdentityKey" placeholder="@_identityKeyText" />
+                <ValidationMessage For="() => Model.IdentityKey" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_usernameText</label>
+                <InputText class="m201-input" @bind-Value="Model.Username" placeholder="@_usernameText" />
+                <ValidationMessage For="() => Model.Username" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_displayNameText</label>
+                <InputText class="m201-input" @bind-Value="Model.DisplayName" placeholder="@_displayNameText" />
+                <ValidationMessage For="() => Model.DisplayName" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_firstNameText</label>
+                <InputText class="m201-input" @bind-Value="Model.FirstName" placeholder="@_firstNameText" />
+                <ValidationMessage For="() => Model.FirstName" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_lastNameText</label>
+                <InputText class="m201-input" @bind-Value="Model.LastName" placeholder="@_lastNameText" />
+                <ValidationMessage For="() => Model.LastName" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_employeeNumberText</label>
+                <InputText class="m201-input" @bind-Value="Model.EmployeeNumber" placeholder="@_employeeNumberText" />
+                <ValidationMessage For="() => Model.EmployeeNumber" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_emailText</label>
+                <InputText class="m201-input" @bind-Value="Model.BusinessEmail" placeholder="@_emailText" />
+                <ValidationMessage For="() => Model.BusinessEmail" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_phoneText</label>
+                <InputText class="m201-input" @bind-Value="Model.BusinessPhone" placeholder="@_phoneText" />
+                <ValidationMessage For="() => Model.BusinessPhone" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_plantText</label>
+                <InputText class="m201-input" @bind-Value="Model.Plant" placeholder="@_plantText" />
+                <ValidationMessage For="() => Model.Plant" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_locationText</label>
+                <InputText class="m201-input" @bind-Value="Model.Location" placeholder="@_locationText" />
+                <ValidationMessage For="() => Model.Location" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_teamText</label>
+                <InputText class="m201-input" @bind-Value="Model.Team" placeholder="@_teamText" />
+                <ValidationMessage For="() => Model.Team" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_costCenterText</label>
+                <InputSelect TValue="Guid?" class="m201-input" @bind-Value="Model.CostCenterId">
+                    <option value="">@_selectCostCenterText</option>
+                    @foreach (var costCenter in CostCenters)
+                    {
+                        <option value="@costCenter.Id">@costCenter.Name (@costCenter.Code)</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_shiftModelText</label>
+                <InputSelect TValue="Guid?" class="m201-input" @bind-Value="Model.ShiftModelId">
+                    <option value="">@_selectShiftModelText</option>
+                    @foreach (var shiftModel in ShiftModels)
+                    {
+                        <option value="@shiftModel.Id">@shiftModel.Name (@shiftModel.Code)</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_jobFunctionText</label>
+                <InputText class="m201-input" @bind-Value="Model.JobFunction" placeholder="@_jobFunctionText" />
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_languageText</label>
+                <InputSelect TValue="string" class="m201-input" @bind-Value="Model.PreferredCultureName">
+                    <option value="en-US">English</option>
+                    <option value="de-DE">Deutsch</option>
+                    <option value="ru-RU">Русский</option>
+                    <option value="it-IT">Italiano</option>
+                    <option value="sr-RS">Srpski</option>
+                    <option value="es-MX">Español</option>
+                    <option value="hu-HU">Magyar</option>
+                    <option value="pl-PL">Polski</option>
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_primaryOrganizationText</label>
+                <InputSelect TValue="Guid?" class="m201-input" @bind-Value="Model.PrimaryOrganizationUnitId">
+                    <option value="">@_selectPrimaryOrganizationText</option>
+                    @foreach (var organizationUnit in OrganizationUnits)
+                    {
+                        <option value="@organizationUnit.Id">@organizationUnit.Name (@organizationUnit.Code)</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_statusText</label>
+                <InputSelect TValue="UserStatus" class="m201-input" @bind-Value="Model.Status">
+                    @foreach (UserStatus status in Enum.GetValues<UserStatus>())
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field">
+                <label>@_typeText</label>
+                <InputSelect TValue="UserType" class="m201-input" @bind-Value="Model.UserType">
+                    @foreach (UserType userType in Enum.GetValues<UserType>())
+                    {
+                        <option value="@userType">@userType</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="m102-users-form-field m102-users-form-field--full">
+                <label>@_reasonText</label>
+                <InputTextArea class="m201-textarea" @bind-Value="Model.Reason" placeholder="@_reasonText" />
+            </div>
+
+        </div>
+
+        <div class="m102-users-panel__actions">
+            <button type="submit" class="m201-button" disabled="@IsSubmitting">
+                @(IsSubmitting ? _savingText : _saveText)
+            </button>
+            <button type="button" class="m201-button m201-button--secondary" @onclick="HandleCancelAsync" disabled="@IsSubmitting">
+                @_cancelText
+            </button>
+        </div>
+    </EditForm>
+</section>
+
+@code {
+    private string _titleText = "";
+    private string _subtitleText = "";
+    private string _identityKeyText = "";
+    private string _usernameText = "";
+    private string _displayNameText = "";
+    private string _firstNameText = "";
+    private string _lastNameText = "";
+    private string _employeeNumberText = "";
+    private string _emailText = "";
+    private string _phoneText = "";
+    private string _plantText = "";
+    private string _locationText = "";
+    private string _teamText = "";
+    private string _costCenterText = "";
+    private string _shiftModelText = "";
+    private string _selectCostCenterText = "";
+    private string _selectShiftModelText = "";
+    private string _jobFunctionText = "";
+    private string _languageText = "";
+    private string _primaryOrganizationText = "";
+    private string _selectPrimaryOrganizationText = "";
+    private string _statusText = "";
+    private string _typeText = "";
+    private string _reasonText = "";
+    private string _saveText = "";
+    private string _savingText = "";
+    private string _cancelText = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _titleText = await TextProvider.GetTextAsync("UserCreate.Title", culture);
+        _subtitleText = await TextProvider.GetTextAsync("UserCreate.Subtitle", culture);
+        _identityKeyText = await TextProvider.GetTextAsync("Users.IdentityKey", culture);
+        _usernameText = await TextProvider.GetTextAsync("Users.Username", culture);
+        _displayNameText = await TextProvider.GetTextAsync("Users.DisplayName", culture);
+        _firstNameText = await TextProvider.GetTextAsync("Users.FirstName", culture);
+        _lastNameText = await TextProvider.GetTextAsync("Users.LastName", culture);
+        _employeeNumberText = await TextProvider.GetTextAsync("Users.EmployeeNumber", culture);
+        _emailText = await TextProvider.GetTextAsync("Users.BusinessEmail", culture);
+        _phoneText = await TextProvider.GetTextAsync("Users.BusinessPhone", culture);
+        _plantText = await TextProvider.GetTextAsync("Users.Plant", culture);
+        _locationText = await TextProvider.GetTextAsync("Users.Location", culture);
+        _teamText = await TextProvider.GetTextAsync("Users.Team", culture);
+        _costCenterText = await TextProvider.GetTextAsync("Users.CostCenter", culture);
+        _shiftModelText = await TextProvider.GetTextAsync("Users.ShiftModel", culture);
+        _selectCostCenterText = await TextProvider.GetTextAsync("UserDetail.SelectCostCenter", culture);
+        _selectShiftModelText = await TextProvider.GetTextAsync("UserDetail.SelectShiftModel", culture);
+        _jobFunctionText = await TextProvider.GetTextAsync("Users.JobFunction", culture);
+        _languageText = await TextProvider.GetTextAsync("Common.Language", culture);
+        _primaryOrganizationText = await TextProvider.GetTextAsync("Users.PrimaryOrganizationUnit", culture);
+        _selectPrimaryOrganizationText = await TextProvider.GetTextAsync("Users.SelectPrimaryOrganizationUnit", culture);
+        _statusText = await TextProvider.GetTextAsync("UserDetail.Status", culture);
+        _typeText = await TextProvider.GetTextAsync("Users.UserType", culture);
+        _reasonText = await TextProvider.GetTextAsync("Common.Reason", culture);
+        _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
+        _savingText = await TextProvider.GetTextAsync("Common.Saving", culture);
+        _cancelText = await TextProvider.GetTextAsync("Common.Cancel", culture);
+    }
+
+    [Parameter, EditorRequired] public EditContext EditContext { get; set; } = default!;
+    [Parameter, EditorRequired] public CreateUserModel Model { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<CostCenterListItem> CostCenters { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ShiftModelListItem> ShiftModels { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<OrganizationUnitListItem> OrganizationUnits { get; set; } = [];
+    [Parameter] public bool IsSubmitting { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnValidSubmit { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnCancel { get; set; }
+
+    private Task HandleValidSubmitAsync() => OnValidSubmit.InvokeAsync();
+    private Task HandleCancelAsync() => OnCancel.InvokeAsync();
+}

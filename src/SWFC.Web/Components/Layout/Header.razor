@@ -1,27 +1,222 @@
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services
+
+@inject ICurrentUserService CurrentUserService
+@inject LocalizationTextProvider TextProvider
+@inject NavigationManager NavigationManager
+@inject UserUiPreferenceService PreferenceService
+
 <header class="app-header">
     <div class="app-header__content">
         <div class="app-header__brand">
-            <div class="app-header__title">SWFC</div>
-            <div class="app-header__subtitle">Factory Control System</div>
+            <div class="app-header__title">@_productNameText</div>
+            <div class="app-header__subtitle">@_productSubtitleText</div>
         </div>
 
         <div class="app-header__center">
-            <button type="button" class="app-header__pill app-header__pill--active">Leiter</button>
-            <button type="button" class="app-header__pill">Lager</button>
-            <button type="button" class="app-header__pill">Einkauf</button>
-            <button type="button" class="app-header__pill">QS</button>
+            @if (CanSeeSection("dashboard"))
+            {
+                <a href="@_dashboardRoute" class="@BuildPillClass("dashboard")">@_dashboardText</a>
+            }
+
+            @if (CanSeeSection("assets"))
+            {
+                <a href="/business/assets" class="@BuildPillClass("assets")">@_assetsText</a>
+            }
+
+            @if (CanSeeSection("maintenance"))
+            {
+                <a href="/business/maintenance" class="@BuildPillClass("maintenance")">@_maintenanceText</a>
+            }
+
+            @if (CanSeeSection("inventory"))
+            {
+                <a href="/business/inventory" class="@BuildPillClass("inventory")">@_inventoryText</a>
+            }
+
+            @if (CanSeeSection("energy"))
+            {
+                <a href="/business/energy" class="@BuildPillClass("energy")">@_energyText</a>
+            }
         </div>
 
         <div class="app-header__actions">
-            <div class="app-header__search">Suche...</div>
+            @if (_securityContext.CanUseDeveloperMode)
+            {
+                <form method="post"
+                      action="@(_securityContext.IsDeveloperMode ? "/security/developer-mode/disable" : "/security/developer-mode/enable")"
+                      class="app-header__mode-form">
+                    <AntiforgeryToken />
+                    <button type="submit"
+                            class="app-header__mode-toggle @(_securityContext.IsDeveloperMode ? "app-header__mode-toggle--active" : null)">
+                        @(_securityContext.IsDeveloperMode ? _developerModeActiveText : _developerModeText)
+                    </button>
+                </form>
+            }
+
+            <div class="app-header__search">@BuildPathDisplay()</div>
 
             <div class="app-header__user">
-                <div class="app-header__avatar">SW</div>
+                <div class="app-header__avatar">@BuildInitials(_userName)</div>
+
                 <div class="app-header__user-text">
-                    <div class="app-header__user-name">S. Wahl</div>
-                    <div class="app-header__user-role">Entwickler</div>
+                    <div class="app-header__user-name">@_userName</div>
+                    <div class="app-header__user-role">@BuildRoleLabel()</div>
                 </div>
             </div>
         </div>
     </div>
 </header>
+
+@code {
+    private string _cultureName = LocalizationTextProvider.DefaultCultureName;
+    private string _userName = "User";
+    private SecurityContext _securityContext = new(string.Empty, string.Empty, string.Empty, string.Empty, false);
+    private UserUiPreferences _preferences = UserUiPreferences.Default;
+    private string _dashboardRoute = "/dashboard";
+
+    private string _productNameText = "SWFC";
+    private string _productSubtitleText = "Factory Control System";
+    private string _dashboardText = "Dashboard";
+    private string _assetsText = "Assets";
+    private string _maintenanceText = "Maintenance";
+    private string _inventoryText = "Inventory";
+    private string _energyText = "Energy";
+    private string _developerModeText = "Developer Mode";
+    private string _developerModeActiveText = "Developer Mode active";
+    private string _signedInText = "Signed in";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _securityContext = await CurrentUserService.GetSecurityContextAsync();
+        _preferences = await PreferenceService.GetCurrentAsync();
+        _dashboardRoute = _preferences.StartPageRoute;
+
+        _cultureName = string.IsNullOrWhiteSpace(_securityContext.PreferredCultureName)
+            ? LocalizationTextProvider.DefaultCultureName
+            : _securityContext.PreferredCultureName.Trim();
+
+        await LocalizeAsync();
+
+        _userName = string.IsNullOrWhiteSpace(_securityContext.DisplayName)
+            ? (string.IsNullOrWhiteSpace(_securityContext.Username) ? "User" : _securityContext.Username)
+            : _securityContext.DisplayName;
+    }
+
+    private async Task LocalizeAsync()
+    {
+        _productNameText = await TextProvider.GetTextAsync("Header.ProductName", _cultureName);
+        _productSubtitleText = await TextProvider.GetTextAsync("Header.ProductSubtitle", _cultureName);
+        _dashboardText = await TextProvider.GetTextAsync("Header.Dashboard", _cultureName);
+        _assetsText = await TextProvider.GetTextAsync("Navigation.Module.M201", _cultureName);
+        _maintenanceText = await TextProvider.GetTextAsync("Navigation.Module.M202", _cultureName);
+        _inventoryText = await TextProvider.GetTextAsync("Navigation.Module.M204", _cultureName);
+        _energyText = await TextProvider.GetTextAsync("Navigation.Module.M205", _cultureName);
+        _developerModeText = await TextProvider.GetTextAsync("Sidebar.DeveloperMode.Title", _cultureName);
+        _developerModeActiveText = await TextProvider.GetTextAsync("Header.DeveloperModeActive", _cultureName);
+        _signedInText = await TextProvider.GetTextAsync("Header.SignedIn", _cultureName);
+    }
+
+    private string BuildPillClass(string section)
+        => IsSectionActive(section)
+            ? "app-header__pill app-header__pill--active"
+            : "app-header__pill";
+
+    private bool IsSectionActive(string section)
+    {
+        var path = GetPath();
+
+        return section switch
+        {
+            "dashboard" => string.IsNullOrWhiteSpace(path)
+                || path.StartsWith("dashboard", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("modules", StringComparison.OrdinalIgnoreCase),
+
+            "assets" => path.StartsWith("business/assets", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("machines", StringComparison.OrdinalIgnoreCase),
+
+            "maintenance" => path.StartsWith("business/maintenance", StringComparison.OrdinalIgnoreCase),
+
+            "inventory" => path.StartsWith("business/inventory", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/inventory-item", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/location", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/stock-reservation", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/stock-movement", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/inventory-items", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/locations", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/stock-reservations", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("business/stock-movements", StringComparison.OrdinalIgnoreCase),
+
+            "energy" => path.StartsWith("business/energy", StringComparison.OrdinalIgnoreCase),
+
+            _ => false
+        };
+    }
+
+    private bool CanSeeSection(string section)
+    {
+        if (!_securityContext.IsAuthenticated)
+        {
+            return false;
+        }
+
+        return section switch
+        {
+            "dashboard" => true,
+            "assets" => _securityContext.HasModuleAccess("M201"),
+            "maintenance" => _securityContext.HasModuleAccess("M202"),
+            "inventory" => _securityContext.HasModuleAccess("M204"),
+            "energy" => _securityContext.HasModuleAccess("M205"),
+            _ => false
+        };
+    }
+
+    private string BuildPathDisplay()
+    {
+        var path = GetPath();
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return _dashboardText;
+        }
+
+        return "/" + path;
+    }
+
+    private string BuildRoleLabel()
+    {
+        if (_securityContext.IsDeveloperMode)
+        {
+            return _developerModeText;
+        }
+
+        if (_securityContext.Roles.Count > 0)
+        {
+            return string.Join(", ", _securityContext.Roles);
+        }
+
+        return _signedInText;
+    }
+
+    private string GetPath()
+        => NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Trim();
+
+    private static string BuildInitials(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "U";
+        }
+
+        var parts = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 1)
+        {
+            return parts[0][0].ToString().ToUpperInvariant();
+        }
+
+        return string.Concat(parts.Take(2).Select(x => char.ToUpperInvariant(x[0])));
+    }
+}

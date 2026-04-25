@@ -1,0 +1,50 @@
+﻿.m202-card {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-surface-2);
+}
+
+.m202-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1rem 0;
+}
+
+    .m202-card__header h2 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+.m202-detail-list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 1rem 0;
+}
+
+    .m202-detail-list div {
+        display: grid;
+        gap: 0.2rem;
+    }
+
+    .m202-detail-list dt {
+        font-weight: 700;
+    }
+
+    .m202-detail-list dd {
+        margin: 0;
+    }
+
+.m202-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .m202-table th,
+    .m202-table td {
+        padding: 0.65rem 0.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+    }

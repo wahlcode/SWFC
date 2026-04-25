@@ -1,16 +1,27 @@
-.app-header {
+﻿.app-header {
     border-bottom: 1px solid var(--color-border);
-    background: rgba(15, 16, 18, 0.88);
+    background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
     backdrop-filter: blur(16px);
 }
 
+.app-header__title-link {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+    .app-header__title-link:hover {
+        color: var(--color-link);
+    }
+
 .app-header__content {
-    min-height: 52px; /* vorher 58px → etwas kompakter */
+    min-height: 52px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: var(--space-lg);
-    padding: 0 var(--space-lg); /* weniger Padding */
+    padding: 0 var(--space-lg);
 }
 
 .app-header__brand {
@@ -36,6 +47,7 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .app-header__pill {
@@ -47,8 +59,12 @@
     color: var(--color-text-secondary);
     font-size: 12px;
     font-weight: 600;
-    cursor: default;
+    cursor: pointer;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .app-header__pill--active {
@@ -61,6 +77,27 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.app-header__mode-form {
+    margin: 0;
+}
+
+.app-header__mode-toggle {
+    min-height: 32px;
+    padding: 0 14px;
+    border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 10%, rgba(255,255,255,0.03));
+    color: var(--color-text-primary);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.app-header__mode-toggle--active {
+    background: color-mix(in srgb, var(--color-primary) 20%, rgba(255,255,255,0.03));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 26%, transparent);
 }
 
 .app-header__search {
@@ -125,5 +162,8 @@
 
     .app-header__actions {
         justify-content: space-between;
+        flex-wrap: wrap;
     }
 }
+
+

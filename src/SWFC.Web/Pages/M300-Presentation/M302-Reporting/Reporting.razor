@@ -1,0 +1,87 @@
+@page "/presentation/reports"
+@attribute [Authorize]
+
+@using SWFC.Web.Pages.M300_Presentation.M302_Reporting.Models
+@using SWFC.Web.Pages.M300_Presentation.M302_Reporting.Services
+
+@inject ReportingWorkspaceService Reports
+
+<PageTitle>M302 Reporting</PageTitle>
+
+<div class="m302-reporting">
+    <header class="m302-reporting__header">
+        <div>
+            <div class="m302-reporting__eyebrow">M302</div>
+            <h1>Reporting</h1>
+            <p>Report definitions, filters, visual presentation and export options without KPI calculation logic.</p>
+        </div>
+    </header>
+
+    <section class="m302-reporting__panel">
+        <h2>Create report definition</h2>
+        <form method="post" action="/presentation/reports/register" class="m302-reporting__form">
+            <AntiforgeryToken />
+            <label>
+                <span>Name</span>
+                <input name="Name" required maxlength="160" />
+            </label>
+            <label>
+                <span>Source module</span>
+                <input name="SourceModule" required maxlength="12" />
+            </label>
+            <label>
+                <span>Visualization</span>
+                <select name="Visualization" required>
+                    <option value="Table">Table</option>
+                    <option value="Chart">Chart</option>
+                    <option value="KPI">KPI</option>
+                    <option value="Timeline">Timeline</option>
+                </select>
+            </label>
+            <label>
+                <span>Export formats</span>
+                <input name="ExportFormats" maxlength="80" value="PDF,Excel" />
+            </label>
+            <label class="m302-reporting__wide">
+                <span>Filter definition</span>
+                <input name="FilterDefinition" maxlength="240" />
+            </label>
+            <button type="submit">Create report</button>
+        </form>
+    </section>
+
+    <section class="m302-reporting__grid">
+        @foreach (var report in _reports)
+        {
+            <article class="m302-reporting__card">
+                <header>
+                    <div class="m302-reporting__module">@report.SourceModule</div>
+                    <h2>@report.Name</h2>
+                </header>
+                <dl>
+                    <div>
+                        <dt>Visualization</dt>
+                        <dd>@report.Visualization</dd>
+                    </div>
+                    <div>
+                        <dt>Filters</dt>
+                        <dd>@report.FilterDefinition</dd>
+                    </div>
+                    <div>
+                        <dt>Exports</dt>
+                        <dd>@string.Join(", ", report.ExportFormats)</dd>
+                    </div>
+                </dl>
+            </article>
+        }
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<ReportDefinition> _reports = Array.Empty<ReportDefinition>();
+
+    protected override void OnInitialized()
+    {
+        _reports = Reports.GetDefinitions();
+    }
+}

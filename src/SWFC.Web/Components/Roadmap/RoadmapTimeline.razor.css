@@ -1,0 +1,152 @@
+.roadmap-street {
+    --roadmap-gap: 28px;
+    --roadmap-row-gap: 58px;
+    --roadmap-card-height: 250px;
+    --roadmap-line: var(--color-accent-gold);
+    --roadmap-line-soft: rgba(217, 185, 123, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: var(--roadmap-row-gap);
+    width: 100%;
+}
+
+.roadmap-street__row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--roadmap-gap);
+    align-items: stretch;
+    position: relative;
+}
+
+.roadmap-street__row--reverse {
+    direction: rtl;
+}
+
+    .roadmap-street__row--reverse .roadmap-street__phase {
+        direction: ltr;
+    }
+
+.roadmap-street__phase {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    z-index: 1;
+}
+
+    /* Karten wirklich einheitlich hoch */
+    .roadmap-street__phase ::deep .roadmap-version-card {
+        width: 100%;
+        height: var(--roadmap-card-height);
+        min-height: var(--roadmap-card-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Horizontale Verbindung: 1-2-3-4-5 und 6-7-8-9-10 */
+    .roadmap-street__phase:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: var(--roadmap-gap);
+        height: 2px;
+        transform: translateY(-50%);
+        background: linear-gradient( 90deg, var(--roadmap-line), var(--roadmap-line-soft), var(--roadmap-line) );
+        z-index: 0;
+        pointer-events: none;
+    }
+
+/* In umgedrehter Reihe läuft die horizontale Verbindung nach links */
+.roadmap-street__row--reverse .roadmap-street__phase:not(:last-child)::before {
+    left: auto;
+    right: 100%;
+}
+
+/* Vertikale Verbindung nur am Reihenende: 5 zu 6, 10 zu 11 */
+.roadmap-street__row:not(:last-child) .roadmap-street__phase:last-child::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 2px;
+    height: var(--roadmap-row-gap);
+    transform: translateX(-50%);
+    background: linear-gradient( 180deg, var(--roadmap-line), var(--roadmap-line-soft), var(--roadmap-line) );
+    z-index: 0;
+    pointer-events: none;
+}
+
+.roadmap-street__index {
+    position: absolute;
+    top: -13px;
+    left: -10px;
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-accent-gold);
+    background: var(--color-surface-2);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-extrabold);
+    box-shadow: 0 0 0 4px rgba(217, 185, 123, 0.12);
+}
+
+.roadmap-street__row--reverse .roadmap-street__index {
+    left: auto;
+    right: -10px;
+}
+
+.roadmap-street__phase--current .roadmap-street__index {
+    border-color: var(--color-accent-gold);
+    color: var(--color-accent-gold);
+}
+
+.roadmap-street__phase--done .roadmap-street__index {
+    border-color: var(--color-success-border);
+    color: var(--color-success, #198754);
+}
+
+@media (max-width: 1500px) {
+    .roadmap-street__row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .roadmap-street__phase::before,
+    .roadmap-street__phase::after {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1100px) {
+    .roadmap-street__row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .roadmap-street__row--reverse {
+        direction: ltr;
+    }
+
+        .roadmap-street__row--reverse .roadmap-street__index {
+            left: -10px;
+            right: auto;
+        }
+}
+
+@media (max-width: 640px) {
+    .roadmap-street {
+        gap: var(--space-lg);
+    }
+
+    .roadmap-street__row {
+        grid-template-columns: 1fr;
+    }
+
+    .roadmap-street__phase ::deep .roadmap-version-card {
+        height: auto;
+        min-height: 220px;
+    }
+}

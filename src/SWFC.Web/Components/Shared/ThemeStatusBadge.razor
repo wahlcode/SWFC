@@ -1,19 +1,81 @@
-<span class="@CssClass">@Label</span>
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<span class="@BuildClass()">
+    @BuildLabel()
+</span>
 
 @code {
-    [Parameter] public string Status { get; set; } = "Open";
+    [Parameter]
+    public string? Status { get; set; }
 
-    private string CssClass => Status switch
-    {
-        "Done" => "theme-status theme-status--done",
-        "InProgress" => "theme-status theme-status--progress",
-        _ => "theme-status theme-status--open"
-    };
+    private string _unknownText = "Unknown";
+    private string _openText = "Open";
+    private string _doneText = "Done";
+    private string _inProgressText = "In progress";
+    private string _coreCompleteText = "Core complete";
+    private string _extendedCompleteText = "Extended complete";
+    private string _fullCompleteText = "Fully complete";
 
-    private string Label => Status switch
+    protected override async Task OnInitializedAsync()
     {
-        "Done" => "Done",
-        "InProgress" => "In Progress",
-        _ => "Open"
-    };
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _unknownText = await TextProvider.GetTextAsync("Roadmap.Status.Unknown", culture);
+        _openText = await TextProvider.GetTextAsync("Roadmap.Status.Open", culture);
+        _doneText = await TextProvider.GetTextAsync("Roadmap.StatusBadge.Done", culture);
+        _inProgressText = await TextProvider.GetTextAsync("Roadmap.Status.InProgress", culture);
+        _coreCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.CoreComplete", culture);
+        _extendedCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.ExtendedComplete", culture);
+        _fullCompleteText = await TextProvider.GetTextAsync("Roadmap.Status.FullComplete", culture);
+    }
+
+    private string BuildClass()
+    {
+        var baseClass = "theme-status";
+        var normalized = Normalize(Status);
+
+        var modifier = normalized switch
+        {
+            "fullcomplete" => "theme-status--done",
+            "extendedcomplete" => "theme-status--done",
+            "corecomplete" => "theme-status--done",
+            "done" => "theme-status--done",
+            "inprogress" => "theme-status--progress",
+            "open" => "theme-status--open",
+            _ => string.Empty
+        };
+
+        return string.IsNullOrWhiteSpace(modifier)
+            ? baseClass
+            : $"{baseClass} {modifier}";
+    }
+
+    private string BuildLabel()
+    {
+        if (string.IsNullOrWhiteSpace(Status))
+        {
+            return _unknownText;
+        }
+
+        var normalized = Normalize(Status);
+
+        return normalized switch
+        {
+            "open" => _openText,
+            "done" => _doneText,
+            "inprogress" => _inProgressText,
+            "corecomplete" => _coreCompleteText,
+            "extendedcomplete" => _extendedCompleteText,
+            "fullcomplete" => _fullCompleteText,
+            _ => Status!
+        };
+    }
+
+    private static string Normalize(string? value)
+        => (value ?? string.Empty)
+            .Trim()
+            .Replace(" ", string.Empty)
+            .ToLowerInvariant();
 }

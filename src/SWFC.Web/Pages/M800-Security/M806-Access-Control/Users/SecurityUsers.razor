@@ -1,0 +1,122 @@
+@page "/security/users"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M806_AccessControl.Users
+
+@inject IExecutionPipeline<GetSecurityUsersQuery, IReadOnlyList<SecurityUserListItemDto>> GetSecurityUsersPipeline
+
+<section class="m800-security-users">
+    <div class="m800-security-users__header">
+        <div>
+            <h1>Sicherheitsbenutzer</h1>
+            <p>Rollen, privilegierte Benutzer und Zugangsschutz werden getrennt von M102 im Sicherheitsmodul verwaltet.</p>
+        </div>
+    </div>
+
+    <div class="m800-security-users__card">
+        @if (_loading)
+        {
+            <div class="m800-security-users__state">Lade Sicherheitsbenutzer...</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m800-security-users__alert m800-security-users__alert--error">@_error</div>
+        }
+        else if (_users.Count == 0)
+        {
+            <div class="m800-security-users__state">Keine Benutzer vorhanden.</div>
+        }
+        else
+        {
+            <table class="m800-security-users__table">
+                <thead>
+                    <tr>
+                        <th>Benutzer</th>
+                        <th>Rollen</th>
+                        <th>Status</th>
+                        <th>Login</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in _users)
+                    {
+                        <tr>
+                            <td>
+                                <div class="m800-security-users__name">@user.DisplayName</div>
+                                <div class="m800-security-users__meta">@user.Username · @user.BusinessEmail</div>
+                            </td>
+                            <td>
+                                <div class="m800-security-users__role-list">
+                                    @if (user.Roles.Count == 0)
+                                    {
+                                        <span class="m800-security-users__chip m800-security-users__chip--muted">Keine Rolle</span>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var role in user.Roles)
+                                        {
+                                            <span class="m800-security-users__chip">@role</span>
+                                        }
+                                    }
+                                    @if (user.IsProtectedSuperAdmin)
+                                    {
+                                        <span class="m800-security-users__chip m800-security-users__chip--accent">Geschützter SuperAdmin</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="m800-security-users__badge @(user.Status == SWFC.Domain.M100_System.M102_Organization.Users.UserStatus.Active ? "m800-security-users__badge--ok" : "m800-security-users__badge--warn")">
+                                    @user.Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (user.CredentialStatus is null)
+                                {
+                                    <span class="m800-security-users__badge m800-security-users__badge--warn">Kein Local-Login</span>
+                                }
+                                else if (user.CredentialStatus.LockoutUntilUtc.HasValue)
+                                {
+                                    <span class="m800-security-users__badge m800-security-users__badge--danger">Gesperrt</span>
+                                }
+                                else
+                                {
+                                    <span class="m800-security-users__badge m800-security-users__badge--ok">Aktiv</span>
+                                }
+                            </td>
+                            <td class="m800-security-users__actions">
+                                <a href="@($"/security/users/{user.Id}")" class="m800-security-users__link">Verwalten</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</section>
+
+@code {
+    private bool _loading = true;
+    private string? _error;
+    private IReadOnlyList<SecurityUserListItemDto> _users = Array.Empty<SecurityUserListItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await GetSecurityUsersPipeline.ExecuteAsync(new GetSecurityUsersQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _users = result.Value;
+        }
+        else
+        {
+            _error = result.Error?.Message ?? "Sicherheitsbenutzer konnten nicht geladen werden.";
+        }
+
+        _loading = false;
+    }
+}

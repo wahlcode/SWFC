@@ -1,0 +1,24 @@
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+
+<section class="m202-card">
+    <header class="m202-card__header">
+        <h2>Plandetails</h2>
+    </header>
+
+    <dl class="m202-detail-list">
+        <div><dt>Beschreibung</dt><dd>@Item.Description</dd></div>
+        <div><dt>Zieltyp</dt><dd>@Item.TargetType</dd></div>
+        <div><dt>Ziel</dt><dd>@Item.TargetId</dd></div>
+        <div><dt>Intervall</dt><dd>@Item.IntervalValue @Item.IntervalUnit</dd></div>
+        <div><dt>Nächster Termin</dt><dd>@Item.NextDueAtUtc.ToString("dd.MM.yyyy")</dd></div>
+        <div><dt>Aktiv</dt><dd>@(Item.IsActive ? "Ja" : "Nein")</dd></div>
+        <div><dt>Angelegt</dt><dd>@Item.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</dd></div>
+    </dl>
+</section>
+
+@code {
+    [Parameter]
+    public MaintenancePlanDetailsDto Item { get; set; } = null!;
+}
+
+

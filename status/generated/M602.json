@@ -1,0 +1,81 @@
+{
+  "ModuleCode": "M602",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9280221+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M602 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M602 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Fachliche Konzepte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Architekturideen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "L\u00C3\u0192\u00C2\u00B6sungsvarianten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modulideen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Explorative Erarbeitung",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M606",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M604",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine automatische Umsetzung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bewertung und Entscheidung erforderlich",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    }
+  ]
+}

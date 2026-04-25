@@ -1,0 +1,806 @@
+{
+  "Versions": [
+    {
+      "Version": "v0.1.0",
+      "Name": "System Foundation",
+      "AudienceTitle": "Systembasis",
+      "Goal": "Die technische Grundlage für SWFC steht stabil.",
+      "UserDescription": "Foundation, Authentifizierung, Setup und erste Sicherheitsgrundlagen werden vorbereitet.",
+      "DeveloperDescription": "M101, M103, M107, M801 und M802 bilden die technische Startbasis.",
+      "Status": "Done",
+      "PrimaryModules": [
+        "M101",
+        "M103",
+        "M107"
+      ],
+      "RequiredModules": [
+        "M801",
+        "M802"
+      ],
+      "Milestones": [
+        {
+          "Title": "Foundation",
+          "Description": "Basisarchitektur, Result-Muster und Grundregeln stehen.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Authentifizierung",
+          "Description": "Login und Current-User-Grundlage sind nutzbar.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Setup",
+          "Description": "Bootstrap und Migrationen werden systematisch vorbereitet.",
+          "Status": "Done"
+        }
+      ],
+      "Result": "Eine tragfähige technische Systembasis."
+    },
+    {
+      "Version": "v0.2.0",
+      "Name": "Organization",
+      "AudienceTitle": "Organisation",
+      "Goal": "Der organisatorische Zwilling wird verwaltbar.",
+      "UserDescription": "Benutzer, Organisationseinheiten, Kostenstellen und Schichten werden strukturiert.",
+      "DeveloperDescription": "M102 baut auf Foundation, Authentifizierung und Security auf.",
+      "Status": "Done",
+      "PrimaryModules": [
+        "M102"
+      ],
+      "RequiredModules": [
+        "M101",
+        "M103",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Organisationseinheiten",
+          "Description": "Organisationsstruktur wird verwaltbar.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Benutzerstammdaten",
+          "Description": "Benutzerprofile und Zuordnungen werden abbildbar.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Kostenstellen und Schichten",
+          "Description": "Optionale Organisationsstrukturen werden vorbereitet.",
+          "Status": "Done"
+        }
+      ],
+      "Result": "Eine organisatorische Grundlage für fachliche Module."
+    },
+    {
+      "Version": "v0.3.0",
+      "Name": "Presentation Foundation",
+      "AudienceTitle": "Oberfläche und Bedienbasis",
+      "Goal": "AppShell, Theme, Formulare, Lokalisierung und Personalisierung bilden eine konsistente UI-Grundlage.",
+      "UserDescription": "Navigation, Theme, Eingaben, Sprache und Benutzerpräferenzen werden bedienbar.",
+      "DeveloperDescription": "M301, M305, M306, M307 und M106 bilden die UI- und Theme-Basis.",
+      "Status": "Done",
+      "PrimaryModules": [
+        "M301",
+        "M305",
+        "M306",
+        "M307",
+        "M106"
+      ],
+      "RequiredModules": [
+        "M103",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "AppShell",
+          "Description": "Layout und Navigation sind systemweit nutzbar.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Formularbasis",
+          "Description": "Eingabemuster werden vereinheitlicht.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Lokalisierung",
+          "Description": "Sprache und Texte sind zentral steuerbar.",
+          "Status": "Done"
+        }
+      ],
+      "Result": "Eine nutzbare und konsistente Bedienoberfläche."
+    },
+    {
+      "Version": "v0.4.0",
+      "Name": "Configuration Documents Search",
+      "AudienceTitle": "Konfiguration, Dokumente und Suche",
+      "Goal": "Systemweite Einstellungen, Dokumente, Reporting-Grundlagen und Suche werden geplant.",
+      "UserDescription": "Konfiguration, Dokumente und Suchfunktionen werden als eigene Systembereiche vorbereitet.",
+      "DeveloperDescription": "M104, M105, M302, M303 und M304 ergänzen die UI- und Systembasis.",
+      "Status": "Done",
+      "PrimaryModules": [
+        "M104",
+        "M105",
+        "M302",
+        "M303",
+        "M304"
+      ],
+      "RequiredModules": [
+        "M301",
+        "M106",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Konfiguration",
+          "Description": "Zentrale Einstellungen und Modulaktivierungen werden vorbereitet.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Dokumente",
+          "Description": "Dokumentbasis und Verknüpfungen werden vorbereitet.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Suche und Meldungen",
+          "Description": "Suche, Reporting und Benachrichtigungen werden eingeordnet.",
+          "Status": "Done"
+        }
+      ],
+      "Result": "Systemweite Bedien- und Verwaltungsfunktionen sind eingeplant."
+    },
+    {
+      "Version": "v0.5.0",
+      "Name": "Asset Foundation",
+      "AudienceTitle": "Anlagen und technischer Zwilling",
+      "Goal": "Assets, Maschinen und Komponenten werden strukturiert verwaltbar.",
+      "UserDescription": "Maschinen, Anlagenbereiche und Komponenten entstehen als technischer Zwilling.",
+      "DeveloperDescription": "M201 nutzt M102, M301 und M806.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M201"
+      ],
+      "RequiredModules": [
+        "M101",
+        "M102",
+        "M301",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Maschinen",
+          "Description": "Maschinenstammdaten sind verwaltbar.",
+          "Status": "Done"
+        },
+        {
+          "Title": "Komponenten",
+          "Description": "Komponenten und Bereiche werden strukturiert.",
+          "Status": "Done"
+        }
+      ],
+      "Result": "Der technische Zwilling steht als Basis für Fachprozesse."
+    },
+    {
+      "Version": "v0.6.0",
+      "Name": "Inventory",
+      "AudienceTitle": "Lager und Materialfluss",
+      "Goal": "Artikel, Lagerorte, Bestände, Reservierungen und Bewegungen werden nachvollziehbar.",
+      "UserDescription": "Material wird für Betrieb und Wartung transparent verwaltet.",
+      "DeveloperDescription": "M204 führt Bestand über Bewegungen und bleibt Quelle für Bestandsänderungen.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M204"
+      ],
+      "RequiredModules": [
+        "M201",
+        "M102",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Artikel und Lagerorte",
+          "Description": "Grunddaten für Lagerverwaltung sind verfügbar.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Bewegungen",
+          "Description": "Bestandsveränderungen werden nachvollziehbar erfasst.",
+          "Status": "InProgress"
+        }
+      ],
+      "Result": "Transparenter Materialbestand für operative Prozesse."
+    },
+    {
+      "Version": "v0.7.0",
+      "Name": "Maintenance",
+      "AudienceTitle": "Wartung",
+      "Goal": "Wartungspläne und Wartungsaufträge werden operativ nutzbar.",
+      "UserDescription": "Wartung wird planbar, nachvollziehbar und mit Anlagen sowie Material verbunden.",
+      "DeveloperDescription": "M202 baut auf M201, M204, M102 und M805 auf.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M202"
+      ],
+      "RequiredModules": [
+        "M201",
+        "M204",
+        "M102",
+        "M805"
+      ],
+      "Milestones": [
+        {
+          "Title": "Wartungspläne",
+          "Description": "Regelmäßige Wartung ist planbar.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Wartungsaufträge",
+          "Description": "Aufträge sind erfassbar und auswertbar.",
+          "Status": "InProgress"
+        }
+      ],
+      "Result": "Operative Wartung wird systematisch geführt."
+    },
+    {
+      "Version": "v0.8.0",
+      "Name": "Energy",
+      "AudienceTitle": "Energie",
+      "Goal": "Energiezähler, Medien und Messwerte werden strukturiert erfasst.",
+      "UserDescription": "Energieflüsse werden sichtbar und können später ausgewertet werden.",
+      "DeveloperDescription": "M205 speichert Messwerte und Zählerstände als Primärdaten.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M205"
+      ],
+      "RequiredModules": [
+        "M201",
+        "M102",
+        "M805"
+      ],
+      "Milestones": [
+        {
+          "Title": "Zähler",
+          "Description": "Energiezähler sind verwaltbar.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Messwerte",
+          "Description": "Energiehistorie ist erfassbar.",
+          "Status": "InProgress"
+        }
+      ],
+      "Result": "Energie wird messbar und fachlich zuordenbar."
+    },
+    {
+      "Version": "v0.9.0",
+      "Name": "Purchasing",
+      "AudienceTitle": "Operativer Einkauf",
+      "Goal": "Bedarfe, Lieferanten, Bestellungen, RFQ und Wareneingang werden operativ geführt.",
+      "UserDescription": "Einkauf wird als operativer Prozess sichtbar, ERP bleibt kaufmännisch führend.",
+      "DeveloperDescription": "M206 ist operativ führend und löst Wareneingang Richtung M204 aus.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M206"
+      ],
+      "RequiredModules": [
+        "M204",
+        "M202",
+        "M209",
+        "M403",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Bedarfe",
+          "Description": "Bedarfe aus Wartung, Lager und Projekten werden erfasst.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Bestellungen und RFQ",
+          "Description": "Bestellungen und Angebotsanfragen werden operativ geführt.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Wareneingang",
+          "Description": "Wareneingang wird erfasst und fachlich an M204 übergeben.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Ein sauber abgegrenztes operatives Einkaufsmodul."
+    },
+    {
+      "Version": "v0.10.0",
+      "Name": "Inspection Quality Safety",
+      "AudienceTitle": "Prüfung, Qualität und Sicherheit",
+      "Goal": "Prüfungen, Qualitätsabweichungen und Sicherheitsregeln werden fachlich getrennt und verbunden.",
+      "UserDescription": "Prüfungen, Qualität und Sicherheit werden nachvollziehbar geführt.",
+      "DeveloperDescription": "M203, M207 und M208 bilden fachliche Kontroll- und Sicherheitsbereiche.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M203",
+        "M207",
+        "M208"
+      ],
+      "RequiredModules": [
+        "M201",
+        "M202",
+        "M102",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Prüfungen",
+          "Description": "Prüfpläne und Prüfergebnisse werden vorbereitet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Qualität",
+          "Description": "Abweichungen und Maßnahmen werden strukturiert.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Sicherheit",
+          "Description": "Sicherheitsregeln und Freigaben werden vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Kontrollierte Qualität, Prüfung und Sicherheit."
+    },
+    {
+      "Version": "v0.11.0",
+      "Name": "Projects Customers Operations Workforce",
+      "AudienceTitle": "Projekte, Kunden, Produktion und Workforce",
+      "Goal": "Erweiterte operative Bereiche werden geplant und abgegrenzt.",
+      "UserDescription": "Projekte, Kunden, Produktion und Mitarbeitereinsätze werden als eigene Bereiche berücksichtigt.",
+      "DeveloperDescription": "M209, M210, M212 und M213 ergänzen den operativen Business-Bereich.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M209",
+        "M210",
+        "M212",
+        "M213"
+      ],
+      "RequiredModules": [
+        "M102",
+        "M201",
+        "M202",
+        "M204",
+        "M207",
+        "M805"
+      ],
+      "Milestones": [
+        {
+          "Title": "Projekte",
+          "Description": "Maßnahmen und Aufgaben werden strukturiert.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Kunden",
+          "Description": "Schlanke Kundenbasis wird vorbereitet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Produktion und Workforce",
+          "Description": "Produktionsgeschehen und Mitarbeitereinsätze werden eingeordnet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Alle Business-Erweiterungen sind in der Roadmap berücksichtigt."
+    },
+    {
+      "Version": "v0.12.0",
+      "Name": "Analytics",
+      "AudienceTitle": "Analytics und Auswertungen",
+      "Goal": "KPIs, Reports, Dashboards und fachliche Auswertungen werden vorbereitet.",
+      "UserDescription": "Daten aus den Fachmodulen werden auswertbar.",
+      "DeveloperDescription": "M211 liefert fachliche Analysebasis, M302 visualisiert ohne Berechnungslogik.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M211"
+      ],
+      "RequiredModules": [
+        "M201",
+        "M202",
+        "M204",
+        "M205",
+        "M207",
+        "M302"
+      ],
+      "Milestones": [
+        {
+          "Title": "KPIs",
+          "Description": "Kennzahlen werden fachlich eingeordnet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Reports",
+          "Description": "Auswertungen werden nutzbar dargestellt.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Auswertungen werden systematisch nutzbar."
+    },
+    {
+      "Version": "v0.13.0",
+      "Name": "Integration",
+      "AudienceTitle": "Integration",
+      "Goal": "Import, Export, API, ERP, IoT, Messaging, Identity und DMS werden kontrolliert angebunden.",
+      "UserDescription": "Externe Systeme werden über klare Integrationsmodule angebunden.",
+      "DeveloperDescription": "M401 bis M407 bilden die Integrationsschicht ohne Fachlogik zu übernehmen.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M401",
+        "M402",
+        "M403",
+        "M404",
+        "M405",
+        "M406",
+        "M407"
+      ],
+      "RequiredModules": [
+        "M103",
+        "M104",
+        "M201",
+        "M202",
+        "M204",
+        "M205",
+        "M206",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Import Export und API",
+          "Description": "Technischer Datenaustausch wird vorbereitet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "ERP und IoT",
+          "Description": "ERP- und Maschinenanbindung werden abgegrenzt.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Messaging Identity DMS",
+          "Description": "Events, Identität und Dokumentensysteme werden angebunden.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "SWFC kann kontrolliert mit externen Systemen sprechen."
+    },
+    {
+      "Version": "v0.14.0",
+      "Name": "Runtime",
+      "AudienceTitle": "Laufzeit und Automatisierung",
+      "Goal": "Scheduler, Automatisierung, Job-Ausführung, Leitwarte und Echtzeit bilden die Laufzeitschicht.",
+      "UserDescription": "Wiederkehrende Abläufe, Jobs und Live-Zustände werden kontrolliert verarbeitet.",
+      "DeveloperDescription": "M501 bis M505 bauen auf Fachmodulen, Integration und Security auf.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M501",
+        "M502",
+        "M503",
+        "M504",
+        "M505"
+      ],
+      "RequiredModules": [
+        "M202",
+        "M203",
+        "M205",
+        "M303",
+        "M404",
+        "M405",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Scheduler und Jobs",
+          "Description": "Zeitgesteuerte und geplante Abläufe werden möglich.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Automatisierung",
+          "Description": "Regelbasierte Reaktionen werden auditierbar.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Leitwarte und Echtzeit",
+          "Description": "Live-Zustände und kontrollierte Bedienung werden vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "SWFC kann Prozesse kontrolliert im Hintergrund und live ausführen."
+    },
+    {
+      "Version": "v0.15.0",
+      "Name": "Planning",
+      "AudienceTitle": "Planung und Entscheidungen",
+      "Goal": "Roadmap, Konzepte, Prototypen, Entscheidungen, Standards, Anforderungen und Bewertung werden vollständig abgebildet.",
+      "UserDescription": "Weiterentwicklung wird nachvollziehbar geplant und bewertet.",
+      "DeveloperDescription": "M601 bis M607 bilden den Planungsbereich.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M601",
+        "M602",
+        "M603",
+        "M604",
+        "M605",
+        "M606",
+        "M607"
+      ],
+      "RequiredModules": [
+        "M301",
+        "M805"
+      ],
+      "Milestones": [
+        {
+          "Title": "Roadmap",
+          "Description": "Versionen und Module werden nachvollziehbar geplant.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Konzepte und Entscheidungen",
+          "Description": "Ideen und Regeln werden verbindlich dokumentiert.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Anforderungen und Bewertung",
+          "Description": "Neue Anforderungen werden gesammelt und bewertet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Planung und Weiterentwicklung sind systematisch geführt."
+    },
+    {
+      "Version": "v0.16.0",
+      "Name": "Support",
+      "AudienceTitle": "Support",
+      "Goal": "Bugs, Change Requests, Supportfälle, Incidents, Knowledge Base und SLA werden nutzbar.",
+      "UserDescription": "Supportprozesse werden strukturiert geführt.",
+      "DeveloperDescription": "M701 bis M706 bilden den Supportbereich.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M701",
+        "M702",
+        "M703",
+        "M704",
+        "M705",
+        "M706"
+      ],
+      "RequiredModules": [
+        "M303",
+        "M601",
+        "M606",
+        "M805",
+        "M806"
+      ],
+      "Milestones": [
+        {
+          "Title": "Bugs und Supportfälle",
+          "Description": "Fehler und Anfragen werden nachvollziehbar.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Incidents",
+          "Description": "Kritische Situationen werden kontrolliert bearbeitet.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Knowledge und SLA",
+          "Description": "Wissen und Service Levels werden vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Support und Betriebshilfe sind strukturiert."
+    },
+    {
+      "Version": "v0.17.0",
+      "Name": "Security Complete",
+      "AudienceTitle": "Sicherheit und Compliance",
+      "Goal": "Security Foundation, App Security, Data Security, DevSecOps, Audit, Access Control, Secrets, Monitoring und Policies werden vollständig berücksichtigt.",
+      "UserDescription": "Zugriff, Nachvollziehbarkeit und Sicherheitsregeln werden systematisch geführt.",
+      "DeveloperDescription": "M801 bis M809 bilden den Security-Bereich.",
+      "Status": "InProgress",
+      "PrimaryModules": [
+        "M801",
+        "M802",
+        "M803",
+        "M804",
+        "M805",
+        "M806",
+        "M807",
+        "M808",
+        "M809"
+      ],
+      "RequiredModules": [
+        "M103",
+        "M301",
+        "M601"
+      ],
+      "Milestones": [
+        {
+          "Title": "Audit und Zugriff",
+          "Description": "Nachvollziehbarkeit und Berechtigungen werden zentral.",
+          "Status": "InProgress"
+        },
+        {
+          "Title": "Daten- und Anwendungsschutz",
+          "Description": "Sicherheitsregeln schützen Anwendung und Daten.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Secrets Monitoring Policies",
+          "Description": "Geheimnisse, Überwachung und Richtlinien werden vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Sicherheit ist als eigener Systembereich vollständig geplant."
+    },
+    {
+      "Version": "v0.18.0",
+      "Name": "Intelligence",
+      "AudienceTitle": "Intelligenz",
+      "Goal": "Analytics Engine, Prediction, Optimization, Anomaly Detection und Intelligence Governance werden geplant.",
+      "UserDescription": "Daten werden intelligent auswertbar, ohne operative Freigaben zu ersetzen.",
+      "DeveloperDescription": "M901 bis M905 nutzen Fachmodule, Analytics, Runtime und Audit.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M901",
+        "M902",
+        "M903",
+        "M904",
+        "M905"
+      ],
+      "RequiredModules": [
+        "M205",
+        "M207",
+        "M211",
+        "M303",
+        "M500",
+        "M805",
+        "M809"
+      ],
+      "Milestones": [
+        {
+          "Title": "Analyse-Engine",
+          "Description": "Datenanalyse und Korrelationen werden vorbereitet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Vorhersage und Optimierung",
+          "Description": "Empfehlungen und Vorschläge werden nachvollziehbar.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Governance",
+          "Description": "Intelligenzfunktionen bleiben kontrolliert.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "Intelligenzfunktionen sind kontrolliert eingeplant."
+    },
+    {
+      "Version": "v0.19.0",
+      "Name": "Platform",
+      "AudienceTitle": "Plattform",
+      "Goal": "Plugin-System, SDK, Extension Management, Marketplace und Versioning werden vorbereitet.",
+      "UserDescription": "SWFC wird erweiterbar, ohne den Kern unkontrolliert zu verändern.",
+      "DeveloperDescription": "M1001 bis M1005 bilden die Plattformschicht.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M1001",
+        "M1002",
+        "M1003",
+        "M1004",
+        "M1005"
+      ],
+      "RequiredModules": [
+        "M804",
+        "M805",
+        "M806",
+        "M809"
+      ],
+      "Milestones": [
+        {
+          "Title": "Plugin-System",
+          "Description": "Erweiterungen werden kontrolliert möglich.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "SDK und Extension Management",
+          "Description": "Entwicklung und Verwaltung von Erweiterungen werden strukturiert.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Versioning",
+          "Description": "Versionen und Updates werden kontrolliert verwaltet.",
+          "Status": "InProgress"
+        }
+      ],
+      "Result": "Die Plattform kann kontrolliert erweitert und versioniert werden."
+    },
+    {
+      "Version": "v0.20.0",
+      "Name": "Productization",
+      "AudienceTitle": "Produktisierung",
+      "Goal": "Distribution, Updates, Produktversion, Lizenzierung, Backup Restore und Produktbetrieb werden produktfähig.",
+      "UserDescription": "SWFC wird auslieferbar, aktualisierbar und betreibbar.",
+      "DeveloperDescription": "M1101 bis M1106 bilden die Produktisierung.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M1101",
+        "M1102",
+        "M1103",
+        "M1104",
+        "M1105",
+        "M1106"
+      ],
+      "RequiredModules": [
+        "M1001",
+        "M1003",
+        "M1005",
+        "M107",
+        "M805",
+        "M809"
+      ],
+      "Milestones": [
+        {
+          "Title": "Distribution und Updates",
+          "Description": "Auslieferung und Update-Verteilung werden vorbereitet.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Lizenzierung und Version",
+          "Description": "Produktversion und Lizenzstatus werden nachvollziehbar.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Backup und Betrieb",
+          "Description": "Backup, Restore und Produktbetrieb werden vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "SWFC wird produkt- und betriebsfähig."
+    },
+    {
+      "Version": "v1.0.0",
+      "Name": "Full System",
+      "AudienceTitle": "Vollständiges System",
+      "Goal": "Alle Hauptbereiche bilden eine zusammenhängende operative Plattform.",
+      "UserDescription": "SWFC deckt System, Business, Präsentation, Integration, Laufzeit, Planung, Support, Sicherheit, Intelligenz, Plattform und Produktbetrieb ab.",
+      "DeveloperDescription": "v1.0.0 bündelt alle Roadmap-Schritte zu einem prüfbaren Gesamtsystem.",
+      "Status": "Planned",
+      "PrimaryModules": [
+        "M100",
+        "M200",
+        "M300",
+        "M400",
+        "M500",
+        "M600",
+        "M700",
+        "M800",
+        "M900",
+        "M1000",
+        "M1100"
+      ],
+      "RequiredModules": [],
+      "Milestones": [
+        {
+          "Title": "Gesamtabnahme",
+          "Description": "Alle Hauptbereiche sind integriert und prüfbar.",
+          "Status": "Planned"
+        },
+        {
+          "Title": "Betriebsfähigkeit",
+          "Description": "Systembetrieb, Updates und Support sind vorbereitet.",
+          "Status": "Planned"
+        }
+      ],
+      "Result": "SWFC ist als vollständige modulare Unternehmensplattform nutzbar."
+    }
+  ]
+}

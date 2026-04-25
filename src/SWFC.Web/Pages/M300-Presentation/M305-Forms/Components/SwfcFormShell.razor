@@ -1,0 +1,68 @@
+@namespace SWFC.Web.Pages.M300_Presentation.M305_Forms.Components
+@using SWFC.Web.Pages.M300_Presentation.M305_Forms.Models
+
+<section class="m305-form-shell" data-form-mode="@Mode.ToString().ToLowerInvariant()">
+    <header class="m305-form-shell__header">
+        @if (!string.IsNullOrWhiteSpace(Eyebrow))
+        {
+            <p class="m305-form-shell__eyebrow">@Eyebrow</p>
+        }
+
+        <div class="m305-form-shell__title-row">
+            <h1 class="m305-form-shell__title">@Title</h1>
+            <span class="m305-form-shell__mode">@ModeLabel</span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Subtitle))
+        {
+            <p class="m305-form-shell__subtitle">@Subtitle</p>
+        }
+    </header>
+
+    @if (ValidationErrors is not null && ValidationErrors.Count > 0)
+    {
+        <div class="m305-form-shell__summary" role="alert">
+            @foreach (var error in ValidationErrors)
+            {
+                <div class="m305-form-shell__summary-line">@error.Value</div>
+            }
+        </div>
+    }
+
+    <div class="m305-form-shell__body">
+        @ChildContent
+    </div>
+
+    @if (Actions is not null)
+    {
+        <footer class="m305-form-shell__actions">
+            @Actions
+        </footer>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public string Eyebrow { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Subtitle { get; set; } = string.Empty;
+
+    [Parameter]
+    public FormMode Mode { get; set; } = FormMode.Edit;
+
+    [Parameter]
+    public string ModeLabel { get; set; } = string.Empty;
+
+    [Parameter]
+    public IReadOnlyDictionary<string, string>? ValidationErrors { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+}

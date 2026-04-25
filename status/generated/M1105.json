@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M1105",
+  "ScorePercent": 20,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2907204+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M1105 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Backup-Strategien im Produktkontext",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Restore-Prozesse",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Recovery-Kontexte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sicherungsstatus",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wiederherstellungsnachvollziehbarkeit",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

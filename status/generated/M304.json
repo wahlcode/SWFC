@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M304",
+  "ScorePercent": 6,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8252215+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Globale Suche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modul\u00C3\u0192\u00C2\u00BCbergreifende Ergebnisse",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Filtermechanismen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ergebnisdarstellung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Navigation zu Objekten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Gruppierung nach Modulen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Filter nach Modul / Zeitraum / Status / Objekt",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Direktsprung zum Objekt",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Autocomplete",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Freie Textsuche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "ID-basierte Suche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Strukturierte Suche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr gro\u00C3\u0192\u00C5\u00B8e Datenmengen / externe Suche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Rechte- und Sichtbarkeitsfilter",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Integration in M301",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Fachlogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "ModuleCode": "M211",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7735896+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M211 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M211 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "KPIs",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Reports",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dashboards",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Auswertungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abteilungsspezifische Dashboards",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Energieauswertung auf Basis M205",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wartungsauswertung auf Basis M202",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Qualit\u00C3\u0192\u00C2\u00A4tsauswertung auf Basis M207",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Flexible Reports / individuelle KPIs",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export PDF / Excel",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine eigenen fachlichen Daten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine doppelte Datenhaltung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

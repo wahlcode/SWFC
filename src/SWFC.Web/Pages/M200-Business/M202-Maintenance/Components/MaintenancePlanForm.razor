@@ -1,0 +1,87 @@
+@using SWFC.Domain.M200_Business.M202_Maintenance.MaintenanceOrders
+@using SWFC.Domain.M200_Business.M202_Maintenance.MaintenancePlans
+
+<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="m202-form">
+        <div class="m202-form__grid">
+            <div class="m202-form__field">
+                <label for="m202-plan-name">Name</label>
+                <InputText id="m202-plan-name"
+                           @bind-Value="Model.Name"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-targettype">Zieltyp</label>
+                <InputSelect id="m202-plan-targettype"
+                             @bind-Value="Model.TargetType"
+                             class="m202-form__input">
+                    <option value="@MaintenanceTargetType.Machine">Machine</option>
+                    <option value="@MaintenanceTargetType.MachineComponent">MachineComponent</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-targetid">TargetId</label>
+                <InputText id="m202-plan-targetid"
+                           @bind-Value="Model.TargetIdText"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-intervalvalue">Intervallwert</label>
+                <InputNumber id="m202-plan-intervalvalue"
+                             @bind-Value="Model.IntervalValue"
+                             class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-intervalunit">Intervall</label>
+                <InputSelect id="m202-plan-intervalunit"
+                             @bind-Value="Model.IntervalUnit"
+                             class="m202-form__input">
+                    <option value="@MaintenancePlanIntervalUnit.Days">Days</option>
+                    <option value="@MaintenancePlanIntervalUnit.Weeks">Weeks</option>
+                    <option value="@MaintenancePlanIntervalUnit.Months">Months</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-nextdue">Nächster Termin</label>
+                <InputDate id="m202-plan-nextdue"
+                           @bind-Value="Model.NextDueAt"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-plan-active">Aktiv</label>
+                <InputCheckbox id="m202-plan-active"
+                               @bind-Value="Model.IsActive" />
+            </div>
+
+            <div class="m202-form__field m202-form__field--full">
+                <label for="m202-plan-description">Beschreibung</label>
+                <InputTextArea id="m202-plan-description"
+                               @bind-Value="Model.Description"
+                               class="m202-form__input m202-form__textarea" />
+            </div>
+        </div>
+
+        <div class="m202-form__actions">
+            <a href="/business/maintenance" class="m201-link">Abbrechen</a>
+            <button type="submit" class="m201-button" disabled="@IsBusy">Speichern</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public MaintenancePlanFormModel Model { get; set; } = new();
+    [Parameter] public bool IsEdit { get; set; }
+    [Parameter] public bool IsBusy { get; set; }
+    [Parameter] public string? ErrorMessage { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}
+
+

@@ -1,0 +1,190 @@
+@page "/support/service-levels"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M706_SLA_Service_Levels
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M706 · SLA / Service Levels"
+                    Title="Service Levels"
+                    Subtitle="Prioritaeten, Reaktionszeiten und Bearbeitungszeiten fuer Support und Incident Management."
+                    BackHref="/support"
+                    BackLabel="Zurueck"
+                    CurrentCode="M706">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Gesamt</span>
+            <strong class="m700-summary-card__value">@_items.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Support</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.UseForSupport)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Incident</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.UseForIncidentManagement)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Beide</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.UseForSupport && x.UseForIncidentManagement)</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">Ein Service Level muss mindestens fuer Support oder Incident Management nutzbar sein. Diese Regel kommt aus der Application-/Domain-Validierung.</p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_success))
+        {
+            <div class="m700-state m700-state--success">@_success</div>
+        }
+
+        <section class="m700-workspace">
+            <aside class="m700-toolbar">
+                <div class="m700-toolbar__head">
+                    <div>
+                        <h2 class="m700-toolbar__title">Level-Liste</h2>
+                        <p class="m700-toolbar__text">Prioritaet, Reaktion und Bearbeitung.</p>
+                    </div>
+                    <span class="m700-tag">@_filteredItems.Count</span>
+                </div>
+
+                <input class="m201-input m700-input"
+                       placeholder="Prioritaet suchen"
+                       value="@_searchText"
+                       @oninput="OnSearchChanged" />
+
+                <button type="button" class="m201-button" @onclick="OpenCreateForm">Service Level erfassen</button>
+
+                @if (_isLoading)
+                {
+                    <div class="m700-state">Lade Service Levels...</div>
+                }
+                else if (_filteredItems.Count == 0)
+                {
+                    <div class="m700-state">Keine Service Levels gefunden.</div>
+                }
+                else
+                {
+                    <div class="m700-item-list">
+                        @foreach (var item in _filteredItems)
+                        {
+                            <button type="button"
+                                    class="@($"m700-item-button{(_selectedId == item.Id ? " is-selected" : string.Empty)}")"
+                                    @onclick="() => SelectItem(item.Id)">
+                                <span class="m700-item-button__top">
+                                    <span class="m700-item-button__title">@item.Priority</span>
+                                    <span class="m700-tag">@BuildUsage(item)</span>
+                                </span>
+                                <span class="m700-item-button__text">Reaktion @FormatDuration(item.ResponseTime) · Bearbeitung @FormatDuration(item.ProcessingTime)</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m700-detail">
+                @if (SelectedItem is null)
+                {
+                    <div class="m700-detail-card">
+                        <p class="m700-muted">Waehle ein Service Level oder lege einen neuen Eintrag an.</p>
+                    </div>
+                }
+                else
+                {
+                    <article class="m700-detail-card">
+                        <div class="m700-detail-card__head">
+                            <div>
+                                <p class="m700-panel__eyebrow">Service Level Details</p>
+                                <h2 class="m700-detail-card__title">@SelectedItem.Priority</h2>
+                            </div>
+                            <span class="m700-tag">@BuildUsage(SelectedItem)</span>
+                        </div>
+
+                        <dl class="m700-definition-list">
+                            <div>
+                                <dt>Reaktionszeit</dt>
+                                <dd>@FormatDuration(SelectedItem.ResponseTime)</dd>
+                            </div>
+                            <div>
+                                <dt>Bearbeitungszeit</dt>
+                                <dd>@FormatDuration(SelectedItem.ProcessingTime)</dd>
+                            </div>
+                            <div>
+                                <dt>Support</dt>
+                                <dd>@(SelectedItem.UseForSupport ? "Ja" : "Nein")</dd>
+                            </div>
+                            <div>
+                                <dt>Incident Management</dt>
+                                <dd>@(SelectedItem.UseForIncidentManagement ? "Ja" : "Nein")</dd>
+                            </div>
+                        </dl>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="OpenEditForm">Bearbeiten</button>
+                        </div>
+                    </article>
+                }
+
+                @if (_showForm)
+                {
+                    <section class="m700-detail-card">
+                        <div class="m700-panel__header">
+                            <p class="m700-panel__eyebrow">@(_isEdit ? "Service Level aktualisieren" : "Service Level erfassen")</p>
+                            <h2 class="m700-panel__title">@(_isEdit ? "Bestehendes Level bearbeiten" : "Neues Service Level anlegen")</h2>
+                        </div>
+
+                        <div class="m700-form-grid">
+                            <div class="m700-field">
+                                <label>Prioritaet</label>
+                                <input class="m201-input m700-input" @bind="_form.Priority" />
+                            </div>
+                            <div class="m700-field">
+                                <label>Begruendung</label>
+                                <input class="m201-input m700-input" @bind="_form.Reason" />
+                            </div>
+                            <div class="m700-field">
+                                <label>Reaktionszeit in Minuten</label>
+                                <input class="m201-input m700-input" type="number" min="1" @bind="_form.ResponseMinutes" />
+                            </div>
+                            <div class="m700-field">
+                                <label>Bearbeitungszeit in Minuten</label>
+                                <input class="m201-input m700-input" type="number" min="1" @bind="_form.ProcessingMinutes" />
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Nutzung</label>
+                                <div class="m700-switch-row">
+                                    <label class="m700-switch">
+                                        <input type="checkbox" @bind="_form.UseForSupport" />
+                                        <span>Support</span>
+                                    </label>
+                                    <label class="m700-switch">
+                                        <input type="checkbox" @bind="_form.UseForIncidentManagement" />
+                                        <span>Incident Management</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="SaveAsync" disabled="@_isSubmitting">
+                                @(_isSubmitting ? "Speichert..." : "Speichern")
+                            </button>
+                            <button type="button" class="m201-button m201-button--secondary" @onclick="CloseForm" disabled="@_isSubmitting">Abbrechen</button>
+                        </div>
+                    </section>
+                }
+            </section>
+        </section>
+    </ChildContent>
+</SupportModuleShell>

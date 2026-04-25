@@ -1,0 +1,96 @@
+{
+  "ModuleCode": "M305",
+  "ScorePercent": 7,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8374562+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "missing_code",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M305 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Formulare",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eingabemasken",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bearbeitungsansichten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Validierungsdarstellung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eingabe- und Speichermuster",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Konsistente Formular-UX",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pflichtfeldanzeige",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Fehlermeldungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eingabehinweise",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modi Neu / Bearbeiten / Nur Lesen / Best\u00C3\u0192\u00C2\u00A4tigen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Mobile Eingabe / reduzierte Masken / schnelle Erfassung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zusammenarbeit mit M301",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Zusammenarbeit mit M106",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Keine Fachlogik / keine Berechnungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

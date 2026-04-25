@@ -1,0 +1,114 @@
+@page "/presentation/forms"
+@attribute [Authorize]
+
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M100_System.M106_Theme.Services
+@using SWFC.Web.Pages.M300_Presentation.M305_Forms.Components
+@using SWFC.Web.Pages.M300_Presentation.M305_Forms.Models
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services
+
+@inject ICurrentUserService CurrentUserService
+@inject LocalizationTextProvider TextProvider
+@inject ThemeCatalogService ThemeCatalog
+@inject UserUiPreferenceService PreferenceService
+
+<PageTitle>@_pageTitle</PageTitle>
+
+<div class="m305-forms-page">
+    <SwfcFormShell Eyebrow="M305"
+                   Title="@_pageTitle"
+                   Subtitle="@_subtitle"
+                   Mode="FormMode.ReadOnly"
+                   ModeLabel="@_readOnlyText">
+        <SwfcFieldBlock FieldId="m305-current-theme"
+                        LabelText="@_themeText"
+                        HintText="@_themeHintText">
+            <input id="m305-current-theme"
+                   value="@_currentThemeLabel"
+                   readonly />
+        </SwfcFieldBlock>
+
+        <SwfcFieldBlock FieldId="m305-current-start-page"
+                        LabelText="@_startPageText"
+                        HintText="@_startPageHintText">
+            <input id="m305-current-start-page"
+                   value="@_preferences.StartPageRoute"
+                   readonly />
+        </SwfcFieldBlock>
+
+        <SwfcFieldBlock FieldId="m305-current-density"
+                        LabelText="@_densityText">
+            <input id="m305-current-density"
+                   value="@_densityLabel"
+                   readonly />
+        </SwfcFieldBlock>
+
+        <SwfcFieldBlock FieldId="m305-current-motion"
+                        LabelText="@_motionText">
+            <input id="m305-current-motion"
+                   value="@_motionLabel"
+                   readonly />
+        </SwfcFieldBlock>
+
+        <div class="m305-forms-page__actions">
+            <a class="m305-forms-page__button" href="/presentation/personalization">@_editPreferencesText</a>
+        </div>
+    </SwfcFormShell>
+</div>
+
+@code {
+    private string _cultureName = LocalizationTextProvider.DefaultCultureName;
+    private UserUiPreferences _preferences = UserUiPreferences.Default;
+    private string _pageTitle = "M305 Forms";
+    private string _subtitle = "Standardized form surface";
+    private string _readOnlyText = "Read only";
+    private string _themeText = "Theme";
+    private string _themeHintText = "Current user theme";
+    private string _startPageText = "Start page";
+    private string _startPageHintText = "Personal start page";
+    private string _densityText = "Navigation density";
+    private string _motionText = "Motion";
+    private string _editPreferencesText = "Edit preferences";
+    private string _currentThemeLabel = ThemeCatalogService.DefaultThemeName;
+    private string _densityLabel = UserUiPreferences.ComfortableDensity;
+    private string _motionLabel = "Standard";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var securityContext = await CurrentUserService.GetSecurityContextAsync();
+        _cultureName = string.IsNullOrWhiteSpace(securityContext.PreferredCultureName)
+            ? LocalizationTextProvider.DefaultCultureName
+            : securityContext.PreferredCultureName.Trim();
+
+        _preferences = await PreferenceService.GetCurrentAsync();
+        await LocalizeAsync();
+
+        var themeOption = ThemeCatalog.GetThemeOptions()
+            .FirstOrDefault(option => string.Equals(option.Name, _preferences.ThemeName, StringComparison.OrdinalIgnoreCase));
+        _currentThemeLabel = themeOption is null
+            ? _preferences.ThemeName
+            : await TextProvider.GetTextAsync(themeOption.DisplayNameKey, _cultureName);
+        _densityLabel = string.Equals(_preferences.NavigationDensity, UserUiPreferences.CompactDensity, StringComparison.OrdinalIgnoreCase)
+            ? await TextProvider.GetTextAsync("Preferences.Density.Compact", _cultureName)
+            : await TextProvider.GetTextAsync("Preferences.Density.Comfortable", _cultureName);
+        _motionLabel = _preferences.UseReducedMotion
+            ? await TextProvider.GetTextAsync("Preferences.Motion.Reduced", _cultureName)
+            : await TextProvider.GetTextAsync("Preferences.Motion.Standard", _cultureName);
+    }
+
+    private async Task LocalizeAsync()
+    {
+        _pageTitle = await TextProvider.GetTextAsync("Forms.Title", _cultureName);
+        _subtitle = await TextProvider.GetTextAsync("Forms.Subtitle", _cultureName);
+        _readOnlyText = await TextProvider.GetTextAsync("Forms.Mode.ReadOnly", _cultureName);
+        _themeText = await TextProvider.GetTextAsync("Preferences.Theme", _cultureName);
+        _themeHintText = await TextProvider.GetTextAsync("Forms.ThemeHint", _cultureName);
+        _startPageText = await TextProvider.GetTextAsync("Preferences.StartPage", _cultureName);
+        _startPageHintText = await TextProvider.GetTextAsync("Forms.StartPageHint", _cultureName);
+        _densityText = await TextProvider.GetTextAsync("Preferences.NavigationDensity", _cultureName);
+        _motionText = await TextProvider.GetTextAsync("Preferences.Motion", _cultureName);
+        _editPreferencesText = await TextProvider.GetTextAsync("Forms.EditPreferences", _cultureName);
+    }
+}

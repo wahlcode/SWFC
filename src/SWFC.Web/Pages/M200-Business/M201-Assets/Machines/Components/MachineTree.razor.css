@@ -1,0 +1,22 @@
+﻿.m201-tree {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.m201-tree__header,
+.m201-tree__body {
+    width: 100%;
+}
+
+.m201-tree__header {
+    display: grid;
+    grid-template-columns: minmax(320px, 2fr) minmax(180px, 1fr) minmax(140px, 1fr) minmax(180px, 1fr) 100px;
+    gap: var(--space-md);
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 700;
+}
+
+

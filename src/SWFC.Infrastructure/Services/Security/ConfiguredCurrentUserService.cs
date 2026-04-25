@@ -21,14 +21,31 @@ public sealed class ConfiguredCurrentUserService : ICurrentUserService
     {
         var section = _configuration.GetSection(SectionName);
 
-        var userId = section["UserId"];
+        var configuredUserId = section["UserId"];
+        var configuredIdentityKey = section["IdentityKey"];
+        var configuredUsername = section["Username"];
         var isAuthenticated = section.GetValue<bool?>("IsAuthenticated") ?? false;
-        var resolvedUserId = string.IsNullOrWhiteSpace(userId) ? "system" : userId.Trim();
+        var isDeveloperMode = section.GetValue<bool?>("IsDeveloperMode") ?? false;
+
+        var resolvedUserId = string.IsNullOrWhiteSpace(configuredUserId)
+            ? string.Empty
+            : configuredUserId.Trim();
+
+        var resolvedIdentityKey = string.IsNullOrWhiteSpace(configuredIdentityKey)
+            ? resolvedUserId
+            : configuredIdentityKey.Trim();
+
+        var resolvedUsername = string.IsNullOrWhiteSpace(configuredUsername)
+            ? resolvedIdentityKey
+            : configuredUsername.Trim();
 
         return _securityContextResolver.ResolveAsync(
-            identityKey: resolvedUserId,
-            fallbackUsername: resolvedUserId,
+            userId: resolvedUserId,
+            identityKey: resolvedIdentityKey,
+            fallbackUsername: resolvedUsername,
             isAuthenticated: isAuthenticated,
+            isDeveloperMode: isDeveloperMode,
             cancellationToken: cancellationToken);
     }
 }
+

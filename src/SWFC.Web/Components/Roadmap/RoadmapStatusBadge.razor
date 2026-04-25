@@ -1,0 +1,54 @@
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<span class="@BuildClass()">@BuildLabel()</span>
+
+@code {
+    [Parameter]
+    public string? Status { get; set; }
+
+    private string _statusDoneText = "Done";
+    private string _statusInProgressText = "In progress";
+    private string _statusPlannedText = "Planned";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _statusDoneText = await TextProvider.GetTextAsync("Roadmap.StatusBadge.Done", culture);
+        _statusInProgressText = await TextProvider.GetTextAsync("Roadmap.StatusBadge.InProgress", culture);
+        _statusPlannedText = await TextProvider.GetTextAsync("Roadmap.StatusBadge.Planned", culture);
+    }
+
+    private string BuildClass()
+    {
+        var normalized = Normalize(Status);
+
+        var modifier = normalized switch
+        {
+            "done" => "roadmap-status-badge--done",
+            "inprogress" => "roadmap-status-badge--progress",
+            _ => "roadmap-status-badge--planned"
+        };
+
+        return $"roadmap-status-badge {modifier}";
+    }
+
+    private string BuildLabel()
+    {
+        var normalized = Normalize(Status);
+
+        return normalized switch
+        {
+            "done" => _statusDoneText,
+            "inprogress" => _statusInProgressText,
+            _ => _statusPlannedText
+        };
+    }
+
+    private static string Normalize(string? value)
+    {
+        return (value ?? string.Empty).Trim().Replace(" ", string.Empty).ToLowerInvariant();
+    }
+}

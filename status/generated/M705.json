@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M705",
+  "ScorePercent": 20,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9814273+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M705 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Probleml\u00C3\u0192\u00C2\u00B6sungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Anleitungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Best Practices",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Wiederverwendung von Wissen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schneller Support",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

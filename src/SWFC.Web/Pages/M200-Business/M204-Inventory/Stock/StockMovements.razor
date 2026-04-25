@@ -1,0 +1,118 @@
+@page "/business/stock-movements"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M204_Inventory.Stock
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetStockMovementsQuery, IReadOnlyList<StockMovementListItem>> Pipeline
+
+<section class="m204-list-page">
+
+    <div class="m204-header">
+        <div>
+            <h1>Stock Movements</h1>
+            <p class="m204-subtitle">
+                Bestandsbewegungen und Zielreferenzen.
+            </p>
+        </div>
+
+        <a href="/business/stock-movement/new" class="m204-button">
+            Bewegung anlegen
+        </a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">
+            @_errorMessage
+        </div>
+    }
+
+    <div class="m204-card">
+
+        @if (_isLoading)
+        {
+            <div class="m204-loading">Lade Bewegungen...</div>
+        }
+        else if (_items.Count == 0)
+        {
+            <p>Keine Stock Movements gefunden.</p>
+        }
+        else
+        {
+            <table class="m204-table">
+
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Location</th>
+                        <th>Bin</th>
+                        <th>Movement Type</th>
+                        <th>Quantity Delta</th>
+                        <th>Target</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var m in _items)
+                    {
+                        <tr>
+                            <td>@m.InventoryItemName</td>
+
+                            <td>
+                                @m.LocationName (@m.LocationCode)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(m.Bin) ? "-" : m.Bin)
+                            </td>
+
+                            <td>
+                                <span class="m204-status">@m.MovementType</span>
+                            </td>
+
+                            <td>@m.QuantityDelta</td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(m.TargetReference) ? "-" : m.TargetReference)
+                            </td>
+
+                            <td class="m204-table-actions">
+                                <a href="@($"/business/stock-movement/{m.Id}")"
+                                   class="m204-link">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private IReadOnlyList<StockMovementListItem> _items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetStockMovementsQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+            _items = result.Value;
+        else
+            _errorMessage = result.Error?.Message ?? "Failed to load stock movements.";
+
+        _isLoading = false;
+    }
+}
+
+

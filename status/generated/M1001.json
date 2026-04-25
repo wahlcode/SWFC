@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M1001",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2594745+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M1001 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M1001 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Plugin-Struktur definieren",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Plugin-Schnittstellen definieren",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Standardisierte Erweiterungspunkte",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Kontrolliertes Laden von Plugins",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Laufzeitanbindung von Plugins",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Plugin-Initialisierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Isolation von Plugins sicherstellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Trennung Core vs Plugin erzwingen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zugriff nur \u00C3\u0192\u00C2\u00BCber definierte Schnittstellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Plugin-Lifecycle (Load / Unload)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Fehlerisolation von Plugins",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Drittmodule",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr Plattformf\u00C3\u0192\u00C2\u00A4higkeit",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+@page "/machines"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M201_Assets.Machines
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components
+
+@inject IExecutionPipeline<GetVisibleMachinesQuery, IReadOnlyList<MachineListItem>> GetMachinesPipeline
+
+<PageTitle>Machines</PageTitle>
+
+<section class="m201-machines">
+
+    <div class="m201-machines__header">
+        <div>
+            <h1>Machines</h1>
+            <p class="m201-machines__description">
+                Überblick über Maschinen in Parent-Child-Hierarchie.
+            </p>
+        </div>
+
+        <div class="m201-machines__actions">
+            <input class="m201-input"
+                   placeholder="Suche nach Name, Nummer oder Status"
+                   value="@_searchText"
+                   @oninput="OnSearchChanged" />
+
+            <a href="/machines/new" class="m201-button">
+                Machine anlegen
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m201-alert m201-alert--error">
+            @_error
+        </div>
+    }
+
+    <div class="m201-card">
+        @if (_isLoading)
+        {
+            <div class="m201-loading">Lade Maschinen...</div>
+        }
+        else if (_filteredItems.Count == 0)
+        {
+            <div>Keine Maschinen vorhanden.</div>
+        }
+        else
+        {
+            <MachineTree Items="_filteredItems" />
+        }
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private string? _error;
+    private string _searchText = string.Empty;
+
+    private IReadOnlyList<MachineListItem> _items = Array.Empty<MachineListItem>();
+    private List<MachineListItem> _filteredItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await GetMachinesPipeline.ExecuteAsync(new GetVisibleMachinesQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _items = result.Value;
+            ApplyFilter();
+        }
+        else
+        {
+            _error = result.Error?.Message ?? "Maschinen konnten nicht geladen werden.";
+        }
+
+        _isLoading = false;
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? string.Empty;
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<MachineListItem> query = _items;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var search = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                x.InventoryNumber.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                x.Status.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrWhiteSpace(x.ParentMachineName) &&
+                 x.ParentMachineName.Contains(search, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        _filteredItems = query.ToList();
+    }
+}
+
+

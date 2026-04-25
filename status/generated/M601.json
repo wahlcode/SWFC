@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M601",
+  "ScorePercent": 14,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9254782+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M601 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Geplante Funktionen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modul-Erweiterungen",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Zeitplanung",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Version-Ziele",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Meilensteine",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Gliederung nach Modulen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Gliederung nach Versionen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Gliederung nach Zeitr\u00C3\u0192\u00C2\u00A4umen",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Gliederung nach Priorit\u00C3\u0192\u00C2\u00A4ten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nutzung von M606",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Nutzung von M607",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Nutzung von M604",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Keine spontane Umsetzung ohne Planung",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungen nachvollziehbar halten",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

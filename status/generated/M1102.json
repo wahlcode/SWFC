@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M1102",
+  "ScorePercent": 30,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2809743+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M1102 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Update-Auslieferung",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Rollout-Logik",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Update-Freigabestatus",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Update-Verteilung im Produktkontext",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Kundenbezogene Updatezuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

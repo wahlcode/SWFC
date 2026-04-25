@@ -1,0 +1,53 @@
+﻿.m202-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-height: 9rem;
+}
+
+.m202-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+    .m202-card__header h2 {
+        margin: 0;
+    }
+
+.m202-card__count {
+    color: var(--color-text-secondary);
+}
+
+.m202-card__empty {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.m202-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .m202-table th,
+    .m202-table td {
+        padding: 0.75rem 0.5rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .m202-table th {
+        font-size: 0.85rem;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+.m202-link {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+

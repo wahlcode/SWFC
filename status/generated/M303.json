@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M303",
+  "ScorePercent": 10,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8115014+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Systemmeldungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Alerts",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Benachrichtigungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eskalationen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zust\u00C3\u0192\u00C2\u00A4nde von Meldungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Info / Warnung / kritisch",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Priorit\u00C3\u0192\u00C2\u00A4ten",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Zielgruppen (Benutzer / Rollen / Abteilungen)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kan\u00C3\u0192\u00C2\u00A4le UI / E-Mail",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Teams / Slack",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zust\u00C3\u0192\u00C2\u00A4nde ungelesen / gelesen / erledigt",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Eskalationsmechanismen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verlinkung zu Fachmodulen",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Integration in M301 Header / Status / Schnellzugriffe",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Keine Fachlogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

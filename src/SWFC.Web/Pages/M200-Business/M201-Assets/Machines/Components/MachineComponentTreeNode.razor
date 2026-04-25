@@ -1,0 +1,63 @@
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+<div class="m201-component-tree-node">
+    <button type="button"
+            class="m201-component-tree-node__button @(IsSelected ? "m201-component-tree-node__button--selected" : null)"
+            @onclick="() => OnSelectComponent.InvokeAsync(Item.Id)">
+        <span class="m201-component-tree-node__main">
+            <span class="m201-component-tree-node__name-wrap">
+                @for (var i = 0; i < Level; i++)
+                {
+                    <span class="m201-component-tree-node__indent"></span>
+                }
+
+                <span class="m201-component-tree-node__dot"></span>
+                <span class="m201-component-tree-node__name">@Item.Name</span>
+            </span>
+        </span>
+
+        <span class="m201-component-tree-node__meta">
+            @(Item.IsActive ? "Aktiv" : "Inaktiv")
+        </span>
+    </button>
+
+    @if (Children.Count > 0)
+    {
+        <div class="m201-component-tree-node__children">
+            @foreach (var child in Children)
+            {
+                <MachineComponentTreeNode Item="child"
+                                          Level="@(Level + 1)"
+                                          ChildrenByParentId="ChildrenByParentId"
+                                          SelectedComponentId="SelectedComponentId"
+                                          OnSelectComponent="OnSelectComponent" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public MachineComponentVm Item { get; set; } = default!;
+
+    [Parameter]
+    public int Level { get; set; }
+
+    [Parameter, EditorRequired]
+    public IReadOnlyDictionary<Guid, List<MachineComponentVm>> ChildrenByParentId { get; set; } = default!;
+
+    [Parameter]
+    public Guid? SelectedComponentId { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<Guid> OnSelectComponent { get; set; }
+
+    private bool IsSelected => SelectedComponentId == Item.Id;
+
+    private IReadOnlyList<MachineComponentVm> Children =>
+        ChildrenByParentId.TryGetValue(Item.Id, out var children)
+            ? children
+            : Array.Empty<MachineComponentVm>();
+}
+
+

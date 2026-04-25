@@ -1,0 +1,71 @@
+{
+  "ModuleCode": "M704",
+  "ScorePercent": 31,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9758197+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M704 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Incident-Erfassung",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Eskalation",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Reaktionssteuerung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Anlagenstillstand",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Systemausfall",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Sicherheitsvorf\u00C3\u00A4lle",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Verkn\u00C3\u00BCpfung zu M303",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u00BCpfung zu M500",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

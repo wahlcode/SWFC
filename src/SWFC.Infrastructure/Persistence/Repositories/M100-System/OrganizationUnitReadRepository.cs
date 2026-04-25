@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M100_System.M102_Organization.Interfaces;
-using SWFC.Domain.M100_System.M102_Organization.Entities;
+using SWFC.Application.M100_System.M102_Organization.OrganizationUnits;
+using SWFC.Domain.M100_System.M102_Organization.OrganizationUnits;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M100_System;
@@ -23,22 +23,36 @@ public sealed class OrganizationUnitReadRepository : IOrganizationUnitReadReposi
 
     public Task<OrganizationUnit?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
-        var organizationUnit = _dbContext.OrganizationUnits
-            .AsNoTracking()
-            .AsEnumerable()
-            .FirstOrDefault(x => string.Equals(x.Code.Value, code, StringComparison.OrdinalIgnoreCase));
-
-        return Task.FromResult(organizationUnit);
+        var normalizedCode = NormalizeCode(code);
+        return GetByCodeInternalAsync(normalizedCode, cancellationToken);
     }
 
-    public Task<IReadOnlyList<OrganizationUnit>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<OrganizationUnit>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        IReadOnlyList<OrganizationUnit> organizationUnits = _dbContext.OrganizationUnits
+        var items = await _dbContext.OrganizationUnits
             .AsNoTracking()
-            .AsEnumerable()
-            .OrderBy(x => x.Name.Value, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .ToListAsync(cancellationToken);
 
-        return Task.FromResult(organizationUnits);
+        return items
+            .OrderBy(x => x.Name.Value)
+            .ThenBy(x => x.Code.Value)
+            .ToList();
+    }
+
+    private static string NormalizeCode(string code)
+    {
+        return code.Trim();
+    }
+
+    private async Task<OrganizationUnit?> GetByCodeInternalAsync(
+        string normalizedCode,
+        CancellationToken cancellationToken)
+    {
+        var items = await _dbContext.OrganizationUnits
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return items.FirstOrDefault(x =>
+            string.Equals(x.Code.Value, normalizedCode, StringComparison.OrdinalIgnoreCase));
     }
 }

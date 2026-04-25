@@ -1,0 +1,71 @@
+{
+  "ModuleCode": "M210",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7689529+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M210 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M210 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Kundenstammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ansprechpartner",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnungen zu Anlagen / Projekten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung von Qualit\u00C3\u0192\u00C2\u00A4tsf\u00C3\u0192\u00C2\u00A4llen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "ERP-Referenz ohne doppelte Pflege",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine CRM-Logik",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Deaktivierung / Historisierung statt L\u00C3\u0192\u00C2\u00B6schung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

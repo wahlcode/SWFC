@@ -1,0 +1,114 @@
+@page "/business/energy"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M205_Energy.EnergyMeters
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetEnergyMetersQuery, IReadOnlyList<EnergyMeterListItemDto>> MetersPipeline
+
+<PageTitle>M205 Energie</PageTitle>
+
+<section class="m205-page">
+    <div class="m205-page__header">
+        <div class="m205-page__title-block">
+            <div class="m205-page__eyebrow">M205</div>
+            <h1>Energy Management</h1>
+            <p class="m205-page__subtitle">
+                Zähler, Medien und Historie zentral verwalten.
+            </p>
+        </div>
+
+        <div class="m205-page__actions">
+            <a href="/business/energy/meter/new" class="m205-button">Zähler anlegen</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m205-alert m205-alert--error">@_errorMessage</div>
+    }
+
+    <div class="m205-card">
+        @if (_isLoading)
+        {
+            <div class="m205-loading">Lade Daten...</div>
+        }
+        else if (_meters.Count == 0)
+        {
+            <div>Keine Zähler vorhanden.</div>
+        }
+        else
+        {
+            <table class="m205-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Medium</th>
+                        <th>Einheit</th>
+                        <th>Manuell</th>
+                        <th>Extern</th>
+                        <th>Externes System</th>
+                        <th>Maschine</th>
+                        <th>Aktiv</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var meter in _meters)
+                    {
+                        <tr>
+                            <td>@meter.Name</td>
+                            <td>@meter.MediumType</td>
+                            <td>@meter.Unit</td>
+                            <td>@(meter.IsManualEntryEnabled ? "Ja" : "Nein")</td>
+                            <td>@(meter.IsExternalImportEnabled ? "Ja" : "Nein")</td>
+                            <td>@DisplayOrDash(meter.ExternalSystem)</td>
+                            <td>@DisplayOrDash(meter.MachineId?.ToString())</td>
+                            <td>
+                                <span class="m205-badge @(meter.IsActive ? "m205-badge--active" : "m205-badge--inactive")">
+                                    @(meter.IsActive ? "Ja" : "Nein")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="m205-table__actions">
+                                    <a href="@($"/business/energy/meter/{meter.Id}")" class="m205-link">Zähler</a>
+                                    <a href="@($"/business/energy/reading/new?meterId={meter.Id}")" class="m205-link">Stand</a>
+                                    <a href="@($"/business/energy/analysis/{meter.Id}")" class="m205-link">Auswertung</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private IReadOnlyList<EnergyMeterListItemDto> _meters = Array.Empty<EnergyMeterListItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await MetersPipeline.ExecuteAsync(new GetEnergyMetersQuery(), CancellationToken.None);
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _meters = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+

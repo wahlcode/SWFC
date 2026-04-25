@@ -1,0 +1,242 @@
+{
+  "ProjectRoot": "P:\\SWFC",
+  "SourceRoot": "P:\\SWFC\\src",
+  "DocsRoot": "P:\\SWFC\\docs",
+  "SolutionFile": "P:\\SWFC\\SWFC.sln",
+
+  "RequiredTopLevelFolders": [
+    "src",
+    "docs"
+  ],
+
+  "RequiredProjects": [
+    "P:\\SWFC\\src\\SWFC.Domain\\SWFC.Domain.csproj",
+    "P:\\SWFC\\src\\SWFC.Application\\SWFC.Application.csproj",
+    "P:\\SWFC\\src\\SWFC.Infrastructure\\SWFC.Infrastructure.csproj",
+    "P:\\SWFC\\src\\SWFC.Web\\SWFC.Web.csproj"
+  ],
+
+  "OptionalProjects": [
+    "P:\\SWFC\\src\\SWFC.Worker\\SWFC.Worker.csproj"
+  ],
+
+  "RealStructure": {
+    "DoNotReorganizeExistingStructure": true,
+    "DoNotMoveWorkingFilesWithoutTechnicalReason": true,
+    "KeepThemeCssInWwwroot": true,
+    "KeepExistingLayoutStructure": true,
+    "KeepWorkerIfPresent": true
+  },
+
+  "ProjectFolders": {
+    "SWFC.Domain": [
+      "M100-System",
+      "M200-Business",
+      "M400-Integration",
+      "M500-Runtime",
+      "M800-Security"
+    ],
+    "SWFC.Application": [
+      "M100-System",
+      "M200-Business",
+      "M400-Integration",
+      "M500-Runtime",
+      "M800-Security"
+    ],
+    "SWFC.Infrastructure": [
+      "Persistence",
+      "Repositories",
+      "Services"
+    ],
+    "SWFC.Web": [
+      "Pages",
+      "Components",
+      "Layout",
+      "wwwroot"
+    ]
+  },
+
+  "ModulePrefixes": [
+    "M100",
+    "M101",
+    "M102",
+    "M103",
+    "M104",
+    "M105",
+    "M106",
+    "M200",
+    "M201",
+    "M202",
+    "M203",
+    "M204",
+    "M205",
+    "M206",
+    "M207",
+    "M208",
+    "M209",
+    "M210",
+    "M211",
+    "M212",
+    "M213",
+    "M300",
+    "M301",
+    "M302",
+    "M303",
+    "M304",
+    "M305",
+    "M400",
+    "M401",
+    "M402",
+    "M403",
+    "M404",
+    "M405",
+    "M406",
+    "M407",
+    "M500",
+    "M501",
+    "M502",
+    "M503",
+    "M504",
+    "M505",
+    "M600",
+    "M601",
+    "M602",
+    "M603",
+    "M604",
+    "M605",
+    "M606",
+    "M607",
+    "M700",
+    "M701",
+    "M702",
+    "M703",
+    "M704",
+    "M705",
+    "M706",
+    "M800",
+    "M801",
+    "M802",
+    "M803",
+    "M804",
+    "M805",
+    "M806",
+    "M807",
+    "M808",
+    "M809",
+    "M900",
+    "M901",
+    "M902",
+    "M903",
+    "M904",
+    "M905",
+    "M1000",
+    "M1001",
+    "M1002",
+    "M1003",
+    "M1004",
+    "M1005"
+  ],
+
+  "ForbiddenTopLevelFolders": [
+    "themes",
+    "ui-framework",
+    "shared-layout-v2"
+  ],
+
+  "ForbiddenDirectoryNames": [
+    "Helpers",
+    "Stuff",
+    "Misc",
+    "Temp"
+  ],
+
+  "ForbiddenFileNames": [
+    "Helper.cs",
+    "Manager.cs",
+    "Processor.cs",
+    "Util.cs",
+    "Common.cs",
+    "Misc.cs",
+    "Stuff.cs",
+    "DataService.cs",
+    "Temp.cs",
+    "NewFile.cs"
+  ],
+
+  "ForbiddenApplicationFolders": [
+    "Commands",
+    "Queries",
+    "Handlers",
+    "Validators"
+  ],
+
+  "ForbiddenUiPackages": [
+    "MudBlazor",
+    "Telerik.UI.for.Blazor",
+    "Syncfusion.Blazor"
+  ],
+
+  "RequiredWebFiles": [
+    "P:\\SWFC\\src\\SWFC.Web\\wwwroot\\css\\theme.css"
+  ],
+
+  "OptionalWebFiles": [
+    "P:\\SWFC\\src\\SWFC.Web\\wwwroot\\css\\variables.css"
+  ],
+
+  "NamespaceRoot": "SWFC",
+
+  "ArchitectureRules": {
+    "NoBusinessLogicInWeb": true,
+    "NoDecisionLogicInInfrastructure": true,
+    "NoInlineStylesInRazor": true,
+    "ThemeCssGlobalOnly": true,
+    "RazorCssLocalOnly": true,
+    "NoExternalUiFramework": true,
+    "M204OnlyInventoryChanges": true,
+    "M205StoresMeasurementsNotConsumption": true,
+    "M500NoMasterDataLogic": true,
+    "M103_M102_M800_StrictSeparation": true,
+    "M900NoDirectControlWithoutRuntimeAndSecurity": true
+  },
+
+  "CsprojReferenceRules": [
+    {
+      "Project": "SWFC.Domain",
+      "MustNotReference": [
+        "SWFC.Application",
+        "SWFC.Infrastructure",
+        "SWFC.Web"
+      ]
+    },
+    {
+      "Project": "SWFC.Application",
+      "MustNotReference": [
+        "SWFC.Infrastructure",
+        "SWFC.Web"
+      ]
+    },
+    {
+      "Project": "SWFC.Infrastructure",
+      "MustNotReference": [
+        "SWFC.Web"
+      ]
+    }
+  ],
+
+  "FileSizeGuidelines": {
+    "DomainMaxLines": 300,
+    "ApplicationMaxLines": 250,
+    "RazorMaxLines": 400
+  },
+
+  "SuspiciousPatterns": {
+    "InlineStyleRegex": "style\\s*=\\s*\"",
+    "DomainInWebRegex": "(Inventory|Maintenance|Energy|AccessRule|VisibilityResolver|AuditEntry)",
+    "ConsumptionWordsRegex": "(Consumption|Verbrauch)",
+    "MeasurementWordsRegex": "(Reading|Measurement|Meter)",
+    "SecurityMixRegex": "(Auth|Authorization|Permission|Role|Visibility|Audit)",
+    "DangerousDeleteRegex": "\\bDelete\\s*\\(",
+    "UtcNowRecommendedRegex": "DateTime\\.UtcNow|DateTimeOffset\\.UtcNow"
+  }
+}

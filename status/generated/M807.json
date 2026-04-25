@@ -1,0 +1,81 @@
+{
+  "ModuleCode": "M807",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2374202+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M807 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M807 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "API Keys",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Tokens",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zertifikate",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verschl\u00C3\u0192\u00C2\u00BCsselungsschl\u00C3\u0192\u00C2\u00BCssel",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sichere Ablage",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Sichere Nutzung",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Keine Secrets im Code",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kein unkontrollierter Zugriff",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nutzung nachvollziehbar und abgesichert",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M100_System.M103_Authentication.DTOs;
-using SWFC.Application.M100_System.M103_Authentication.Interfaces;
+using SWFC.Application.M100_System.M103_Authentication;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M103_Authentication;
@@ -31,3 +30,4 @@ public sealed class LocalCredentialReadRepository : ILocalCredentialReadReposito
             .FirstOrDefaultAsync(cancellationToken);
     }
 }
+

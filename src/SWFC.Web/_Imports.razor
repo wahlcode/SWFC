@@ -1,12 +1,37 @@
 @using System.Net.Http
-@using Microsoft.AspNetCore.Components
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+
+@using SWFC.Web
+@using SWFC.Web.Components
 @using SWFC.Web.Components.Layout
+@using SWFC.Web.Components.Roadmap
 @using SWFC.Web.Components.Shared
-@using SWFC.Web.Models
-@using SWFC.Web.Data
+
+@using SWFC.Domain.M100_System.M101_Foundation.Results
+@using SWFC.Domain.M200_Business.M204_Inventory.Reservations
+@using SWFC.Domain.M200_Business.M204_Inventory.Stock
+
+@using SWFC.Application
+
+@using SWFC.Application.M100_System.M103_Authentication
+
+@using SWFC.Application.M200_Business.M201_Assets.Machines
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+@using SWFC.Application.M200_Business.M204_Inventory.Items
+@using SWFC.Application.M200_Business.M204_Inventory.Locations
+@using SWFC.Application.M200_Business.M204_Inventory.Reservations
+@using SWFC.Application.M200_Business.M204_Inventory.Shared
+@using SWFC.Application.M200_Business.M204_Inventory.Stock
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions
+
+
+

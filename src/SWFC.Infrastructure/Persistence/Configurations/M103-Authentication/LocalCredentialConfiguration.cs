@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SWFC.Domain.M100_System.M102_Organization.Entities;
-using SWFC.Infrastructure.M800_Security.Auth.Entities;
+using SWFC.Domain.M100_System.M102_Organization.Users;
+using SWFC.Infrastructure.M100_System.M103_Authentication.Entities;
 
 namespace SWFC.Infrastructure.Persistence.Configurations.M103_Authentication;
 
@@ -38,6 +38,6 @@ public sealed class LocalCredentialConfiguration : IEntityTypeConfiguration<Loca
         entity.HasOne<User>()
             .WithOne()
             .HasForeignKey<LocalCredential>(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

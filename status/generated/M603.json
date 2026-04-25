@@ -1,0 +1,86 @@
+{
+  "ModuleCode": "M603",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9311428+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M603 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M603 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "UI-Prototypen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Testimplementierungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Experimentelle Abl\u00C3\u0192\u00C2\u00A4ufe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nicht produktiv",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Isoliert",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verwerfbar",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M604",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine direkte \u00C3\u0192\u00C5\u201Cbernahme in Produktion",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bewertung erforderlich",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    }
+  ]
+}

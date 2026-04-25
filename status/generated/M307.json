@@ -1,0 +1,51 @@
+{
+  "ModuleCode": "M307",
+  "ScorePercent": 80,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8505088+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "1 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Dashboard Configuration",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Widget Management",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Visibility \u0026 Preferences",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "User UI Settings",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Persistierte Benutzerpraeferenzen",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    }
+  ]
+}
