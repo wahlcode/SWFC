@@ -1,0 +1,220 @@
+@page "/business/energy/reading/new"
+@page "/business/energy/reading/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.WebUtilities
+@using SWFC.Application.M200_Business.M205_Energy.EnergyReadings
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M205_Energy.EnergyReadings
+@using SWFC.Web.Pages.M200_Business.M205_Energy.Components
+
+@inject IExecutionPipeline<GetEnergyReadingByIdQuery, EnergyReadingDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateEnergyReadingCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateEnergyReadingCommand, Guid> UpdatePipeline
+@inject NavigationManager NavigationManager
+
+<section class="m205-detail">
+    <div class="m205-detail__header">
+        <div>
+            <div class="m205-detail__eyebrow">M205</div>
+            <h1>@(IsNew ? "Zählerstand erfassen" : "Zählerstand bearbeiten")</h1>
+            <p class="m205-detail__subtitle">Manuelle Erfassung und Historienpflege.</p>
+        </div>
+
+        <div class="m205-detail__actions">
+            <a href="/business/energy" class="m205-button-secondary">Zurück</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m205-alert m205-alert--error">@_errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_successMessage))
+    {
+        <div class="m205-alert m205-alert--success">@_successMessage</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m205-loading">Lade Daten...</div>
+    }
+    else
+    {
+        <div class="m205-detail__grid">
+            <div class="m205-card">
+                <EditForm Model="_model" OnValidSubmit="SaveAsync">
+                    <DataAnnotationsValidator />
+
+                    <div class="m205-form-grid">
+                        <div class="m205-form-field">
+                            <label for="m205-meter-id">MeterId</label>
+                            <InputText id="m205-meter-id" class="m205-input" @bind-Value="_model.MeterId" disabled="@(!IsNew)" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-date">Datum</label>
+                            <InputDate id="m205-date" class="m205-input" @bind-Value="_model.Date" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-value">Wert</label>
+                            <InputNumber id="m205-value" class="m205-input" @bind-Value="_model.Value" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-source">Quelle</label>
+                            <InputSelect id="m205-source" class="m205-input" @bind-Value="_model.Source">
+                                <option value="@EnergyReadingSource.Manual">Manual</option>
+                                <option value="@EnergyReadingSource.Import">Import</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--full">
+                            <label for="m205-reason-reading">Grund</label>
+                            <InputTextArea id="m205-reason-reading" class="m205-input m205-textarea" @bind-Value="_model.Reason" />
+                        </div>
+                    </div>
+
+                    <div class="m205-actions">
+                        <button class="m205-button" type="submit" disabled="@_isBusy">Speichern</button>
+                    </div>
+                </EditForm>
+            </div>
+
+            <div class="m205-card">
+                <h3>Zusammenfassung</h3>
+
+                <ul class="m205-summary">
+                    <li><strong>MeterId:</strong> @DisplayOrDash(_model.MeterId)</li>
+                    <li><strong>Datum:</strong> @_model.Date.ToString("dd.MM.yyyy")</li>
+                    <li><strong>Wert:</strong> @_model.Value</li>
+                    <li><strong>Quelle:</strong> @_model.Source</li>
+                </ul>
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _errorMessage;
+    private string? _successMessage;
+    private EnergyReadingInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _errorMessage = null;
+        _successMessage = null;
+        _isLoading = true;
+
+        if (IsNew)
+        {
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var query = QueryHelpers.ParseQuery(uri.Query);
+
+            _model = new EnergyReadingInputModel();
+
+            if (query.TryGetValue("meterId", out var meterIdValue))
+            {
+                _model.MeterId = meterIdValue.ToString();
+            }
+
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetEnergyReadingByIdQuery(Id!.Value), CancellationToken.None);
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            var item = result.Value;
+            _model = new EnergyReadingInputModel
+            {
+                MeterId = item.MeterId.ToString(),
+                Date = item.Date,
+                Value = item.Value,
+                Source = item.Source
+            };
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task SaveAsync()
+    {
+        _isBusy = true;
+        _errorMessage = null;
+        _successMessage = null;
+
+        try
+        {
+            if (!Guid.TryParse(_model.MeterId, out var meterId))
+            {
+                _errorMessage = "MeterId ist ungültig.";
+                return;
+            }
+
+            if (IsNew)
+            {
+                var createResult = await CreatePipeline.ExecuteAsync(
+                    new CreateEnergyReadingCommand(
+                        meterId,
+                        _model.Date,
+                        _model.Value,
+                        _model.Source,
+                        _model.Reason),
+                    CancellationToken.None);
+
+                if (createResult.IsSuccess)
+                {
+                    NavigationManager.NavigateTo("/business/energy");
+                    return;
+                }
+
+                _errorMessage = createResult.Error?.Message ?? "Anlegen fehlgeschlagen.";
+                return;
+            }
+
+            var updateResult = await UpdatePipeline.ExecuteAsync(
+                new UpdateEnergyReadingCommand(
+                    Id!.Value,
+                    _model.Date,
+                    _model.Value,
+                    _model.Source,
+                    _model.Reason),
+                CancellationToken.None);
+
+            if (updateResult.IsSuccess)
+            {
+                _successMessage = "Gespeichert";
+            }
+            else
+            {
+                _errorMessage = updateResult.Error?.Message ?? "Speichern fehlgeschlagen.";
+            }
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+

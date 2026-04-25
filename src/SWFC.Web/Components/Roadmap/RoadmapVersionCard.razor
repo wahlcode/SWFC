@@ -1,0 +1,57 @@
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<article class="@BuildClass()">
+    <div class="roadmap-version-card__top">
+        <div>
+            <span class="roadmap-version-card__version">@Version.Version</span>
+            <h3>@Version.AudienceTitle</h3>
+        </div>
+
+        <div class="roadmap-version-card__top-right">
+            <RoadmapStatusBadge Status="@Version.Status" />
+            <a class="roadmap-version-card__link" href="@($"/roadmap/{Version.Version}")">
+                @_openText
+            </a>
+        </div>
+    </div>
+
+    <div class="roadmap-version-card__body">
+        <p>@Version.Goal</p>
+
+        <div class="roadmap-version-card__modules">
+            @foreach (var module in Version.PrimaryModules)
+            {
+                <span>@module</span>
+            }
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoadmapVersion Version { get; set; } = new();
+
+    private string _openText = "Open";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+        _openText = await TextProvider.GetTextAsync("Roadmap.Open", culture);
+    }
+
+    private string BuildClass()
+    {
+        var normalized = (Version.Status ?? string.Empty).Trim().Replace(" ", string.Empty).ToLowerInvariant();
+
+        var modifier = normalized switch
+        {
+            "done" => "roadmap-version-card--done",
+            "inprogress" => "roadmap-version-card--current",
+            _ => "roadmap-version-card--planned"
+        };
+
+        return $"roadmap-version-card {modifier}";
+    }
+}

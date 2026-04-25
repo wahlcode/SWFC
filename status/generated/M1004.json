@@ -1,0 +1,106 @@
+{
+  "ModuleCode": "M1004",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2718769+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M1004 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M1004 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Bereitstellung von Erweiterungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verf\u00C3\u0192\u00C2\u00BCgbare Erweiterungen registrieren",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Katalogisierung von Erweiterungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Strukturierte Darstellung verf\u00C3\u0192\u00C2\u00BCgbarer Erweiterungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verteilungsmechanismen definieren",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bereitstellung \u00C3\u0192\u00C2\u00BCber definierte Kan\u00C3\u0192\u00C2\u00A4le",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Referenzen auf Erweiterungen verwalten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Metadaten zu Erweiterungen bereitstellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Trennung von Plugin-Core (M1001)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Trennung von Extension Management (M1003)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine automatische Aktivierung von Erweiterungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verf\u00C3\u0192\u00C2\u00BCgbarkeit \u00C3\u00A2\u00E2\u20AC\u00B0\u00C2\u00A0 Nutzung sicherstellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Einhaltung von Plattform- und Sicherheitsregeln",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr \u00C3\u0192\u00E2\u20AC\u201Ckosystem-F\u00C3\u0192\u00C2\u00A4higkeit",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Unterst\u00C3\u0192\u00C2\u00BCtzung skalierbarer Erweiterungsverteilung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

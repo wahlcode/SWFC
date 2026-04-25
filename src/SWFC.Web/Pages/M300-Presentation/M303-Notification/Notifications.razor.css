@@ -1,0 +1,85 @@
+.m303-notifications {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.m303-notifications__header,
+.m303-notifications__panel,
+.m303-notifications__card {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    padding: var(--space-lg);
+}
+
+.m303-notifications__eyebrow,
+.m303-notifications__module {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.m303-notifications__form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+}
+
+.m303-notifications__form label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.m303-notifications input,
+.m303-notifications select {
+    min-height: var(--size-input-height-md);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-input);
+    background: var(--color-surface-muted);
+    color: var(--color-text-primary);
+    padding: 0 var(--space-md);
+}
+
+.m303-notifications button {
+    min-height: var(--size-button-height-md);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-button);
+    background: var(--gradient-surface-primary);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.m303-notifications__wide {
+    grid-column: 1 / -1;
+}
+
+.m303-notifications__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+}
+
+.m303-notifications__card header,
+.m303-notifications__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.m303-notifications dl {
+    display: grid;
+    gap: var(--space-sm);
+    margin: 0 0 var(--space-md);
+}
+
+.m303-notifications dt {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.m303-notifications dd {
+    margin: 0;
+}

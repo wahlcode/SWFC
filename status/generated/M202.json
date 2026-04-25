@@ -1,0 +1,106 @@
+{
+  "ModuleCode": "M202",
+  "ScorePercent": 13,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.5794692+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Wartungspl\u00C3\u00A4ne",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Wartungsauftr\u00C3\u00A4ge",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Wartungshistorie",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ungeplante Wartung / St\u00C3\u00B6rungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Notdienst / Soforteins\u00C3\u0192\u00C2\u00A4tze",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Priorit\u00C3\u00A4ten / Kritikalit\u00C3\u00A4t",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Statusmodell (geplant / in Arbeit / abgeschlossen / abgebrochen)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u00BCpfung zu M201",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Material nur referenzieren",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Keine Lagerbestands\u00C3\u00A4nderung in M202",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Dokumentenverkn\u00C3\u00BCpfung zu M104",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung zu M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wartungsintervalle",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "F\u00C3\u00A4lligkeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Planung von Wartungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine echte L\u00C3\u0192\u00C2\u00B6schung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

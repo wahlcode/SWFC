@@ -1,0 +1,273 @@
+.purchasing-page {
+    display: grid;
+    gap: var(--page-gap);
+    max-width: var(--page-max-width);
+    margin: 0 auto;
+    padding: var(--page-padding);
+}
+
+.purchasing-header,
+.purchasing-summary,
+.purchasing-forms,
+.purchasing-lists,
+.purchasing-panel {
+    min-width: 0;
+}
+
+.purchasing-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.purchasing-header h1,
+.purchasing-panel h2,
+.purchasing-list-header h2 {
+    margin: 0;
+}
+
+.purchasing-header h1 {
+    font-size: 1.8rem;
+}
+
+.purchasing-eyebrow {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--color-accent-gold);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+
+.purchasing-summary,
+.purchasing-forms,
+.purchasing-lists {
+    display: grid;
+    gap: var(--space-lg);
+}
+
+.purchasing-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.purchasing-summary div,
+.purchasing-panel {
+    border: var(--border-width-default) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--gradient-card-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.purchasing-summary div {
+    display: grid;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+}
+
+.purchasing-summary span,
+.purchasing-list-header span,
+.purchasing-empty {
+    color: var(--color-text-muted);
+}
+
+.purchasing-summary strong {
+    color: var(--color-text-primary);
+    font-size: 1.7rem;
+    line-height: var(--line-height-snug);
+}
+
+.purchasing-forms {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.purchasing-panel {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+}
+
+.purchasing-panel--wide {
+    grid-column: span 4;
+}
+
+.purchasing-panel h2 {
+    font-size: 1.05rem;
+}
+
+.purchasing-panel label {
+    display: grid;
+    gap: var(--space-xs);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.purchasing-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.purchasing-fields--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.purchasing-input {
+    width: 100%;
+    min-height: var(--size-button-height-md);
+    padding: 0 var(--space-md);
+    border: var(--border-width-default) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--gradient-field-surface);
+    color: var(--color-text-primary);
+}
+
+.purchasing-input:disabled {
+    color: var(--color-text-muted);
+    opacity: var(--opacity-disabled);
+}
+
+.purchasing-button {
+    justify-self: start;
+    min-height: var(--size-button-height-md);
+    padding: 0 var(--space-lg);
+    border: var(--border-width-default) solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.purchasing-button--secondary {
+    border-color: var(--color-border);
+    background: var(--color-surface-3);
+}
+
+.purchasing-button:disabled {
+    cursor: not-allowed;
+    opacity: var(--opacity-disabled);
+}
+
+.purchasing-alert {
+    padding: var(--space-md) var(--space-lg);
+    border: var(--border-width-default) solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.purchasing-alert--success {
+    border-color: var(--color-success-border);
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+}
+
+.purchasing-alert--error {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
+}
+
+.purchasing-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.purchasing-table {
+    display: grid;
+    gap: var(--space-xs);
+    overflow-x: auto;
+}
+
+.purchasing-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.2fr 0.7fr 0.8fr 1fr;
+    gap: var(--space-md);
+    align-items: center;
+    min-width: 860px;
+    padding: var(--space-md);
+    border: var(--border-width-default) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-soft);
+}
+
+.purchasing-row--head {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+}
+
+.purchasing-table--compact .purchasing-row {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    min-width: 0;
+}
+
+.purchasing-row span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.purchasing-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    width: fit-content;
+    padding: 0 var(--space-sm);
+    border: var(--border-width-default) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-neutral-bg);
+    color: var(--color-neutral-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.purchasing-status--booked {
+    border-color: var(--color-success-border);
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+}
+
+.purchasing-status--failed {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
+}
+
+@media (max-width: 1180px) {
+    .purchasing-summary,
+    .purchasing-forms {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .purchasing-panel--wide {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 760px) {
+    .purchasing-header,
+    .purchasing-list-header {
+        display: grid;
+    }
+
+    .purchasing-summary,
+    .purchasing-forms,
+    .purchasing-fields,
+    .purchasing-fields--three {
+        grid-template-columns: 1fr;
+    }
+
+    .purchasing-panel--wide {
+        grid-column: span 1;
+    }
+
+    .purchasing-row {
+        grid-template-columns: 1fr;
+        min-width: 0;
+    }
+}

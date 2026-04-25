@@ -1,0 +1,316 @@
+@page "/m200/purchasing"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M204_Inventory.Items
+@using SWFC.Application.M200_Business.M204_Inventory.Locations
+@using SWFC.Application.M200_Business.M206_Purchasing.GoodsReceipts
+@using SWFC.Application.M200_Business.M206_Purchasing.PurchaseOrders
+@using SWFC.Application.M200_Business.M206_Purchasing.PurchaseRequirements
+@using SWFC.Application.M200_Business.M206_Purchasing.RequestForQuotations
+@using SWFC.Application.M200_Business.M206_Purchasing.Suppliers
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M206_Purchasing.GoodsReceipts
+@using SWFC.Domain.M200_Business.M206_Purchasing.PurchaseRequirements
+
+@inject CreatePurchaseRequirement CreatePurchaseRequirementUseCase
+@inject GetPurchaseRequirements GetPurchaseRequirementsUseCase
+@inject CreateSupplier CreateSupplierUseCase
+@inject GetSuppliers GetSuppliersUseCase
+@inject CreatePurchaseOrder CreatePurchaseOrderUseCase
+@inject GetPurchaseOrders GetPurchaseOrdersUseCase
+@inject CreateGoodsReceipt CreateGoodsReceiptUseCase
+@inject GetGoodsReceipts GetGoodsReceiptsUseCase
+@inject CreateRequestForQuotation CreateRequestForQuotationUseCase
+@inject GetRequestForQuotations GetRequestForQuotationsUseCase
+@inject IExecutionPipeline<GetInventoryItemLookupQuery, IReadOnlyList<InventoryItemLookupItem>> InventoryItemsPipeline
+@inject IExecutionPipeline<GetLocationLookupQuery, IReadOnlyList<LocationLookupItem>> LocationsPipeline
+
+<PageTitle>M206 Einkauf</PageTitle>
+
+<section class="purchasing-page">
+    <header class="purchasing-header">
+        <div>
+            <span class="purchasing-eyebrow">M206 Purchasing</span>
+            <h1>Operativer Einkauf</h1>
+        </div>
+
+        <button class="purchasing-button purchasing-button--secondary" type="button" @onclick="LoadAsync" disabled="@_isBusy">
+            Aktualisieren
+        </button>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(_message))
+    {
+        <div class="purchasing-alert purchasing-alert--success">@_message</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="purchasing-alert purchasing-alert--error">@_error</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="purchasing-panel">Lade Einkaufsdaten...</div>
+    }
+    else
+    {
+        <section class="purchasing-summary">
+            <div>
+                <span>Bedarfe</span>
+                <strong>@_requirements.Count</strong>
+            </div>
+            <div>
+                <span>Lieferanten</span>
+                <strong>@_suppliers.Count</strong>
+            </div>
+            <div>
+                <span>Bestellungen</span>
+                <strong>@_orders.Count</strong>
+            </div>
+            <div>
+                <span>Wareneingaenge</span>
+                <strong>@_goodsReceipts.Count</strong>
+            </div>
+        </section>
+
+        <section class="purchasing-forms">
+            <article class="purchasing-panel">
+                <h2>Bedarf</h2>
+                <label>
+                    Artikel / Material
+                    <input class="purchasing-input" @bind="_requirementItem" />
+                </label>
+                <div class="purchasing-fields">
+                    <label>
+                        Menge
+                        <input class="purchasing-input" type="number" step="0.01" @bind="_requirementQuantity" />
+                    </label>
+                    <label>
+                        Einheit
+                        <input class="purchasing-input" @bind="_requirementUnit" />
+                    </label>
+                </div>
+                <button class="purchasing-button" type="button" @onclick="CreateRequirementAsync" disabled="@_isBusy">
+                    Bedarf speichern
+                </button>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Lieferant</h2>
+                <label>
+                    Name
+                    <input class="purchasing-input" @bind="_supplierName" />
+                </label>
+                <label>
+                    Lieferantennummer
+                    <input class="purchasing-input" @bind="_supplierNumber" />
+                </label>
+                <button class="purchasing-button" type="button" @onclick="CreateSupplierAsync" disabled="@_isBusy">
+                    Lieferant speichern
+                </button>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Bestellung</h2>
+                <label>
+                    Bestellnummer
+                    <input class="purchasing-input" @bind="_orderNumber" />
+                </label>
+                <label>
+                    Lieferant
+                    <select class="purchasing-input" @bind="_orderSupplierId">
+                        <option value="">Lieferant auswaehlen</option>
+                        @foreach (var supplier in _suppliers.Where(x => x.IsActive))
+                        {
+                            <option value="@supplier.Id">@supplier.Name</option>
+                        }
+                    </select>
+                </label>
+                <button class="purchasing-button" type="button" @onclick="CreateOrderAsync" disabled="@_isBusy">
+                    Bestellung speichern
+                </button>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Angebotsanfrage</h2>
+                <label>
+                    Bedarf
+                    <select class="purchasing-input" @bind="_rfqRequirementId">
+                        <option value="">Bedarf auswaehlen</option>
+                        @foreach (var requirement in _requirements.Where(x => x.Status == PurchaseRequirementStatus.Open))
+                        {
+                            <option value="@requirement.Id">@requirement.RequiredItem</option>
+                        }
+                    </select>
+                </label>
+                <label>
+                    Lieferant
+                    <select class="purchasing-input" @bind="_rfqSupplierId">
+                        <option value="">Lieferant auswaehlen</option>
+                        @foreach (var supplier in _suppliers.Where(x => x.IsActive))
+                        {
+                            <option value="@supplier.Id">@supplier.Name</option>
+                        }
+                    </select>
+                </label>
+                <button class="purchasing-button" type="button" @onclick="CreateRfqAsync" disabled="@_isBusy">
+                    RFQ speichern
+                </button>
+            </article>
+
+            <article class="purchasing-panel purchasing-panel--wide">
+                <h2>Wareneingang</h2>
+                <div class="purchasing-fields purchasing-fields--three">
+                    <label>
+                        Bestellung
+                        <select class="purchasing-input" @bind="_receiptOrderId">
+                            <option value="">Bestellung auswaehlen</option>
+                            @foreach (var order in _orders)
+                            {
+                                <option value="@order.Id">@order.OrderNumber - @order.SupplierName</option>
+                            }
+                        </select>
+                    </label>
+                    <label>
+                        M204-Artikel
+                        <select class="purchasing-input" @bind="_receiptInventoryItemId">
+                            <option value="">Artikel auswaehlen</option>
+                            @foreach (var item in _inventoryItems.Where(x => x.IsActive))
+                            {
+                                <option value="@item.Id">@item.ArticleNumber - @item.Name</option>
+                            }
+                        </select>
+                    </label>
+                    <label>
+                        Lagerort
+                        <select class="purchasing-input" @bind="_receiptLocationId">
+                            <option value="">Lagerort auswaehlen</option>
+                            @foreach (var location in _locations)
+                            {
+                                <option value="@location.Id">@location.Name (@location.Code)</option>
+                            }
+                        </select>
+                    </label>
+                </div>
+                <div class="purchasing-fields purchasing-fields--three">
+                    <label>
+                        Menge
+                        <input class="purchasing-input" type="number" min="1" step="1" @bind="_receiptQuantity" />
+                    </label>
+                    <label>
+                        Fach
+                        <input class="purchasing-input" @bind="_receiptBin" />
+                    </label>
+                    <label>
+                        Einheit
+                        <input class="purchasing-input" value="@ReceiptUnit" disabled />
+                    </label>
+                </div>
+                <button class="purchasing-button" type="button" @onclick="CreateReceiptAsync" disabled="@_isBusy">
+                    Wareneingang buchen lassen
+                </button>
+            </article>
+        </section>
+
+        <section class="purchasing-lists">
+            <article class="purchasing-panel">
+                <div class="purchasing-list-header">
+                    <h2>Wareneingaenge</h2>
+                    <span>M204 bucht Bestand</span>
+                </div>
+                @if (_goodsReceipts.Count == 0)
+                {
+                    <p class="purchasing-empty">Keine Wareneingaenge vorhanden.</p>
+                }
+                else
+                {
+                    <div class="purchasing-table">
+                        <div class="purchasing-row purchasing-row--head">
+                            <span>Bestellung</span>
+                            <span>Artikel</span>
+                            <span>Lagerort</span>
+                            <span>Menge</span>
+                            <span>Status</span>
+                            <span>M204-Bewegung</span>
+                        </div>
+                        @foreach (var receipt in _goodsReceipts)
+                        {
+                            <div class="purchasing-row">
+                                <span>@receipt.PurchaseOrderNumber</span>
+                                <span>@receipt.InventoryItemName</span>
+                                <span>@receipt.LocationName (@receipt.LocationCode)</span>
+                                <span>@receipt.Quantity @receipt.Unit</span>
+                                <span class="@BookingStatusClass(receipt.InventoryBookingStatus)">
+                                    @receipt.InventoryBookingStatus
+                                </span>
+                                <span>@(receipt.InventoryStockMovementId?.ToString() ?? "-")</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Bedarfe</h2>
+                <div class="purchasing-table purchasing-table--compact">
+                    @foreach (var requirement in _requirements)
+                    {
+                        <div class="purchasing-row">
+                            <span>@requirement.RequiredItem</span>
+                            <span>@requirement.Quantity @requirement.Unit</span>
+                            <span>@requirement.SourceType</span>
+                            <span>@requirement.Status</span>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Bestellungen</h2>
+                <div class="purchasing-table purchasing-table--compact">
+                    @foreach (var order in _orders)
+                    {
+                        <div class="purchasing-row">
+                            <span>@order.OrderNumber</span>
+                            <span>@order.SupplierName</span>
+                            <span>@order.Status</span>
+                            <span>@FormatDate(order.CreatedAtUtc)</span>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Lieferanten</h2>
+                <div class="purchasing-table purchasing-table--compact">
+                    @foreach (var supplier in _suppliers)
+                    {
+                        <div class="purchasing-row">
+                            <span>@supplier.Name</span>
+                            <span>@(supplier.SupplierNumber ?? "-")</span>
+                            <span>@(supplier.IsActive ? "Aktiv" : "Inaktiv")</span>
+                        </div>
+                    }
+                </div>
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Angebotsanfragen</h2>
+                <div class="purchasing-table purchasing-table--compact">
+                    @foreach (var rfq in _rfqs)
+                    {
+                        <div class="purchasing-row">
+                            <span>@rfq.RequiredItem</span>
+                            <span>@rfq.SupplierName</span>
+                            <span>@(rfq.IsClosed ? "Geschlossen" : "Offen")</span>
+                            <span>@FormatDate(rfq.RequestedAtUtc)</span>
+                        </div>
+                    }
+                </div>
+            </article>
+        </section>
+    }
+</section>

@@ -1,0 +1,96 @@
+@page "/system/configuration"
+@attribute [Authorize]
+
+@using SWFC.Web.Pages.M100_System.M105_Configuration.Models
+@using SWFC.Web.Pages.M100_System.M105_Configuration.Services
+
+@inject ConfigurationWorkspaceService ConfigurationService
+
+<PageTitle>M105 Configuration</PageTitle>
+
+<div class="m105-configuration">
+    <header class="m105-configuration__header">
+        <div>
+            <div class="m105-configuration__eyebrow">M105</div>
+            <h1>Configuration</h1>
+            <p>Versioned system settings, feature flags and module activation state.</p>
+        </div>
+    </header>
+
+    <section class="m105-configuration__panel">
+        <h2>Update setting</h2>
+        <form method="post" action="/system/configuration/setting" class="m105-configuration__form">
+            <AntiforgeryToken />
+            <label>
+                <span>Key</span>
+                <input name="Key" required maxlength="120" />
+            </label>
+            <label>
+                <span>Value</span>
+                <input name="Value" required maxlength="240" />
+            </label>
+            <label class="m105-configuration__wide">
+                <span>Reason</span>
+                <input name="Reason" required maxlength="240" />
+            </label>
+            <button type="submit">Save setting</button>
+        </form>
+    </section>
+
+    <section class="m105-configuration__panel">
+        <h2>Module activation</h2>
+        <div class="m105-configuration__modules">
+            @foreach (var module in _modules)
+            {
+                <form method="post" action="/system/configuration/module" class="m105-configuration__module">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ModuleCode" value="@module.ModuleCode" />
+                    <label>
+                        <input type="checkbox" name="IsEnabled" value="true" checked="@module.IsEnabled" />
+                        <span>@module.ModuleCode</span>
+                    </label>
+                    <input name="Reason" required maxlength="240" value="@module.Reason" />
+                    <button type="submit">Apply</button>
+                </form>
+            }
+        </div>
+    </section>
+
+    <section class="m105-configuration__settings">
+        @foreach (var setting in _settings)
+        {
+            <article class="m105-configuration__card">
+                <header>
+                    <h2>@setting.Key</h2>
+                    <span>v@setting.Version</span>
+                </header>
+                <p>@setting.Value</p>
+                <dl>
+                    <div>
+                        <dt>Scope</dt>
+                        <dd>@setting.Scope</dd>
+                    </div>
+                    <div>
+                        <dt>Security relevant</dt>
+                        <dd>@(setting.IsSecurityRelevant ? "Yes" : "No")</dd>
+                    </div>
+                    <div>
+                        <dt>Updated</dt>
+                        <dd>@setting.UpdatedUtc.ToString("u")</dd>
+                    </div>
+                </dl>
+            </article>
+        }
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<ConfigurationSettingRecord> _settings = Array.Empty<ConfigurationSettingRecord>();
+    private IReadOnlyList<ModuleActivationRecord> _modules = Array.Empty<ModuleActivationRecord>();
+
+    protected override void OnInitialized()
+    {
+        _settings = ConfigurationService.GetSettings();
+        _modules = ConfigurationService.GetModuleActivations();
+    }
+}

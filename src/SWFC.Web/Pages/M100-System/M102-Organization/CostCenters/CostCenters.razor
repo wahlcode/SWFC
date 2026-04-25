@@ -1,0 +1,307 @@
+@page "/system/cost-centers"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.CostCenters
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject IExecutionPipeline<GetCostCentersQuery, IReadOnlyList<CostCenterListItem>> GetCostCentersPipeline
+@inject IExecutionPipeline<CreateCostCenterCommand, Guid> CreateCostCenterPipeline
+@inject LocalizationTextProvider TextProvider
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou">
+    <div class="m100-ou__header">
+        <div>
+            <h1>@_titleText</h1>
+            <p>@_subtitleText</p>
+        </div>
+
+        <div class="m100-ou__actions">
+            <input class="m100-input"
+                   placeholder="@_searchPlaceholderText"
+                   value="@_searchText"
+                   @oninput="OnSearchChanged" />
+
+            <button class="m100-button" @onclick="OpenCreatePanel">
+                @_createText
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    <div class="m100-ou__layout">
+        <div class="m100-card">
+            @if (_isLoading)
+            {
+                <div class="m100-loading">@_loadingText</div>
+            }
+            else if (_filteredItems.Count == 0)
+            {
+                <div class="m100-empty">@_emptyText</div>
+            }
+            else
+            {
+                <table class="m100-table">
+                    <thead>
+                        <tr>
+                            <th>@_nameText</th>
+                            <th>@_codeText</th>
+                            <th>@_parentText</th>
+                            <th>@_activeText</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in _filteredItems)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Code</td>
+                                <td>@BuildParentLabel(item)</td>
+                                <td>@(item.IsActive ? _yesText : _noText)</td>
+                                <td class="m100-table__actions">
+                                    <a href="@($"/system/cost-centers/{item.Id}")">@_detailsText</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        @if (_showCreatePanel)
+        {
+            <div class="m100-card m100-ou__create">
+                <h3>@_createText</h3>
+
+                <input class="m100-input"
+                       placeholder="@_nameText"
+                       @bind="_createModel.Name" />
+
+                <input class="m100-input"
+                       placeholder="@_codeText"
+                       @bind="_createModel.Code" />
+
+                <select class="m100-input"
+                        @bind="_createModel.ParentId">
+                    <option value="">@_noParentText</option>
+                    @foreach (var item in _items.OrderBy(x => x.Name))
+                    {
+                        <option value="@item.Id">@item.Name (@item.Code)</option>
+                    }
+                </select>
+
+                <textarea class="m100-textarea"
+                          placeholder="@_reasonText"
+                          @bind="_createModel.Reason"></textarea>
+
+                <div class="m100-actions">
+                    <button class="m100-button"
+                            @onclick="CreateAsync"
+                            disabled="@_isSubmitting">
+                        @_saveText
+                    </button>
+
+                    <button class="m100-button m100-button--secondary"
+                            @onclick="CloseCreatePanel">
+                        @_cancelText
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private bool _showCreatePanel;
+
+    private string? _error;
+    private string? _success;
+    private string _searchText = string.Empty;
+
+    private IReadOnlyList<CostCenterListItem> _items = [];
+    private List<CostCenterListItem> _filteredItems = [];
+
+    private CreateCostCenterInputModel _createModel = new();
+
+    private string _titleText = "Cost Centers";
+    private string _subtitleText = "Overview of all cost centers";
+    private string _searchPlaceholderText = "Search name or code";
+    private string _createText = "Create cost center";
+    private string _loadingText = "Loading cost centers...";
+    private string _emptyText = "No cost centers found";
+    private string _nameText = "Name";
+    private string _codeText = "Code";
+    private string _parentText = "Parent";
+    private string _activeText = "Active";
+    private string _yesText = "Yes";
+    private string _noText = "No";
+    private string _detailsText = "Details";
+    private string _noParentText = "-- no parent --";
+    private string _reasonText = "Reason";
+    private string _saveText = "Save";
+    private string _cancelText = "Cancel";
+    private string _createdText = "Cost center created";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LocalizeAsync();
+        await LoadAsync();
+    }
+
+    private async Task LocalizeAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _titleText = await TextProvider.GetTextAsync("CostCenters.Title", culture);
+        _subtitleText = await TextProvider.GetTextAsync("CostCenters.Subtitle", culture);
+        _searchPlaceholderText = await TextProvider.GetTextAsync("CostCenters.SearchPlaceholder", culture);
+        _createText = await TextProvider.GetTextAsync("CostCenters.Create", culture);
+        _loadingText = await TextProvider.GetTextAsync("CostCenters.Loading", culture);
+        _emptyText = await TextProvider.GetTextAsync("CostCenters.Empty", culture);
+        _nameText = await TextProvider.GetTextAsync("Common.Name", culture);
+        _codeText = await TextProvider.GetTextAsync("Common.Code", culture);
+        _parentText = await TextProvider.GetTextAsync("Common.Parent", culture);
+        _activeText = await TextProvider.GetTextAsync("Common.Active", culture);
+        _yesText = await TextProvider.GetTextAsync("Common.Yes", culture);
+        _noText = await TextProvider.GetTextAsync("Common.No", culture);
+        _detailsText = await TextProvider.GetTextAsync("Common.Details", culture);
+        _noParentText = await TextProvider.GetTextAsync("Common.NoParent", culture);
+        _reasonText = await TextProvider.GetTextAsync("Common.Reason", culture);
+        _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
+        _cancelText = await TextProvider.GetTextAsync("Common.Cancel", culture);
+        _createdText = await TextProvider.GetTextAsync("CostCenters.Created", culture);
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            var result = await GetCostCentersPipeline.ExecuteAsync(new GetCostCentersQuery());
+
+            if (!result.IsSuccess || result.Value is null)
+            {
+                _error = result.Error.Message;
+                return;
+            }
+
+            _items = result.Value;
+            ApplyFilter();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<CostCenterListItem> query = _items;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var s = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.Name.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                x.Code.Contains(s, StringComparison.OrdinalIgnoreCase));
+        }
+
+        _filteredItems = query
+            .OrderBy(x => x.Name)
+            .ThenBy(x => x.Code)
+            .ToList();
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? string.Empty;
+        ApplyFilter();
+    }
+
+    private void OpenCreatePanel()
+    {
+        _createModel = new();
+        _showCreatePanel = true;
+        _error = null;
+        _success = null;
+    }
+
+    private void CloseCreatePanel()
+    {
+        if (!_isSubmitting)
+        {
+            _showCreatePanel = false;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        _error = null;
+        _success = null;
+        _isSubmitting = true;
+
+        try
+        {
+            var result = await CreateCostCenterPipeline.ExecuteAsync(
+                new CreateCostCenterCommand(
+                    _createModel.Name,
+                    _createModel.Code,
+                    _createModel.ParentId,
+                    _createModel.Reason));
+
+            if (!result.IsSuccess)
+            {
+                _error = result.Error.Message;
+                return;
+            }
+
+            _success = _createdText;
+            _showCreatePanel = false;
+
+            await LoadAsync();
+
+            NavigationManager.NavigateTo($"/system/cost-centers/{result.Value}");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private static string BuildParentLabel(CostCenterListItem item)
+    {
+        if (!string.IsNullOrWhiteSpace(item.ParentName) && !string.IsNullOrWhiteSpace(item.ParentCode))
+        {
+            return $"{item.ParentName} ({item.ParentCode})";
+        }
+
+        return item.ParentName ?? item.ParentCode ?? "-";
+    }
+
+    private sealed class CreateCostCenterInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public Guid? ParentId { get; set; }
+        public string Reason { get; set; } = string.Empty;
+    }
+}

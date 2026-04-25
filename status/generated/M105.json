@@ -1,0 +1,66 @@
+{
+  "ModuleCode": "M105",
+  "ScorePercent": 6,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.4318621+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M105 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Systemeinstellungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Feature Flags",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Modulaktivierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Standardwerte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Einheitenanzeige",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Lokalisierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zeitzonenanzeige",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Audit-Parameter",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

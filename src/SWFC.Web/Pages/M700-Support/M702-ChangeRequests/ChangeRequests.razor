@@ -1,0 +1,187 @@
+@page "/support/change-requests"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M702_ChangeRequests
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M700_Support.M702_ChangeRequests
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M702 · ChangeRequests"
+                    Title="Change Requests"
+                    Subtitle="Aenderungswuensche, Verbesserungsideen und Erweiterungen mit dokumentierten Requirement- und Roadmap-Referenzen."
+                    BackHref="/support"
+                    BackLabel="Zurueck"
+                    CurrentCode="M702">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Gesamt</span>
+            <strong class="m700-summary-card__value">@_items.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Changes</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == ChangeRequestType.ChangeRequest)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Ideen</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == ChangeRequestType.ImprovementIdea)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Erweiterungen</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Type == ChangeRequestType.Extension)</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">Die MD nennt Verknuepfungen zu M606 und M601. Ohne Ziel-UseCases werden hier nur echte Referenzwerte gespeichert, keine erfundenen Fremdschluessel.</p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_success))
+        {
+            <div class="m700-state m700-state--success">@_success</div>
+        }
+
+        <section class="m700-workspace">
+            <aside class="m700-toolbar">
+                <div class="m700-toolbar__head">
+                    <div>
+                        <h2 class="m700-toolbar__title">Change-Liste</h2>
+                        <p class="m700-toolbar__text">Typ, Beschreibung und MD-gedeckte Referenzen.</p>
+                    </div>
+                    <span class="m700-tag">@_filteredItems.Count</span>
+                </div>
+
+                <input class="m201-input m700-input"
+                       placeholder="Beschreibung oder Referenz suchen"
+                       value="@_searchText"
+                       @oninput="OnSearchChanged" />
+
+                <button type="button" class="m201-button" @onclick="OpenCreateForm">Change erfassen</button>
+
+                @if (_isLoading)
+                {
+                    <div class="m700-state">Lade Change Requests...</div>
+                }
+                else if (_filteredItems.Count == 0)
+                {
+                    <div class="m700-state">Keine Change Requests gefunden.</div>
+                }
+                else
+                {
+                    <div class="m700-item-list">
+                        @foreach (var item in _filteredItems)
+                        {
+                            <button type="button"
+                                    class="@($"m700-item-button{(_selectedId == item.Id ? " is-selected" : string.Empty)}")"
+                                    @onclick="() => SelectItem(item.Id)">
+                                <span class="m700-item-button__top">
+                                    <span class="m700-item-button__title">@Preview(item.Description)</span>
+                                    <span class="m700-tag">@FormatType(item.Type)</span>
+                                </span>
+                                <span class="m700-item-button__text">@BuildReferenceLine(item)</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m700-detail">
+                @if (SelectedItem is null)
+                {
+                    <div class="m700-detail-card">
+                        <p class="m700-muted">Waehle einen Change Request oder lege einen neuen Eintrag an.</p>
+                    </div>
+                }
+                else
+                {
+                    <article class="m700-detail-card">
+                        <div class="m700-detail-card__head">
+                            <div>
+                                <p class="m700-panel__eyebrow">Change Request Details</p>
+                                <h2 class="m700-detail-card__title">@Preview(SelectedItem.Description, 120)</h2>
+                            </div>
+                            <span class="m700-tag">@FormatType(SelectedItem.Type)</span>
+                        </div>
+
+                        <dl class="m700-definition-list">
+                            <div>
+                                <dt>Beschreibung</dt>
+                                <dd>@SelectedItem.Description</dd>
+                            </div>
+                            <div>
+                                <dt>Requirement-Referenz</dt>
+                                <dd>@(SelectedItem.RequirementReference ?? "-")</dd>
+                            </div>
+                            <div>
+                                <dt>Roadmap-Referenz</dt>
+                                <dd>@(SelectedItem.RoadmapReference ?? "-")</dd>
+                            </div>
+                            <div>
+                                <dt>Erstellt</dt>
+                                <dd>@FormatDate(SelectedItem.CreatedAtUtc)</dd>
+                            </div>
+                        </dl>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="OpenEditForm">Bearbeiten</button>
+                        </div>
+                    </article>
+                }
+
+                @if (_showForm)
+                {
+                    <section class="m700-detail-card">
+                        <div class="m700-panel__header">
+                            <p class="m700-panel__eyebrow">@(_isEdit ? "Change aktualisieren" : "Change erfassen")</p>
+                            <h2 class="m700-panel__title">@(_isEdit ? "Bestehenden Eintrag bearbeiten" : "Neuen Change Request anlegen")</h2>
+                        </div>
+
+                        <div class="m700-form-grid">
+                            <div class="m700-field">
+                                <label>Typ</label>
+                                <select class="m201-input m700-select" @bind="_form.Type">
+                                    @foreach (ChangeRequestType type in Enum.GetValues<ChangeRequestType>())
+                                    {
+                                        <option value="@type">@FormatType(type)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="m700-field">
+                                <label>Begruendung</label>
+                                <input class="m201-input m700-input" @bind="_form.Reason" />
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Beschreibung</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Description"></textarea>
+                            </div>
+                            <div class="m700-field">
+                                <label>Requirement-Referenz (M606)</label>
+                                <input class="m201-input m700-input" @bind="_form.RequirementReference" />
+                            </div>
+                            <div class="m700-field">
+                                <label>Roadmap-Referenz (M601)</label>
+                                <input class="m201-input m700-input" @bind="_form.RoadmapReference" />
+                            </div>
+                        </div>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="SaveAsync" disabled="@_isSubmitting">
+                                @(_isSubmitting ? "Speichert..." : "Speichern")
+                            </button>
+                            <button type="button" class="m201-button m201-button--secondary" @onclick="CloseForm" disabled="@_isSubmitting">Abbrechen</button>
+                        </div>
+                    </section>
+                }
+            </section>
+        </section>
+    </ChildContent>
+</SupportModuleShell>

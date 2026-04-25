@@ -1,0 +1,210 @@
+@page "/system/shift-models/{Id:guid?}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.ShiftModels
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetShiftModelByIdQuery, ShiftModelDetailsDto> GetShiftModelPipeline
+@inject IExecutionPipeline<CreateShiftModelCommand, Guid> CreateShiftModelPipeline
+@inject IExecutionPipeline<UpdateShiftModelCommand, bool> UpdateShiftModelPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou-detail">
+
+    <div class="m100-ou-detail__header">
+        <h1>@(IsNew ? "New shift model" : "Edit shift model")</h1>
+
+        <a href="/system/shift-models" class="m100-link">
+            Back
+        </a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m100-loading">Loading data...</div>
+    }
+    else
+    {
+        <div class="m100-ou-detail__layout">
+
+            <div class="m100-card">
+
+                <input class="m100-input"
+                       placeholder="Name"
+                       @bind="_model.Name" />
+
+                <input class="m100-input"
+                       placeholder="Code"
+                       @bind="_model.Code" />
+
+                <textarea class="m100-textarea"
+                          placeholder="Description"
+                          @bind="_model.Description"></textarea>
+
+                <label class="m100-checkbox">
+                    <input type="checkbox" @bind="_model.IsActive" />
+                    Active
+                </label>
+
+                <textarea class="m100-textarea"
+                          placeholder="Reason"
+                          @bind="_model.Reason"></textarea>
+
+                <button class="m100-button"
+                        @onclick="SaveAsync"
+                        disabled="@_isBusy">
+                    Save
+                </button>
+
+            </div>
+
+            <div class="m100-card m100-ou-detail__side">
+
+                @if (IsNew)
+                {
+                    <div class="m100-muted">New shift model</div>
+                }
+                else if (_shiftModel is not null)
+                {
+                    <ul class="m100-list">
+                        <li><strong>Name:</strong> @_shiftModel.Name</li>
+                        <li><strong>Code:</strong> @_shiftModel.Code</li>
+                        <li><strong>Description:</strong> @(string.IsNullOrWhiteSpace(_shiftModel.Description) ? "-" : _shiftModel.Description)</li>
+                        <li><strong>Active:</strong> @(_shiftModel.IsActive ? "Yes" : "No")</li>
+                    </ul>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _error;
+    private string? _success;
+
+    private ShiftModelDetailsDto? _shiftModel;
+    private ShiftModelInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+        _success = null;
+
+        if (IsNew)
+        {
+            _shiftModel = null;
+            _model = new ShiftModelInputModel();
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetShiftModelPipeline.ExecuteAsync(new GetShiftModelByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _shiftModel = result.Value;
+            _model = new ShiftModelInputModel
+            {
+                Name = result.Value.Name,
+                Code = result.Value.Code,
+                Description = result.Value.Description,
+                IsActive = result.Value.IsActive,
+                Reason = string.Empty
+            };
+        }
+        else
+        {
+            _error = result.Error?.Message ?? "Could not be loaded.";
+        }
+
+        _isLoading = false;
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _success = null;
+        _isBusy = true;
+
+        try
+        {
+            if (IsNew)
+            {
+                var createResult = await CreateShiftModelPipeline.ExecuteAsync(
+                    new CreateShiftModelCommand(
+                        _model.Name,
+                        _model.Code,
+                        _model.Description,
+                        _model.Reason));
+
+                if (!createResult.IsSuccess)
+                {
+                    _error = createResult.Error?.Message;
+                    return;
+                }
+
+                _success = "Created";
+                NavigationManager.NavigateTo($"/system/shift-models/{createResult.Value}");
+                return;
+            }
+
+            var updateResult = await UpdateShiftModelPipeline.ExecuteAsync(
+                new UpdateShiftModelCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.Code,
+                    _model.Description,
+                    _model.IsActive,
+                    _model.Reason));
+
+            if (!updateResult.IsSuccess)
+            {
+                _error = updateResult.Error?.Message;
+                return;
+            }
+
+            _success = "Updated";
+            await LoadAsync();
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private sealed class ShiftModelInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string Reason { get; set; } = string.Empty;
+    }
+}

@@ -1,0 +1,212 @@
+@page "/business/maintenance/orders/new"
+@page "/business/maintenance/orders/{Id:guid}/edit"
+@using SWFC.Web.Pages.M200_Business.M202_Maintenance.Components
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<CreateMaintenanceOrderCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateMaintenanceOrderCommand, bool> UpdatePipeline
+@inject IExecutionPipeline<GetMaintenanceOrderByIdQuery, MaintenanceOrderDetailsDto> DetailsPipeline
+@inject NavigationManager Navigation
+
+<PageTitle>M202 Arbeitsauftrag</PageTitle>
+
+<section class="m201-machine-detail">
+    <div class="m201-machine-detail__header">
+        <div class="m201-machine-detail__title-block">
+            <div class="m202-page__eyebrow">M202</div>
+            <h1>@(IsEdit ? "Arbeitsauftrag bearbeiten" : "Arbeitsauftrag anlegen")</h1>
+            <p class="m201-machine-detail__subtitle">
+                @(IsEdit
+                    ? "Arbeitsauftrag strukturiert bearbeiten."
+                    : "Neuen Arbeitsauftrag strukturiert anlegen.")
+            </p>
+        </div>
+
+        <div class="m201-machine-detail__actions">
+            <a href="/business/maintenance" class="m201-link">Zurück</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m201-alert m201-alert--error">@_errorMessage</div>
+    }
+
+    <div class="m201-machine-detail__layout">
+        <div class="m201-card">
+            <MaintenanceOrderForm Model="_model"
+                                  IsEdit="IsEdit"
+                                  IsBusy="_isBusy"
+                                  ErrorMessage="_errorMessage"
+                                  OnValidSubmit="HandleSubmitAsync" />
+        </div>
+
+        <div class="m201-machine-detail__side-column">
+            <div class="m201-card">
+                <div class="m201-machine-summary">
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Nummer</span>
+                        <strong>@DisplayOrDash(_model.Number)</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Typ</span>
+                        <strong>@_model.Type</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Zieltyp</span>
+                        <strong>@_model.TargetType</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Material</span>
+                        <strong>@DisplayOrDash(_model.MaterialItemId)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private MaintenanceOrderFormModel _model = new();
+    private string? _errorMessage;
+    private bool _isBusy;
+    private bool IsEdit => Id.HasValue && Id.Value != Guid.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _errorMessage = null;
+
+        if (!IsEdit)
+        {
+            _model = new MaintenanceOrderFormModel();
+            return;
+        }
+
+        var result = await DetailsPipeline.ExecuteAsync(
+            new GetMaintenanceOrderByIdQuery(Id!.Value),
+            CancellationToken.None);
+
+        var item = result.Value;
+        if (item is null)
+        {
+            _errorMessage = "Arbeitsauftrag konnte nicht geladen werden.";
+            return;
+        }
+
+        _model = new MaintenanceOrderFormModel
+        {
+            Number = item.Number,
+            Title = item.Title,
+            Description = item.Description,
+            Type = item.Type,
+            TargetType = item.TargetType,
+            TargetIdText = item.TargetId.ToString(),
+            MaterialItemId = item.Materials.FirstOrDefault()?.ItemId.ToString() ?? string.Empty,
+            MaterialQuantity = item.Materials.FirstOrDefault()?.Quantity ?? 1
+        };
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        _errorMessage = null;
+        _isBusy = true;
+
+        try
+        {
+            if (!Guid.TryParse(_model.TargetIdText, out var targetId))
+            {
+                _errorMessage = "TargetId ist ungültig.";
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(_model.MaterialItemId) &&
+                !Guid.TryParse(_model.MaterialItemId, out _))
+            {
+                _errorMessage = "Material ItemId ist ungültig.";
+                return;
+            }
+
+            var updateMaterials = string.IsNullOrWhiteSpace(_model.MaterialItemId)
+                ? Array.Empty<UpdateMaintenanceOrderMaterialCommand>()
+                : new[]
+                {
+                    new UpdateMaintenanceOrderMaterialCommand(
+                        Guid.Parse(_model.MaterialItemId),
+                        _model.MaterialQuantity)
+                };
+
+            if (IsEdit)
+            {
+                var updateResult = await UpdatePipeline.ExecuteAsync(
+                    new UpdateMaintenanceOrderCommand(
+                        Id!.Value,
+                        _model.Title,
+                        _model.Description,
+                        _model.Type,
+                        _model.TargetType,
+                        targetId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        updateMaterials),
+                    CancellationToken.None);
+
+                if (updateResult.IsFailure)
+                {
+                    _errorMessage = "Speichern fehlgeschlagen.";
+                    return;
+                }
+            }
+            else
+            {
+                var createMaterials = string.IsNullOrWhiteSpace(_model.MaterialItemId)
+                    ? Array.Empty<CreateMaintenanceOrderMaterialCommand>()
+                    : new[]
+                    {
+                        new CreateMaintenanceOrderMaterialCommand(
+                            Guid.Parse(_model.MaterialItemId),
+                            _model.MaterialQuantity)
+                    };
+
+                var createResult = await CreatePipeline.ExecuteAsync(
+                    new CreateMaintenanceOrderCommand(
+                        _model.Number,
+                        _model.Title,
+                        _model.Description,
+                        _model.Type,
+                        _model.TargetType,
+                        targetId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        createMaterials),
+                    CancellationToken.None);
+
+                if (createResult.IsFailure)
+                {
+                    _errorMessage = "Anlegen fehlgeschlagen.";
+                    return;
+                }
+            }
+
+            Navigation.NavigateTo("/business/maintenance");
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+

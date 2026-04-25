@@ -1,0 +1,327 @@
+@page "/business/energy/meter/new"
+@page "/business/energy/meter/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M205_Energy.EnergyMeters
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M205_Energy.EnergyMeters
+@using SWFC.Web.Pages.M200_Business.M205_Energy.Components
+
+@inject IExecutionPipeline<GetEnergyMeterByIdQuery, EnergyMeterDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateEnergyMeterCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateEnergyMeterCommand, Guid> UpdatePipeline
+@inject NavigationManager NavigationManager
+
+<section class="m205-detail">
+    <div class="m205-detail__header">
+        <div>
+            <div class="m205-detail__eyebrow">M205</div>
+            <h1>@(IsNew ? "Energiezähler anlegen" : "Energiezähler bearbeiten")</h1>
+            <p class="m205-detail__subtitle">Zählerstammdaten strukturiert pflegen.</p>
+        </div>
+
+        <div class="m205-detail__actions">
+            <a href="/business/energy" class="m205-button-secondary">Zurück</a>
+            @if (!IsNew && Id.HasValue)
+            {
+                <a href="@($"/business/energy/reading/new?meterId={Id.Value}")" class="m205-button">
+                    Neuer Zählerstand
+                </a>
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m205-alert m205-alert--error">@_errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_successMessage))
+    {
+        <div class="m205-alert m205-alert--success">@_successMessage</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m205-loading">Lade Daten...</div>
+    }
+    else
+    {
+        <div class="m205-detail__grid">
+            <div class="m205-card">
+                <EditForm Model="_model" OnValidSubmit="SaveAsync">
+                    <DataAnnotationsValidator />
+
+                    <div class="m205-form-grid">
+                        <div class="m205-form-field">
+                            <label for="m205-name">Name</label>
+                            <InputText id="m205-name" class="m205-input" @bind-Value="_model.Name" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-medium">Medium</label>
+                            <InputSelect id="m205-medium" class="m205-input" @bind-Value="_model.MediumType">
+                                <option value="@EnergyMediumType.Electricity">Electricity</option>
+                                <option value="@EnergyMediumType.Water">Water</option>
+                                <option value="@EnergyMediumType.Gas">Gas</option>
+                                <option value="@EnergyMediumType.Oxygen">Oxygen</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-unit">Einheit</label>
+                            <InputText id="m205-unit" class="m205-input" @bind-Value="_model.Unit" />
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--checkbox">
+                            <label class="m205-checkbox">
+                                <InputCheckbox @bind-Value="_model.IsManualEntryEnabled" />
+                                Manuelle Eingabe
+                            </label>
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--checkbox">
+                            <label class="m205-checkbox">
+                                <InputCheckbox @bind-Value="_model.IsExternalImportEnabled" />
+                                Externer Import
+                            </label>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-external">Externes System</label>
+                            <InputText id="m205-external" class="m205-input" @bind-Value="_model.ExternalSystem" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-rfid">RFID-Tag</label>
+                            <InputText id="m205-rfid" class="m205-input" @bind-Value="_model.RfidTag" />
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--checkbox">
+                            <label class="m205-checkbox">
+                                <InputCheckbox @bind-Value="_model.SupportsOfflineCapture" />
+                                Offline-Erfassung möglich
+                            </label>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-machine">MachineId</label>
+                            <InputText id="m205-machine" class="m205-input" @bind-Value="_model.MachineId" />
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--checkbox">
+                            <label class="m205-checkbox">
+                                <InputCheckbox @bind-Value="_model.IsActive" />
+                                Aktiv
+                            </label>
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--full">
+                            <label for="m205-reason">Grund</label>
+                            <InputTextArea id="m205-reason" class="m205-input m205-textarea" @bind-Value="_model.Reason" />
+                        </div>
+                    </div>
+
+                    <div class="m205-actions">
+                        <button class="m205-button" type="submit" disabled="@_isBusy">Speichern</button>
+                        <button type="button" class="m205-button-secondary" @onclick="ResetModel">Verwerfen</button>
+                    </div>
+                </EditForm>
+            </div>
+
+            <div class="m205-card">
+                <h3>Zusammenfassung</h3>
+
+                @if (_item is null)
+                {
+                    <p class="m205-muted">Neuer Zähler.</p>
+                }
+                else
+                {
+                    <ul class="m205-summary">
+                        <li><strong>Name:</strong> @_item.Name</li>
+                        <li><strong>Medium:</strong> @_item.MediumType</li>
+                        <li><strong>Einheit:</strong> @_item.Unit</li>
+                        <li><strong>Manuell:</strong> @(_item.IsManualEntryEnabled ? "Ja" : "Nein")</li>
+                        <li><strong>Extern:</strong> @(_item.IsExternalImportEnabled ? "Ja" : "Nein")</li>
+                        <li><strong>Externes System:</strong> @DisplayOrDash(_item.ExternalSystem)</li>
+                        <li><strong>RFID-Tag:</strong> @DisplayOrDash(_item.RfidTag)</li>
+                        <li><strong>Offline:</strong> @(_item.SupportsOfflineCapture ? "Ja" : "Nein")</li>
+                        <li><strong>MachineId:</strong> @DisplayOrDash(_item.MachineId?.ToString())</li>
+                        <li><strong>Aktiv:</strong> @(_item.IsActive ? "Ja" : "Nein")</li>
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    private EnergyMeterDetailsDto? _item;
+    private EnergyMeterInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _errorMessage = null;
+        _successMessage = null;
+        _isLoading = true;
+
+        if (IsNew)
+        {
+            _item = null;
+            _model = new EnergyMeterInputModel { IsActive = true, IsManualEntryEnabled = true };
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetEnergyMeterByIdQuery(Id!.Value), CancellationToken.None);
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _item = result.Value;
+            ResetModel();
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ResetModel()
+    {
+        if (_item is null)
+        {
+            _model = new EnergyMeterInputModel { IsActive = true, IsManualEntryEnabled = true };
+            return;
+        }
+
+        _model = new EnergyMeterInputModel
+        {
+            Name = _item.Name,
+            MediumType = _item.MediumType,
+            Unit = _item.Unit,
+            IsManualEntryEnabled = _item.IsManualEntryEnabled,
+            IsExternalImportEnabled = _item.IsExternalImportEnabled,
+            ExternalSystem = _item.ExternalSystem,
+            RfidTag = _item.RfidTag,
+            SupportsOfflineCapture = _item.SupportsOfflineCapture,
+            MachineId = _item.MachineId?.ToString(),
+            IsActive = _item.IsActive
+        };
+    }
+
+    private async Task SaveAsync()
+    {
+        _isBusy = true;
+        _errorMessage = null;
+        _successMessage = null;
+
+        try
+        {
+            Guid? machineId = null;
+
+            if (!string.IsNullOrWhiteSpace(_model.MachineId))
+            {
+                if (!Guid.TryParse(_model.MachineId, out var parsedMachineId))
+                {
+                    _errorMessage = "MachineId ist ungültig.";
+                    return;
+                }
+
+                machineId = parsedMachineId;
+            }
+
+            if (!_model.IsManualEntryEnabled && !_model.IsExternalImportEnabled)
+            {
+                _errorMessage = "Mindestens ein Erfassungsweg muss aktiv sein.";
+                return;
+            }
+
+            if (_model.IsExternalImportEnabled && string.IsNullOrWhiteSpace(_model.ExternalSystem))
+            {
+                _errorMessage = "Externes System ist erforderlich.";
+                return;
+            }
+
+            if (_model.SupportsOfflineCapture && !_model.IsManualEntryEnabled)
+            {
+                _errorMessage = "Offline-Erfassung benötigt manuelle Eingabe.";
+                return;
+            }
+
+            if (IsNew)
+            {
+                var result = await CreatePipeline.ExecuteAsync(
+                    new CreateEnergyMeterCommand(
+                        _model.Name,
+                        _model.MediumType,
+                        _model.Unit,
+                        _model.IsManualEntryEnabled,
+                        _model.IsExternalImportEnabled,
+                        _model.ExternalSystem,
+                        _model.RfidTag,
+                        _model.SupportsOfflineCapture,
+                        machineId,
+                        _model.Reason),
+                    CancellationToken.None);
+
+                if (result.IsSuccess && result.Value != Guid.Empty)
+                {
+                    NavigationManager.NavigateTo($"/business/energy/meter/{result.Value}");
+                    return;
+                }
+
+                _errorMessage = result.Error?.Message ?? "Anlegen fehlgeschlagen.";
+                return;
+            }
+
+            var updateResult = await UpdatePipeline.ExecuteAsync(
+                new UpdateEnergyMeterCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.MediumType,
+                    _model.Unit,
+                    _model.IsManualEntryEnabled,
+                    _model.IsExternalImportEnabled,
+                    _model.ExternalSystem,
+                    _model.RfidTag,
+                    _model.SupportsOfflineCapture,
+                    machineId,
+                    _model.IsActive,
+                    _model.Reason),
+                CancellationToken.None);
+
+            if (updateResult.IsSuccess)
+            {
+                _successMessage = "Gespeichert";
+            }
+            else
+            {
+                _errorMessage = updateResult.Error?.Message ?? "Speichern fehlgeschlagen.";
+            }
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+

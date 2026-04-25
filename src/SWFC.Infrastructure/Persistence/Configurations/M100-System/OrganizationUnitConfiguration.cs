@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SWFC.Domain.M100_System.M102_Organization.Entities;
-using SWFC.Domain.M100_System.M102_Organization.ValueObjects;
+using SWFC.Domain.M100_System.M102_Organization.OrganizationUnits;
 
 namespace SWFC.Infrastructure.Persistence.Configurations.M100_System;
 
@@ -29,6 +28,9 @@ public sealed class OrganizationUnitConfiguration : IEntityTypeConfiguration<Org
 
         entity.Property(x => x.ParentOrganizationUnitId)
             .IsRequired(false);
+
+        entity.Property(x => x.IsActive)
+            .IsRequired();
 
         entity.HasIndex(x => x.Code)
             .IsUnique();

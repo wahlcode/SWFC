@@ -1,0 +1,76 @@
+@page "/presentation/search"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.WebUtilities
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M300_Presentation.M304_Search.Models
+@using SWFC.Web.Pages.M300_Presentation.M304_Search.Services
+
+@inject ICurrentUserService CurrentUserService
+@inject NavigationManager NavigationManager
+@inject SearchWorkspaceService SearchWorkspace
+
+<PageTitle>M304 Search</PageTitle>
+
+<div class="m304-search">
+    <header class="m304-search__header">
+        <div>
+            <div class="m304-search__eyebrow">M304</div>
+            <h1>Search</h1>
+            <p>Permission-filtered search across documents, configuration, reports and notifications.</p>
+        </div>
+    </header>
+
+    <section class="m304-search__panel">
+        <form method="get" action="/presentation/search" class="m304-search__form">
+            <label>
+                <span>Search text</span>
+                <input name="q" value="@_query" maxlength="120" />
+            </label>
+            <label>
+                <span>Module</span>
+                <input name="module" value="@_moduleFilter" maxlength="12" />
+            </label>
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <section class="m304-search__results">
+        @foreach (var result in _results)
+        {
+            <article class="m304-search__result">
+                <div class="m304-search__result-type">@result.ModuleCode · @result.ResultType</div>
+                <h2>@result.Title</h2>
+                <p>@result.Summary</p>
+                <a href="@result.Route">Open</a>
+            </article>
+        }
+    </section>
+</div>
+
+@code {
+    private string _query = string.Empty;
+    private string _moduleFilter = string.Empty;
+    private IReadOnlyList<SearchResultRecord> _results = Array.Empty<SearchResultRecord>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        _query = query.TryGetValue("q", out var q) ? q.ToString() : string.Empty;
+        _moduleFilter = query.TryGetValue("module", out var module) ? module.ToString() : string.Empty;
+
+        var securityContext = await CurrentUserService.GetSecurityContextAsync();
+        var allowedModules = securityContext.IsDeveloperMode
+            ? new[] { "M104", "M105", "M302", "M303", "M304", "M306", "M601", "M805" }
+            : securityContext.PermissionModules
+                .Concat(new[] { "M104", "M105", "M302", "M303", "M304" })
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+        _results = SearchWorkspace.Search(new SearchRequest(
+            _query,
+            _moduleFilter,
+            allowedModules));
+    }
+}

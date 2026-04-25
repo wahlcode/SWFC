@@ -1,0 +1,45 @@
+@namespace SWFC.Web.Pages.M300_Presentation.M305_Forms.Components
+
+<div class="m305-field" data-required="@Required.ToString().ToLowerInvariant()" data-invalid="@(!string.IsNullOrWhiteSpace(ErrorText)).ToString().ToLowerInvariant()">
+    <label class="m305-field__label" for="@FieldId">
+        <span>@LabelText</span>
+        @if (Required)
+        {
+            <span class="m305-field__required" aria-hidden="true">*</span>
+        }
+    </label>
+
+    <div class="m305-field__control">
+        @ChildContent
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(HintText))
+    {
+        <div class="m305-field__hint">@HintText</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(ErrorText))
+    {
+        <div class="m305-field__error" role="alert">@ErrorText</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string FieldId { get; set; } = string.Empty;
+
+    [Parameter]
+    public string LabelText { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Required { get; set; }
+
+    [Parameter]
+    public string HintText { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ErrorText { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

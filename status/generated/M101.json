@@ -1,0 +1,49 @@
+{
+  "ModuleCode": "M101",
+  "ScorePercent": 100,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.0374438+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
+  "WorkItems": [
+    {
+      "Title": "Result / Error Handling",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Guards",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "ValueObjects / Basis-Primitives",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Globale ID-Grundlagen",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Zeit-/Timestamp-Basis (UTC)",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Einheiten-Basis",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Audit-Basisfelder",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

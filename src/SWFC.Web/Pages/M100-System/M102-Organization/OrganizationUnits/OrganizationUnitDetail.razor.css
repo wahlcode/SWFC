@@ -1,0 +1,193 @@
+.m100-ou-detail {
+    width: min(100%, var(--page-max-width));
+    margin: 0 auto;
+    padding: var(--page-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--page-gap);
+}
+
+.m100-ou-detail__header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.m100-ou-detail__title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.m100-ou-detail__back {
+    width: fit-content;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+}
+
+.m100-ou-detail__eyebrow {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.m100-ou-detail__title h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 1.3rem + 1vw, 2.45rem);
+    line-height: 1.05;
+}
+
+.m100-ou-detail__title p:last-child {
+    margin: 0;
+    color: var(--color-text-secondary);
+    max-width: 68ch;
+}
+
+.m100-ou-detail__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+.m100-card {
+    background: var(--gradient-card-surface);
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-md);
+}
+
+.m100-ou-detail__form,
+.m100-ou-detail__side,
+.m100-ou-detail__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.m100-ou-detail__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.m100-ou-detail__field span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.m100-ou-detail__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.m100-input,
+.m100-textarea,
+select {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.85rem 0.95rem;
+    background: var(--gradient-field-surface);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--color-text-primary);
+}
+
+.m100-textarea {
+    min-height: 120px;
+}
+
+.m100-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 78%, transparent);
+    border-radius: 12px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 95%, white 5%), var(--color-primary-hover));
+    color: var(--color-text-primary);
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+.m100-button--secondary {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, var(--color-surface-3), var(--color-surface-4));
+}
+
+.m100-ou-detail__summary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+    margin: 0;
+}
+
+.m100-ou-detail__summary div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--gradient-surface-panel);
+}
+
+.m100-ou-detail__summary dt {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.m100-ou-detail__summary dd {
+    margin: 0;
+}
+
+.m100-ou-detail__children {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.m100-ou-detail__child {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--gradient-surface-panel);
+}
+
+.m100-ou-detail__child-title {
+    font-weight: var(--font-weight-semibold);
+}
+
+.m100-ou-detail__child-meta,
+.m100-muted {
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 1100px) {
+    .m100-ou-detail__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    .m100-actions {
+        flex-direction: column;
+    }
+
+    .m100-actions :is(.m100-button, a.m100-button) {
+        width: 100%;
+    }
+}

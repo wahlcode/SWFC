@@ -1,0 +1,78 @@
+@using SWFC.Application.M200_Business.M201_Assets.Machines
+
+<div class="m201-tree">
+    <div class="m201-tree__header">
+        <div>Name</div>
+        <div>Inventory Number</div>
+        <div>Status</div>
+        <div>Parent</div>
+        <div></div>
+    </div>
+
+    <div class="m201-tree__body">
+        @foreach (var root in _rootItems)
+        {
+            <MachineTreeNode Item="root"
+                             Level="0"
+                             ChildrenByParentId="_childrenByParentId"
+                             ExpandedMachineIds="_expandedMachineIds"
+                             OnToggleExpanded="ToggleExpanded" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<MachineListItem> Items { get; set; } = Array.Empty<MachineListItem>();
+
+    private List<MachineListItem> _rootItems = new();
+    private Dictionary<Guid, List<MachineListItem>> _childrenByParentId = new();
+    private HashSet<Guid> _expandedMachineIds = new();
+
+    protected override void OnParametersSet()
+    {
+        BuildTree();
+
+        if (_rootItems.Count > 0)
+        {
+            ExpandAllParents();
+        }
+    }
+
+    private void BuildTree()
+    {
+        _rootItems = Items
+            .Where(x => x.ParentMachineId is null)
+            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        _childrenByParentId = Items
+            .Where(x => x.ParentMachineId.HasValue)
+            .GroupBy(x => x.ParentMachineId!.Value)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList());
+    }
+
+    private void ExpandAllParents()
+    {
+        _expandedMachineIds.Clear();
+
+        foreach (var parentId in _childrenByParentId.Keys)
+        {
+            _expandedMachineIds.Add(parentId);
+        }
+    }
+
+    private Task ToggleExpanded(Guid machineId)
+    {
+        if (!_expandedMachineIds.Add(machineId))
+        {
+            _expandedMachineIds.Remove(machineId);
+        }
+
+        return Task.CompletedTask;
+    }
+}
+
+

@@ -1,0 +1,198 @@
+@page "/business/location/new"
+@page "/business/location/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M204_Inventory.Locations
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetLocationByIdQuery, LocationDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateLocationCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateLocationCommand, bool> UpdatePipeline
+@inject IExecutionPipeline<GetLocationLookupQuery, IReadOnlyList<LocationLookupItem>> LookupPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m204-detail">
+
+    <div class="m204-detail__header">
+        <div>
+            <h1>@(IsNew ? "Location anlegen" : "Location Detail")</h1>
+        </div>
+
+        <a href="/business/locations" class="m204-button-secondary">Zurück</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">@_errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_successMessage))
+    {
+        <div class="m204-alert m204-alert--success">@_successMessage</div>
+    }
+
+    <div class="m204-card">
+
+        @if (_isLoading)
+        {
+            <div class="m204-loading">Lade Daten...</div>
+        }
+        else
+        {
+            <EditForm Model="_model" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+
+                <div class="m204-form-grid">
+
+                    <input class="m204-input" placeholder="Name" @bind="_model.Name" />
+                    <input class="m204-input" placeholder="Code" @bind="_model.Code" />
+
+                    <select class="m204-input" @bind="_model.ParentLocationId">
+                        <option value="">-- Parent Location --</option>
+                        @foreach (var loc in _locations)
+                        {
+                            <option value="@loc.Id">@loc.Name (@loc.Code)</option>
+                        }
+                    </select>
+
+                    <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+
+                </div>
+
+                <div class="m204-actions">
+                    <button class="m204-button" type="submit" disabled="@_isBusy">
+                        Speichern
+                    </button>
+
+                    <button type="button" class="m204-button-secondary" @onclick="ResetModel">
+                        Verwerfen
+                    </button>
+                </div>
+
+            </EditForm>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    private LocationDetailsDto? _item;
+    private IReadOnlyList<LocationLookupItem> _locations = [];
+    private LocationInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+
+        var lookup = await LookupPipeline.ExecuteAsync(new GetLocationLookupQuery());
+        if (lookup.IsSuccess && lookup.Value is not null)
+        {
+            _locations = lookup.Value
+                .Where(x => !Id.HasValue || x.Id != Id.Value)
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        if (IsNew)
+        {
+            _model = new LocationInputModel();
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetLocationByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _item = result.Value;
+            ResetModel();
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ResetModel()
+    {
+        if (_item is null)
+        {
+            _model = new LocationInputModel();
+            return;
+        }
+
+        _model = new LocationInputModel
+        {
+            Name = _item.Name,
+            Code = _item.Code,
+            ParentLocationId = _item.ParentLocationId
+        };
+    }
+
+    private async Task SaveAsync()
+    {
+        _isBusy = true;
+        _errorMessage = null;
+        _successMessage = null;
+
+        if (IsNew)
+        {
+            var result = await CreatePipeline.ExecuteAsync(
+                new CreateLocationCommand(
+                    _model.Name,
+                    _model.Code,
+                    _model.ParentLocationId,
+                    _model.Reason));
+
+            if (result.IsSuccess)
+            {
+                NavigationManager.NavigateTo($"/business/location/{result.Value}");
+                return;
+            }
+
+            _errorMessage = result.Error?.Message;
+        }
+        else
+        {
+            var result = await UpdatePipeline.ExecuteAsync(
+                new UpdateLocationCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.Code,
+                    _model.ParentLocationId,
+                    _model.Reason));
+
+            if (result.IsSuccess)
+                _successMessage = "Location gespeichert";
+            else
+                _errorMessage = result.Error?.Message;
+        }
+
+        _isBusy = false;
+    }
+
+    private sealed class LocationInputModel
+    {
+        [Required] public string Name { get; set; } = "";
+        [Required] public string Code { get; set; } = "";
+        public Guid? ParentLocationId { get; set; }
+        [Required] public string Reason { get; set; } = "";
+    }
+}
+
+

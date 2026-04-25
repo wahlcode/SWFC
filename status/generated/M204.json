@@ -1,0 +1,111 @@
+{
+  "ModuleCode": "M204",
+  "ScorePercent": 9,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.6690802+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "16 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Artikel",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Lager",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Lagerorte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Best\u00C3\u0192\u00C2\u00A4nde",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Bewegungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Buchungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Preise / Werte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nur M204 darf Best\u00C3\u0192\u00C2\u00A4nde ver\u00C3\u0192\u00C2\u00A4ndern",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Zug\u00C3\u0192\u00C2\u00A4nge",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Abg\u00C3\u0192\u00C2\u00A4nge",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Umlagerungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Korrekturen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kein direktes Setzen von Best\u00C3\u0192\u00C2\u00A4nden",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Inventurprozesse",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bestandskorrekturen mit Begr\u00C3\u0192\u00C2\u00BCndung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Barcode / Scanner / mobile Nutzung",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Bewegungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

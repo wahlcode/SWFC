@@ -1,0 +1,223 @@
+@page "/business/stock-movement/new"
+@page "/business/stock-movement/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M204_Inventory.Items
+@using SWFC.Application.M200_Business.M204_Inventory.Locations
+@using SWFC.Application.M200_Business.M204_Inventory.Stock
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M200_Business.M204_Inventory.Reservations
+@using SWFC.Domain.M200_Business.M204_Inventory.Stock
+
+@inject IExecutionPipeline<GetStockMovementByIdQuery, StockMovementDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateStockMovementCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<GetInventoryItemLookupQuery, IReadOnlyList<InventoryItemLookupItem>> InventoryItemLookupPipeline
+@inject IExecutionPipeline<GetLocationLookupQuery, IReadOnlyList<LocationLookupItem>> LocationLookupPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m204-detail">
+
+    <div class="m204-detail__header">
+        <h1>@(IsNew ? "Stock Movement anlegen" : "Stock Movement Detail")</h1>
+        <a href="/business/stock-movements" class="m204-button-secondary">Zurück</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">@_errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_successMessage))
+    {
+        <div class="m204-alert m204-alert--success">@_successMessage</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m204-loading">Lade Daten...</div>
+    }
+    else if (IsNew)
+    {
+        <div class="m204-card">
+            <EditForm Model="_model" OnValidSubmit="CreateAsync">
+                <DataAnnotationsValidator />
+
+                <div class="m204-form-grid">
+
+                    <select class="m204-input" @bind="_model.InventoryItemId">
+                        <option value="">-- Inventory Item --</option>
+                        @foreach (var item in _inventoryItems)
+                        {
+                            <option value="@item.Id">@item.ArticleNumber - @item.Name</option>
+                        }
+                    </select>
+
+                    <select class="m204-input" @bind="_model.LocationId">
+                        <option value="">-- Location --</option>
+                        @foreach (var loc in _locations)
+                        {
+                            <option value="@loc.Id">@loc.Name (@loc.Code)</option>
+                        }
+                    </select>
+
+                    <input class="m204-input" placeholder="Bin" @bind="_model.Bin" />
+
+                    <select class="m204-input" @bind="_model.MovementType">
+                        @foreach (var value in Enum.GetValues<StockMovementType>())
+                        {
+                            <option value="@value">@value</option>
+                        }
+                    </select>
+
+                    <input type="number"
+                           class="m204-input"
+                           placeholder="Quantity Delta"
+                           @bind="_model.QuantityDelta" />
+
+                    <select class="m204-input" @bind="_model.TargetType">
+                        <option value="">-- Target Type --</option>
+                        @foreach (var value in Enum.GetValues<InventoryTargetType>())
+                        {
+                            <option value="@value">@value</option>
+                        }
+                    </select>
+
+                    <input class="m204-input" placeholder="Target Reference" @bind="_model.TargetReference" />
+
+                    <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+
+                </div>
+
+                <div class="m204-actions">
+                    <button class="m204-button" disabled="@_isBusy">
+                        Speichern
+                    </button>
+                </div>
+
+            </EditForm>
+        </div>
+    }
+    else if (_item is not null)
+    {
+        <div class="m204-card">
+            <ul class="m204-list">
+                <li><strong>Movement Type:</strong> @_item.MovementType</li>
+                <li><strong>Quantity Delta:</strong> @_item.QuantityDelta</li>
+                <li><strong>Stock Id:</strong> @_item.StockId</li>
+                <li><strong>Created At:</strong> @_item.CreatedAtUtc</li>
+                <li><strong>Created By:</strong> @_item.CreatedBy</li>
+            </ul>
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    private StockMovementDetailsDto? _item;
+    private IReadOnlyList<InventoryItemLookupItem> _inventoryItems = [];
+    private IReadOnlyList<LocationLookupItem> _locations = [];
+
+    private CreateStockMovementInput _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        if (IsNew)
+        {
+            var inventoryResult = await InventoryItemLookupPipeline.ExecuteAsync(new GetInventoryItemLookupQuery());
+            var locationResult = await LocationLookupPipeline.ExecuteAsync(new GetLocationLookupQuery());
+
+            if (inventoryResult.IsSuccess && inventoryResult.Value is not null)
+                _inventoryItems = inventoryResult.Value.Where(x => x.IsActive).ToList();
+
+            if (locationResult.IsSuccess && locationResult.Value is not null)
+                _locations = locationResult.Value;
+
+            if (!inventoryResult.IsSuccess || !locationResult.IsSuccess)
+                _errorMessage = "Failed to load lookup data.";
+
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetStockMovementByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+            _item = result.Value;
+        else
+            _errorMessage = result.Error?.Message ?? "Failed to load stock movement.";
+
+        _isLoading = false;
+    }
+
+    private async Task CreateAsync()
+    {
+        _errorMessage = null;
+        _successMessage = null;
+
+        if (_model.InventoryItemId == Guid.Empty || _model.LocationId == Guid.Empty)
+        {
+            _errorMessage = "Inventory item and location are required.";
+            return;
+        }
+
+        _isBusy = true;
+
+        try
+        {
+            var result = await CreatePipeline.ExecuteAsync(
+                new CreateStockMovementCommand(
+                    _model.InventoryItemId,
+                    _model.LocationId,
+                    _model.Bin,
+                    _model.MovementType,
+                    _model.QuantityDelta,
+                    _model.TargetType,
+                    _model.TargetReference,
+                    _model.Reason));
+
+            if (!result.IsSuccess)
+            {
+                _errorMessage = result.Error?.Message ?? "Failed to create stock movement.";
+                return;
+            }
+
+            NavigationManager.NavigateTo($"/business/stock-movement/{result.Value}");
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private sealed class CreateStockMovementInput
+    {
+        public Guid InventoryItemId { get; set; }
+        public Guid LocationId { get; set; }
+        public string? Bin { get; set; }
+        public StockMovementType MovementType { get; set; } = StockMovementType.GoodsReceipt;
+        public int QuantityDelta { get; set; }
+
+        public InventoryTargetType? TargetType { get; set; }
+        public string? TargetReference { get; set; }
+
+        [Required]
+        public string Reason { get; set; } = string.Empty;
+    }
+}
+
+

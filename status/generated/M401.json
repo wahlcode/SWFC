@@ -1,0 +1,151 @@
+{
+  "ModuleCode": "M401",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8557346+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M401 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M401 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "23 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Dateiimporte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dateiexporte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Mapping externer Datenstrukturen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Validierung technischer Importformate",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "\u00C3\u0192\u00C5\u201Cbergabe an Fachmodule",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "CSV",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Excel",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Import f\u00C3\u0192\u00C2\u00BCr Assets",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Import f\u00C3\u0192\u00C2\u00BCr Lagerdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Import f\u00C3\u0192\u00C2\u00BCr Energie-Messwerte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Import f\u00C3\u0192\u00C2\u00BCr Stammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Import f\u00C3\u0192\u00C2\u00BCr externe Listen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export f\u00C3\u0192\u00C2\u00BCr Berichte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export f\u00C3\u0192\u00C2\u00BCr Stammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export f\u00C3\u0192\u00C2\u00BCr Bewegungsdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export f\u00C3\u0192\u00C2\u00BCr Audit-Nachweise",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Spaltenzuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Feldzuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Formatkonvertierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Technische Fehleranzeige",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Protokollierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Teilweises Ablehnen fehlerhafter Datens\u00C3\u0192\u00C2\u00A4tze",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Fachlogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

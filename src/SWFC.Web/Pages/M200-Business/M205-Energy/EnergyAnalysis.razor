@@ -1,0 +1,214 @@
+@page "/business/energy/analysis/{MeterId:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M205_Energy.Analysis
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetEnergyAnalysisQuery, EnergyAnalysisResultDto> AnalysisPipeline
+
+<PageTitle>M205 Auswertung</PageTitle>
+
+<section class="m205-analysis">
+    <div class="m205-analysis__header">
+        <div class="m205-analysis__title-block">
+            <div class="m205-analysis__eyebrow">M205</div>
+            <h1>Energieauswertung</h1>
+            <p class="m205-analysis__subtitle">Verbrauchsdifferenzen und Monatsübersicht pro Zähler.</p>
+        </div>
+
+        <div class="m205-analysis__actions">
+            <a href="/business/energy" class="m205-analysis__button-secondary">Zurück</a>
+            <a href="@($"/business/energy/reading/new?meterId={MeterId}")" class="m205-analysis__button">Neuer Zählerstand</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m205-analysis__alert m205-analysis__alert--error">@_errorMessage</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m205-analysis__loading">Lade Daten...</div>
+    }
+    else if (_result is null)
+    {
+        <div class="m205-analysis__empty">Keine Daten gefunden.</div>
+    }
+    else
+    {
+        <div class="m205-analysis__summary-grid">
+            <div class="m205-analysis__card">
+                <div class="m205-analysis__card-label">Zähler</div>
+                <div class="m205-analysis__card-value">@_result.Meter.MeterName</div>
+                <div class="m205-analysis__card-text">@_result.Meter.MediumType · @_result.Meter.Unit</div>
+            </div>
+
+            <div class="m205-analysis__card">
+                <div class="m205-analysis__card-label">Datensätze</div>
+                <div class="m205-analysis__card-value">@_result.Readings.Count</div>
+                <div class="m205-analysis__card-text">Historie gesamt</div>
+            </div>
+
+            <div class="m205-analysis__card">
+                <div class="m205-analysis__card-label">Monate</div>
+                <div class="m205-analysis__card-value">@_result.Monthly.Count</div>
+                <div class="m205-analysis__card-text">Mit Auswertung</div>
+            </div>
+
+            <div class="m205-analysis__card">
+                <div class="m205-analysis__card-label">Erfassung</div>
+                <div class="m205-analysis__card-value">@GetMeterModeText()</div>
+                <div class="m205-analysis__card-text">@(_result.Meter.IsActive ? "Aktiv" : "Inaktiv")</div>
+            </div>
+        </div>
+
+        <div class="m205-analysis__panel-grid">
+            <div class="m205-analysis__panel">
+                <div class="m205-analysis__panel-header">
+                    <h2>Monatsübersicht</h2>
+                </div>
+
+                @if (_result.Monthly.Count == 0)
+                {
+                    <div class="m205-analysis__empty">Keine Monatsauswertung vorhanden.</div>
+                }
+                else
+                {
+                    <table class="m205-analysis__table">
+                        <thead>
+                            <tr>
+                                <th>Monat</th>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>Start</th>
+                                <th>Ende</th>
+                                <th>Verbrauch</th>
+                                <th>Werte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var month in _result.Monthly.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month))
+                            {
+                                <tr>
+                                    <td>@month.Year-@month.Month.ToString("00")</td>
+                                    <td>@month.PeriodStart.ToString("dd.MM.yyyy")</td>
+                                    <td>@month.PeriodEnd.ToString("dd.MM.yyyy")</td>
+                                    <td>@FormatValue(month.StartValue)</td>
+                                    <td>@FormatValue(month.EndValue)</td>
+                                    <td>@FormatValue(month.Consumption) @_result.Meter.Unit</td>
+                                    <td>@month.ReadingCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+
+            <div class="m205-analysis__panel">
+                <div class="m205-analysis__panel-header">
+                    <h2>Historie</h2>
+                </div>
+
+                @if (_result.Readings.Count == 0)
+                {
+                    <div class="m205-analysis__empty">Keine Historie vorhanden.</div>
+                }
+                else
+                {
+                    <table class="m205-analysis__table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Wert</th>
+                                <th>Differenz</th>
+                                <th>Quelle</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reading in _result.Readings.OrderByDescending(x => x.Date).ThenByDescending(x => x.CreatedAtUtc))
+                            {
+                                <tr>
+                                    <td>@reading.Date.ToString("dd.MM.yyyy")</td>
+                                    <td>@FormatValue(reading.Value) @_result.Meter.Unit</td>
+                                    <td>@DisplayConsumption(reading.ConsumptionSincePrevious)</td>
+                                    <td>@reading.Source</td>
+                                    <td>
+                                        <a class="m205-analysis__link" href="@($"/business/energy/reading/{reading.ReadingId}")">Bearbeiten</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public Guid MeterId { get; set; }
+
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private EnergyAnalysisResultDto? _result;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        _result = null;
+
+        var result = await AnalysisPipeline.ExecuteAsync(
+            new GetEnergyAnalysisQuery(MeterId),
+            CancellationToken.None);
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _result = result.Value;
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message ?? "Auswertung konnte nicht geladen werden.";
+        }
+
+        _isLoading = false;
+    }
+
+    private static string FormatValue(decimal value)
+        => value.ToString("0.###");
+
+    private string DisplayConsumption(decimal? value)
+        => value.HasValue ? $"{FormatValue(value.Value)} {_result?.Meter.Unit}" : "-";
+
+    private string GetMeterModeText()
+    {
+        if (_result is null)
+        {
+            return "-";
+        }
+
+        if (_result.Meter.IsManualEntryEnabled && _result.Meter.IsExternalImportEnabled)
+        {
+            return "Manuell + Extern";
+        }
+
+        if (_result.Meter.IsManualEntryEnabled)
+        {
+            return "Manuell";
+        }
+
+        if (_result.Meter.IsExternalImportEnabled)
+        {
+            return "Extern";
+        }
+
+        return "-";
+    }
+}
+
+

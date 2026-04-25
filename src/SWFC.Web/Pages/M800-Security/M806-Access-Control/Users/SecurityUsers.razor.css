@@ -1,0 +1,169 @@
+.m800-security-users {
+    width: min(100%, var(--page-max-width));
+    margin: 0 auto;
+    padding: var(--page-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.m800-security-users__header p {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-secondary);
+    max-width: 64rem;
+    line-height: 1.55;
+}
+
+.m800-security-users__card {
+    background: var(--color-surface-2);
+    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+    padding: var(--space-lg);
+}
+
+.m800-security-users__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.m800-security-users__table th,
+.m800-security-users__table td {
+    padding: 0.9rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+}
+
+.m800-security-users__table th {
+    font-size: 0.84rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+}
+
+.m800-security-users__name {
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.m800-security-users__meta {
+    margin-top: 0.25rem;
+    font-size: 0.86rem;
+    color: var(--color-text-secondary);
+}
+
+.m800-security-users__role-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.m800-security-users__chip,
+.m800-security-users__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    min-height: 2rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.m800-security-users__chip {
+    background: color-mix(in srgb, var(--color-primary) 11%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
+    color: var(--color-primary);
+}
+
+.m800-security-users__chip--muted {
+    background: color-mix(in srgb, var(--color-text-secondary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-border) 78%, transparent);
+    color: var(--color-text-secondary);
+}
+
+.m800-security-users__chip--accent {
+    background: color-mix(in srgb, var(--color-warning, #b17a00) 14%, transparent);
+    border-color: color-mix(in srgb, var(--color-warning, #b17a00) 28%, transparent);
+    color: color-mix(in srgb, var(--color-warning, #b17a00) 88%, var(--color-text-primary));
+}
+
+.m800-security-users__badge--ok {
+    background: color-mix(in srgb, var(--color-success) 14%, transparent);
+    border-color: color-mix(in srgb, var(--color-success) 28%, transparent);
+    color: var(--color-success);
+}
+
+.m800-security-users__badge--warn {
+    background: color-mix(in srgb, var(--color-warning, #b17a00) 14%, transparent);
+    border-color: color-mix(in srgb, var(--color-warning, #b17a00) 28%, transparent);
+    color: color-mix(in srgb, var(--color-warning, #b17a00) 88%, var(--color-text-primary));
+}
+
+.m800-security-users__badge--danger {
+    background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+    border-color: color-mix(in srgb, var(--color-danger) 28%, transparent);
+    color: var(--color-danger);
+}
+
+.m800-security-users__actions {
+    text-align: right;
+}
+
+.m800-security-users__link {
+    color: var(--color-link);
+    font-weight: 600;
+}
+
+.m800-security-users__state,
+.m800-security-users__alert {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+}
+
+.m800-security-users__state {
+    color: var(--color-text-secondary);
+}
+
+.m800-security-users__alert--error {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+    border: 1px solid color-mix(in srgb, var(--color-danger) 28%, transparent);
+}
+
+@media (max-width: 920px) {
+    .m800-security-users {
+        padding: var(--space-lg);
+    }
+
+    .m800-security-users__table,
+    .m800-security-users__table thead,
+    .m800-security-users__table tbody,
+    .m800-security-users__table tr,
+    .m800-security-users__table th,
+    .m800-security-users__table td {
+        display: block;
+        width: 100%;
+    }
+
+    .m800-security-users__table thead {
+        display: none;
+    }
+
+    .m800-security-users__table tr {
+        padding: var(--space-md) 0;
+        border-bottom: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+    }
+
+    .m800-security-users__table td {
+        padding: 0.35rem 0;
+        border-bottom: 0;
+    }
+
+    .m800-security-users__actions {
+        text-align: left;
+        padding-top: 0.75rem;
+    }
+}

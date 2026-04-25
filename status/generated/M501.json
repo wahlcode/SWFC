@@ -1,0 +1,91 @@
+{
+  "ModuleCode": "M501",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8883994+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M501 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M501 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Zeitpl\u00C3\u0192\u00C2\u00A4ne",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Periodische Trigger",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Terminbasierte Ausl\u00C3\u0192\u00C2\u00B6sung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "F\u00C3\u0192\u00C2\u00A4lligkeitsausl\u00C3\u0192\u00C2\u00B6sung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Geplante Runtime-Starts",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wartungsf\u00C3\u0192\u00C2\u00A4lligkeiten (M202)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklen (M203)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Geplante Jobs",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Periodische Auswertungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Automatische Kontrolll\u00C3\u0192\u00C2\u00A4ufe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Scheduler l\u00C3\u0192\u00C2\u00B6st aus, entscheidet aber nicht fachlich",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

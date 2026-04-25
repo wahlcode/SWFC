@@ -1,0 +1,164 @@
+@page "/security/audit"
+@page "/system/audit"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M805_AuditCompliance.Entries
+
+@inject IExecutionPipeline<GetAuditEntriesQuery, IReadOnlyList<AuditEntryListItem>> GetAuditEntriesPipeline
+
+<section class="m805-audit">
+    <div class="m805-audit__header">
+        <div>
+            <h1>Audit-Protokoll</h1>
+            <p>Revisionssichere Übersicht über sicherheits- und systemrelevante Ereignisse.</p>
+        </div>
+    </div>
+
+    <div class="m805-audit__panel">
+        @if (_loading)
+        {
+            <div class="m805-audit__loading">Audit-Einträge werden geladen ...</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m805-audit__alert m805-audit__alert--error">@_error</div>
+        }
+        else if (_groups.Count == 0)
+        {
+            <div class="m805-audit__empty">Es sind noch keine Audit-Einträge vorhanden.</div>
+        }
+        else
+        {
+            <div class="m805-audit__groups">
+                @foreach (var group in _groups)
+                {
+                    var isGroupOpen = _openGroupKey == group.Key;
+
+                    <section class="m805-audit__group">
+                        <div class="m805-audit__group-header">
+                            <button type="button"
+                                    class="m805-audit__group-toggle"
+                                    aria-expanded="@isGroupOpen"
+                                    @onclick="@(() => ToggleGroup(group.Key))">
+                                <span class="m805-audit__group-left">
+                                    <span class="m805-audit__group-title">@group.Title</span>
+                                    <span class="m805-audit__group-count">@group.Items.Count</span>
+                                </span>
+                            </button>
+                        </div>
+
+                        @if (isGroupOpen)
+                        {
+                            <div class="m805-audit__timeline">
+                                @foreach (var item in group.Items)
+                                {
+                                    var view = item.View;
+                                    var isItemOpen = _openItemKey == item.Key;
+
+                                    <article class="m805-audit__item">
+                                        <button type="button"
+                                                class="m805-audit__item-toggle"
+                                                aria-expanded="@isItemOpen"
+                                                @onclick="@(() => ToggleItem(item.Key))">
+                                            <div class="m805-audit__item-main">
+                                                <div class="m805-audit__item-left">
+                                                    <span class="m805-audit__marker" aria-hidden="true"></span>
+                                                    <span class="m805-audit__action">@view.Action</span>
+                                                </div>
+
+                                                <div class="m805-audit__item-right">
+                                                    <span class="m805-audit__module">@view.Module</span>
+                                                    <span class="m805-audit__timestamp">@view.Timestamp</span>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        @if (isItemOpen)
+                                        {
+                                            <div class="m805-audit__details-content">
+                                                <div class="m805-audit__details-grid">
+                                                    <div class="m805-audit__field">
+                                                        <span class="m805-audit__label">Akteur</span>
+                                                        <div class="m805-audit__value">@view.Actor</div>
+                                                    </div>
+
+                                                    <div class="m805-audit__field">
+                                                        <span class="m805-audit__label">Ziel</span>
+                                                        <div class="m805-audit__value">@view.Target</div>
+                                                    </div>
+
+                                                    <div class="m805-audit__field">
+                                                        <span class="m805-audit__label">Objekt</span>
+                                                        <div class="m805-audit__value">@view.Object</div>
+                                                    </div>
+
+                                                    <div class="m805-audit__field">
+                                                        <span class="m805-audit__label">Client</span>
+                                                        <div class="m805-audit__value">@view.Client</div>
+                                                    </div>
+
+                                                    @if (!string.IsNullOrWhiteSpace(view.Reason))
+                                                    {
+                                                        <div class="m805-audit__field m805-audit__field--full">
+                                                            <span class="m805-audit__label">Hinweis</span>
+                                                            <div class="m805-audit__value">@view.Reason</div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </article>
+                                }
+                            </div>
+                        }
+                    </section>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private bool _loading = true;
+    private string? _error;
+    private IReadOnlyList<AuditEntryGroupViewModel> _groups = [];
+    private string? _openGroupKey;
+    private string? _openItemKey;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await GetAuditEntriesPipeline.ExecuteAsync(new GetAuditEntriesQuery(200));
+
+        if (result.IsFailure || result.Value is null)
+        {
+            _error = result.Error.Message;
+            _loading = false;
+            return;
+        }
+
+        _groups = AuditEntryDisplayMapper.Group(result.Value);
+        _loading = false;
+    }
+
+    private void ToggleGroup(string groupKey)
+    {
+        if (_openGroupKey == groupKey)
+        {
+            _openGroupKey = null;
+            _openItemKey = null;
+            return;
+        }
+
+        _openGroupKey = groupKey;
+        _openItemKey = null;
+    }
+
+    private void ToggleItem(string itemKey)
+    {
+        _openItemKey = _openItemKey == itemKey ? null : itemKey;
+    }
+}

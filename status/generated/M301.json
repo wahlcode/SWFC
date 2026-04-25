@@ -1,0 +1,136 @@
+{
+  "ModuleCode": "M301",
+  "ScorePercent": 14,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7918574+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "missing_code",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M301 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "22 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Globales Layout",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Hauptnavigation",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sidebar",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Modulorientierte Navigation",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Globale UI-Elemente",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Einstiegspunkte / Startbereiche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Standardisierte Seitenstrukturen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Mehrere Navigationsebenen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Rollenbasierte Navigation",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Header",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Breadcrumbs",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Benutzerbereich",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schnellzugriffe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Globale Statusanzeigen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kontextbezogene Navigation",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Individuelle Startseiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Listenansichten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Detailseiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Seitenlayouts",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Tabs / Unterbereiche / Detailnavigation",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Mobile / Responsive Vorbereitung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Fachlogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

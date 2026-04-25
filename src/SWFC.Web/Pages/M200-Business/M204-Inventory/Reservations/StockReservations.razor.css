@@ -1,0 +1,12 @@
+﻿.m204-table-actions {
+    text-align: right;
+}
+
+.m204-status {
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-soft-3);
+    font-size: var(--font-size-sm);
+}
+
+

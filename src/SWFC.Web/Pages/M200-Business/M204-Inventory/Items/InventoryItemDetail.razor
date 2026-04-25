@@ -1,0 +1,261 @@
+@page "/business/inventory-item/new"
+@page "/business/inventory-item/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M204_Inventory.Items
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetInventoryItemByIdQuery, InventoryItemDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateInventoryItemCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateInventoryItemCommand, bool> UpdatePipeline
+@inject IExecutionPipeline<DeactivateInventoryItemCommand, bool> DeactivatePipeline
+@inject NavigationManager NavigationManager
+
+<section class="m204-detail">
+
+    <div class="m204-detail__header">
+        <div>
+            <h1>@(IsNew ? "Artikel anlegen" : "Inventory Item Detail")</h1>
+            <p class="m204-muted">Stammdaten anzeigen und bearbeiten.</p>
+        </div>
+
+        <div class="m204-detail__actions">
+            <a href="/business/inventory-items" class="m204-button-secondary">Zurück</a>
+
+            @if (!IsNew)
+            {
+                <button class="m204-button-danger" @onclick="DeactivateAsync" disabled="@_isBusy">
+                    Deaktivieren
+                </button>
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">@_errorMessage</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_successMessage))
+    {
+        <div class="m204-alert m204-alert--success">@_successMessage</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m204-loading">Lade Daten...</div>
+    }
+    else
+    {
+        <div class="m204-detail__grid">
+
+            <!-- FORM -->
+            <div class="m204-card">
+                <EditForm Model="_model" OnValidSubmit="SaveAsync">
+                    <DataAnnotationsValidator />
+
+                    <div class="m204-form-grid">
+
+                        <input class="m204-input" placeholder="Article Number" @bind="_model.ArticleNumber" />
+                        <input class="m204-input" placeholder="Name" @bind="_model.Name" />
+                        <input class="m204-input" placeholder="Unit" @bind="_model.Unit" />
+
+                        <label class="m204-checkbox">
+                            <input type="checkbox" @bind="_model.IsActive" />
+                            Aktiv
+                        </label>
+
+                        <textarea class="m204-input" placeholder="Description" @bind="_model.Description"></textarea>
+
+                        <input class="m204-input" placeholder="Barcode" @bind="_model.Barcode" />
+                        <input class="m204-input" placeholder="Manufacturer" @bind="_model.Manufacturer" />
+                        <input class="m204-input" placeholder="Manufacturer Part Number" @bind="_model.ManufacturerPartNumber" />
+
+                        <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+
+                    </div>
+
+                    <div class="m204-actions">
+                        <button class="m204-button" type="submit" disabled="@_isBusy">
+                            Speichern
+                        </button>
+
+                        <button type="button" class="m204-button-secondary" @onclick="ResetModel">
+                            Verwerfen
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="m204-card">
+                <h3>Zusammenfassung</h3>
+
+                @if (_item is null)
+                {
+                    <p class="m204-muted">Neuer Artikel.</p>
+                }
+                else
+                {
+                    <ul class="m204-summary">
+                        <li><strong>Name:</strong> @_item.Name</li>
+                        <li><strong>Artikelnummer:</strong> @_item.ArticleNumber</li>
+                        <li><strong>Unit:</strong> @_item.Unit</li>
+                        <li><strong>Aktiv:</strong> @(_item.IsActive ? "Ja" : "Nein")</li>
+                        <li><strong>On Hand:</strong> @_item.QuantityOnHand</li>
+                        <li><strong>Reserved:</strong> @_item.ReservedQuantity</li>
+                        <li><strong>Available:</strong> @_item.AvailableQuantity</li>
+                    </ul>
+                }
+            </div>
+
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    private InventoryItemDetailsDto? _item;
+    private InventoryItemInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+
+        if (IsNew)
+        {
+            _model = new InventoryItemInputModel { IsActive = true };
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetInventoryItemByIdQuery(Id!.Value));
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _item = result.Value;
+            ResetModel();
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ResetModel()
+    {
+        if (_item is null)
+        {
+            _model = new InventoryItemInputModel { IsActive = true };
+            return;
+        }
+
+        _model = new InventoryItemInputModel
+        {
+            ArticleNumber = _item.ArticleNumber,
+            Name = _item.Name,
+            Description = _item.Description,
+            Unit = _item.Unit,
+            Barcode = _item.Barcode,
+            Manufacturer = _item.Manufacturer,
+            ManufacturerPartNumber = _item.ManufacturerPartNumber,
+            IsActive = _item.IsActive
+        };
+    }
+
+    private async Task SaveAsync()
+    {
+        _isBusy = true;
+
+        if (IsNew)
+        {
+            var result = await CreatePipeline.ExecuteAsync(
+                new CreateInventoryItemCommand(
+                    _model.ArticleNumber,
+                    _model.Name,
+                    _model.Description,
+                    _model.Unit,
+                    _model.Barcode,
+                    _model.Manufacturer,
+                    _model.ManufacturerPartNumber,
+                    _model.IsActive,
+                    _model.Reason));
+
+            if (result.IsSuccess)
+            {
+                NavigationManager.NavigateTo($"/business/inventory-item/{result.Value}");
+                return;
+            }
+
+            _errorMessage = result.Error?.Message;
+        }
+        else
+        {
+            var result = await UpdatePipeline.ExecuteAsync(
+                new UpdateInventoryItemCommand(
+                    Id!.Value,
+                    _model.ArticleNumber,
+                    _model.Name,
+                    _model.Description,
+                    _model.Unit,
+                    _model.Barcode,
+                    _model.Manufacturer,
+                    _model.ManufacturerPartNumber,
+                    _model.IsActive,
+                    _model.Reason));
+
+            if (result.IsSuccess)
+                _successMessage = "Gespeichert";
+            else
+                _errorMessage = result.Error?.Message;
+        }
+
+        _isBusy = false;
+    }
+
+    private async Task DeactivateAsync()
+    {
+        if (IsNew) return;
+
+        _isBusy = true;
+
+        var result = await DeactivatePipeline.ExecuteAsync(
+            new DeactivateInventoryItemCommand(Id!.Value, _model.Reason));
+
+        if (result.IsSuccess)
+            NavigationManager.NavigateTo("/business/inventory-items");
+        else
+            _errorMessage = result.Error?.Message;
+
+        _isBusy = false;
+    }
+
+    private sealed class InventoryItemInputModel
+    {
+        [Required] public string ArticleNumber { get; set; } = "";
+        [Required] public string Name { get; set; } = "";
+        [Required] public string Description { get; set; } = "";
+        [Required] public string Unit { get; set; } = "";
+        public string? Barcode { get; set; }
+        public string? Manufacturer { get; set; }
+        public string? ManufacturerPartNumber { get; set; }
+        public bool IsActive { get; set; } = true;
+        [Required] public string Reason { get; set; } = "";
+    }
+}
+
+

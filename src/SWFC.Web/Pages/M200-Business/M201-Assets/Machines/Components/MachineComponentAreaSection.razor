@@ -1,0 +1,157 @@
+@using SWFC.Application.M200_Business.M201_Assets.MachineComponentAreas
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+@inject IExecutionPipeline<CreateMachineComponentAreaCommand, Guid> CreateAreaPipeline
+@inject IExecutionPipeline<UpdateMachineComponentAreaCommand, bool> UpdateAreaPipeline
+@inject IExecutionPipeline<SetMachineComponentAreaActiveStateCommand, bool> SetAreaActiveStatePipeline
+
+<div class="m201-area-section">
+    <div class="m201-area-section__header">
+        <div>
+            <h3>Katalogbereiche</h3>
+            <div class="m201-area-section__subtitle">
+                Globale Stammdaten, systemweit wiederverwendbar.
+            </div>
+        </div>
+
+        <button type="button" class="m201-button m201-button--secondary" @onclick="PrepareNewArea">Neu</button>
+    </div>
+
+    <div class="m201-area-section__editor">
+        <input class="m201-input" placeholder="Bereichsname" @bind="_name" />
+        <input class="m201-input" placeholder="Begründung" @bind="_reason" />
+
+        <div class="m201-area-section__actions">
+            <button type="button" class="m201-button" @onclick="SaveAsync">Speichern</button>
+
+            @if (_selectedArea is not null)
+            {
+                <button type="button" class="m201-button m201-button--secondary" @onclick="ToggleActiveStateAsync">
+                    @(_selectedArea.IsActive ? "Deaktivieren" : "Aktivieren")
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="m201-area-section__list">
+        <button type="button"
+                class="m201-area-section__item @(SelectedAreaId is null ? "m201-area-section__item--selected" : null)"
+                @onclick="() => SelectAsync(null)">
+            <span>Alle sichtbaren Katalogbereiche</span>
+        </button>
+
+        @foreach (var area in Areas)
+        {
+            <button type="button"
+                    class="m201-area-section__item @(SelectedAreaId == area.Id ? "m201-area-section__item--selected" : null)"
+                    @onclick="() => SelectAsync(area.Id)">
+                <span>@area.Name</span>
+                <span class="m201-area-section__state">@(area.IsActive ? "Aktiv" : "Inaktiv")</span>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<MachineComponentAreaVm> Areas { get; set; } = Array.Empty<MachineComponentAreaVm>();
+
+    [Parameter]
+    public Guid? SelectedAreaId { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid?> OnSelectArea { get; set; }
+
+    [Parameter]
+    public EventCallback OnReloadRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<MachineComponentsSection.ComponentMessage> OnMessageChanged { get; set; }
+
+    private string _name = string.Empty;
+    private string _reason = string.Empty;
+
+    private MachineComponentAreaVm? _selectedArea =>
+        SelectedAreaId.HasValue ? Areas.FirstOrDefault(x => x.Id == SelectedAreaId.Value) : null;
+
+    protected override void OnParametersSet()
+    {
+        if (_selectedArea is null)
+        {
+            _name = string.Empty;
+        }
+        else
+        {
+            _name = _selectedArea.Name;
+        }
+    }
+
+    private Task PrepareNewArea()
+    {
+        _name = string.Empty;
+        return SelectAsync(null);
+    }
+
+    private Task SelectAsync(Guid? areaId)
+        => OnSelectArea.InvokeAsync(areaId);
+
+    private async Task SaveAsync()
+    {
+        if (_selectedArea is null)
+        {
+            var createResult = await CreateAreaPipeline.ExecuteAsync(
+                new CreateMachineComponentAreaCommand(_name, _reason));
+
+            if (!createResult.IsSuccess)
+            {
+                await OnMessageChanged.InvokeAsync(new(true, createResult.Error?.Message ?? "Katalogbereich konnte nicht erstellt werden."));
+                return;
+            }
+
+            await OnMessageChanged.InvokeAsync(new(false, "Katalogbereich erstellt."));
+        }
+        else
+        {
+            var updateResult = await UpdateAreaPipeline.ExecuteAsync(
+                new UpdateMachineComponentAreaCommand(_selectedArea.Id, _name, _reason));
+
+            if (!updateResult.IsSuccess)
+            {
+                await OnMessageChanged.InvokeAsync(new(true, updateResult.Error?.Message ?? "Katalogbereich konnte nicht aktualisiert werden."));
+                return;
+            }
+
+            await OnMessageChanged.InvokeAsync(new(false, "Katalogbereich aktualisiert."));
+        }
+
+        _reason = string.Empty;
+        await OnReloadRequested.InvokeAsync();
+    }
+
+    private async Task ToggleActiveStateAsync()
+    {
+        if (_selectedArea is null)
+        {
+            return;
+        }
+
+        var result = await SetAreaActiveStatePipeline.ExecuteAsync(
+            new SetMachineComponentAreaActiveStateCommand(
+                _selectedArea.Id,
+                !_selectedArea.IsActive,
+                _reason));
+
+        if (!result.IsSuccess)
+        {
+            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Katalogbereichsstatus konnte nicht geändert werden."));
+            return;
+        }
+
+        _reason = string.Empty;
+        await OnMessageChanged.InvokeAsync(new(false, "Katalogbereichsstatus aktualisiert."));
+        await OnReloadRequested.InvokeAsync();
+    }
+}
+
+

@@ -1,0 +1,124 @@
+@page "/security/roles"
+@page "/system/roles"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M806_AccessControl.Roles
+
+@inject IExecutionPipeline<GetRolesQuery, IReadOnlyList<RoleListItem>> GetRolesPipeline
+@inject ICurrentUserService CurrentUserService
+@inject NavigationManager Nav
+
+<section class="m100-roles">
+
+    <div class="m100-roles__header">
+        <div>
+            <h1>Rollenverwaltung</h1>
+            <p>Rollen gehören zum Sicherheitsmodul `M806` und werden getrennt von den Benutzerstammdaten geführt.</p>
+        </div>
+
+        @if (_securityContext.IsDeveloperMode)
+        {
+            <button class="m100-button"
+                    @onclick='() => Nav.NavigateTo("/security/roles/new")'>
+                Neue Rolle
+            </button>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_notice))
+    {
+        <div class="m100-roles__notice">@_notice</div>
+    }
+
+    <div class="m100-card">
+
+        @if (_loading)
+        {
+            <div class="m100-loading">Lade Rollen...</div>
+        }
+        else if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m100-error">@_error</div>
+        }
+        else if (_roles.Count == 0)
+        {
+            <div class="m100-empty">Keine Rollen vorhanden.</div>
+        }
+        else
+        {
+            <table class="m100-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Beschreibung</th>
+                        <th>Status</th>
+                        <th>Typ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var role in _roles)
+                    {
+                        <tr>
+                            <td>@role.Name</td>
+                            <td>@role.Description</td>
+                            <td>
+                                <span class="m100-role-badge @(role.IsActive ? "m100-role-badge--active" : "m100-role-badge--inactive")">
+                                    @(role.IsActive ? "Aktiv" : "Inaktiv")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="m100-role-badge @(role.IsSystemRole ? "m100-role-badge--system" : "m100-role-badge--custom")">
+                                    @(role.IsSystemRole ? "Systemrolle" : "Benutzerrolle")
+                                </span>
+                            </td>
+                            <td class="m100-table__actions">
+                                <a class="m100-link"
+                                   href="@($"/security/roles/{role.Id}")">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _loading = true;
+    private string? _error;
+    private string? _notice;
+    private SecurityContext _securityContext = new(string.Empty, string.Empty, string.Empty, string.Empty, false);
+    private IReadOnlyList<RoleListItem> _roles = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _securityContext = await CurrentUserService.GetSecurityContextAsync();
+        _notice = _securityContext.IsDeveloperMode
+            ? "Developer-Modus ist aktiv. Rollenstammdaten und Rechte koennen bearbeitet werden."
+            : "Die Rollenverwaltung ist aktuell im Lesemodus. Neue Rollen und Aenderungen sind nur im Developer-Modus moeglich.";
+
+        var result = await GetRolesPipeline.ExecuteAsync(new GetRolesQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _roles = result.Value;
+        }
+        else
+        {
+            _error = result.Error?.Message ?? "Rollen konnten nicht geladen werden.";
+        }
+
+        _loading = false;
+    }
+}

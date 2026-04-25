@@ -1,0 +1,314 @@
+@page "/system/organization-units/{Id:guid?}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetOrganizationUnitByIdQuery, OrganizationUnitDetailsDto> GetOrganizationUnitPipeline
+@inject IExecutionPipeline<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>> GetOrganizationUnitsPipeline
+@inject IExecutionPipeline<CreateOrganizationUnitCommand, Guid> CreateOrganizationUnitPipeline
+@inject IExecutionPipeline<UpdateOrganizationUnitCommand, bool> UpdateOrganizationUnitPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou-detail">
+
+    <header class="m100-ou-detail__header">
+        <div class="m100-ou-detail__title">
+            <a href="/system/organization-units" class="m100-ou-detail__back">Back</a>
+            <p class="m100-ou-detail__eyebrow">M102 · Organization</p>
+            <h1>@(IsNew ? "New organization unit" : "Edit organization unit")</h1>
+            <p>Master data and parent references are maintained only through existing M102 fields.</p>
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m100-loading">Loading data...</div>
+    }
+    else
+    {
+        <div class="m100-ou-detail__layout">
+
+            <div class="m100-card m100-ou-detail__form">
+                <label class="m100-ou-detail__field">
+                    <span>Name</span>
+                    <input class="m100-input"
+                           placeholder="Name"
+                           @bind="_model.Name" />
+                </label>
+
+                <label class="m100-ou-detail__field">
+                    <span>Code</span>
+                    <input class="m100-input"
+                           placeholder="Code"
+                           @bind="_model.Code" />
+                </label>
+
+                <label class="m100-ou-detail__field">
+                    <span>Parent unit</span>
+                    <select class="m100-input"
+                            @bind="_model.ParentId">
+                        <option value="">-- no parent --</option>
+                        @foreach (var unit in _parentOptions)
+                        {
+                            <option value="@unit.Id">@unit.Name (@unit.Code)</option>
+                        }
+                    </select>
+                </label>
+
+                @if (!IsNew)
+                {
+                    <label class="m100-ou-detail__checkbox">
+                        <input type="checkbox" @bind="_model.IsActive" />
+                        <span>Active</span>
+                    </label>
+                }
+
+                <label class="m100-ou-detail__field">
+                    <span>Reason</span>
+                    <textarea class="m100-textarea"
+                              placeholder="Reason"
+                              @bind="_model.Reason"></textarea>
+                </label>
+
+                <div class="m100-actions">
+                    <button class="m100-button"
+                            @onclick="SaveAsync"
+                            disabled="@_isBusy">
+                        Save
+                    </button>
+
+                    <a href="/system/organization-units" class="m100-button m100-button--secondary">
+                        Back to list
+                    </a>
+                </div>
+            </div>
+
+            <div class="m100-card m100-ou-detail__side">
+                @if (IsNew)
+                {
+                    <div class="m100-muted">New organization unit. After saving, the structure can be checked in detail.</div>
+                }
+                else if (_organizationUnit is not null)
+                {
+                    <section class="m100-ou-detail__section">
+                        <h3>Current state</h3>
+                        <dl class="m100-ou-detail__summary">
+                            <div>
+                                <dt>Name</dt>
+                                <dd>@_organizationUnit.Name</dd>
+                            </div>
+                            <div>
+                                <dt>Code</dt>
+                                <dd>@_organizationUnit.Code</dd>
+                            </div>
+                            <div>
+                                <dt>Parent</dt>
+                                <dd>@BuildParentLabel(_organizationUnit)</dd>
+                            </div>
+                            <div>
+                                <dt>Status</dt>
+                                <dd>@(_organizationUnit.IsActive ? "Active" : "Inactive")</dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section class="m100-ou-detail__section">
+                        <h3>Direct child units</h3>
+
+                        @if (ChildUnits.Count == 0)
+                        {
+                            <p class="m100-muted">No direct child units available.</p>
+                        }
+                        else
+                        {
+                            <div class="m100-ou-detail__children">
+                                @foreach (var child in ChildUnits)
+                                {
+                                    <div class="m100-ou-detail__child">
+                                        <div class="m100-ou-detail__child-title">@child.Name</div>
+                                        <div class="m100-ou-detail__child-meta">@child.Code</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </section>
+                }
+            </div>
+
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _error;
+    private string? _success;
+
+    private OrganizationUnitDetailsDto? _organizationUnit;
+    private IReadOnlyList<OrganizationUnitListItem> _allUnits = [];
+    private List<OrganizationUnitListItem> _parentOptions = [];
+    private OrganizationUnitInputModel _model = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    private IReadOnlyList<OrganizationUnitListItem> ChildUnits =>
+        !Id.HasValue
+            ? []
+            : _allUnits
+                .Where(x => x.ParentId == Id.Value)
+                .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+        _success = null;
+
+        try
+        {
+            var unitsResult = await GetOrganizationUnitsPipeline.ExecuteAsync(new GetOrganizationUnitsQuery());
+
+            if (unitsResult.IsSuccess && unitsResult.Value is not null)
+            {
+                _allUnits = unitsResult.Value;
+
+                _parentOptions = _allUnits
+                    .Where(x => x.IsActive)
+                    .Where(x => !Id.HasValue || x.Id != Id.Value)
+                    .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+            else if (!unitsResult.IsSuccess)
+            {
+                _error = unitsResult.Error?.Message ?? "Organization units could not be loaded.";
+            }
+
+            if (IsNew)
+            {
+                _organizationUnit = null;
+                _model = new OrganizationUnitInputModel();
+                return;
+            }
+
+            var result = await GetOrganizationUnitPipeline.ExecuteAsync(new GetOrganizationUnitByIdQuery(Id!.Value));
+
+            if (result.IsSuccess && result.Value is not null)
+            {
+                _organizationUnit = result.Value;
+
+                _model = new OrganizationUnitInputModel
+                {
+                    Name = result.Value.Name,
+                    Code = result.Value.Code,
+                    ParentId = result.Value.ParentId,
+                    IsActive = result.Value.IsActive,
+                    Reason = string.Empty
+                };
+            }
+            else
+            {
+                _error = result.Error?.Message ?? "Could not be loaded.";
+            }
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _success = null;
+        _isBusy = true;
+
+        try
+        {
+            if (IsNew)
+            {
+                var createResult = await CreateOrganizationUnitPipeline.ExecuteAsync(
+                    new CreateOrganizationUnitCommand(
+                        _model.Name,
+                        _model.Code,
+                        _model.ParentId,
+                        _model.Reason));
+
+                if (!createResult.IsSuccess)
+                {
+                    _error = createResult.Error?.Message;
+                    return;
+                }
+
+                _success = "Organization unit created.";
+                NavigationManager.NavigateTo($"/system/organization-units/{createResult.Value}");
+                return;
+            }
+
+            var updateResult = await UpdateOrganizationUnitPipeline.ExecuteAsync(
+                new UpdateOrganizationUnitCommand(
+                    Id!.Value,
+                    _model.Name,
+                    _model.Code,
+                    _model.ParentId,
+                    _model.IsActive,
+                    _model.Reason));
+
+            if (!updateResult.IsSuccess)
+            {
+                _error = updateResult.Error?.Message;
+                return;
+            }
+
+            _success = "Updated.";
+            await LoadAsync();
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string BuildParentLabel(OrganizationUnitDetailsDto item)
+    {
+        if (!string.IsNullOrWhiteSpace(item.ParentName) && !string.IsNullOrWhiteSpace(item.ParentCode))
+        {
+            return $"{item.ParentName} ({item.ParentCode})";
+        }
+
+        return item.ParentName ?? item.ParentCode ?? "-";
+    }
+
+    private sealed class OrganizationUnitInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public Guid? ParentId { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string Reason { get; set; } = string.Empty;
+    }
+}

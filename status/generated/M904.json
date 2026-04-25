@@ -1,0 +1,71 @@
+{
+  "ModuleCode": "M904",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2538637+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M904 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M904 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Abweichungserkennung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Musterabweichungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnliche Zust\u00C3\u0192\u00C2\u00A4nde",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnlicher Energieverbrauch",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Atypische Maschinenzust\u00C3\u0192\u00C2\u00A4nde",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Unerwartete Produktionswerte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Anomalien erkl\u00C3\u0192\u00C2\u00A4rbar machen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ergebnisse k\u00C3\u0192\u00C2\u00B6nnen Alerts ausl\u00C3\u0192\u00C2\u00B6sen (M303)",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

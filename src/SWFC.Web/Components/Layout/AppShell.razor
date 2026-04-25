@@ -1,17 +1,44 @@
-@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models
+@using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services
 
-<div class="m305-shell">
+@inject LocalizationState LocalizationState
+@inject UserUiPreferenceService UserUiPreferenceService
 
-    <Header />
+@if (_isInitialized)
+{
+    <CascadingValue Value="LocalizationState" IsFixed="false">
+        <div class="app-shell"
+             data-swfc-theme="@_preferences.ThemeName"
+             data-swfc-density="@_preferences.NavigationDensity"
+             data-swfc-motion="@(_preferences.UseReducedMotion ? "reduced" : "standard")">
+            <Header />
 
-    <div class="m305-shell__body">
-        <aside class="m305-shell__sidebar">
-            <Sidebar />
-        </aside>
+            <div class="app-shell__body">
+                <aside class="app-shell__sidebar">
+                    <Sidebar />
+                </aside>
 
-        <main class="m305-shell__content">
-            @Body
-        </main>
-    </div>
+                <main class="app-shell__content">
+                    @Body
+                </main>
+            </div>
+        </div>
+    </CascadingValue>
+}
 
-</div>
+@code {
+    [Parameter]
+    public RenderFragment? Body { get; set; }
+
+    private bool _isInitialized;
+    private UserUiPreferences _preferences = UserUiPreferences.Default;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LocalizationState.InitializeAsync();
+        _preferences = await UserUiPreferenceService.GetCurrentAsync();
+        _isInitialized = true;
+    }
+}

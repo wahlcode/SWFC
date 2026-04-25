@@ -1,0 +1,116 @@
+{
+  "ModuleCode": "M504",
+  "ScorePercent": 8,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9096419+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "missing_code",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M504 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "18 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Live-Ansichten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Leitwartenoberfl\u00C3\u0192\u00C2\u00A4chen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "\u00C3\u0192\u00C5\u201Cbersicht mehrerer Anlagen / Bereiche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bedien- und Eingriffsoberfl\u00C3\u0192\u00C2\u00A4chen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zentrale Kontrollansichten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schaltwarte / Leitwarte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "\u00C3\u0192\u00C5\u201Cberwachung laufender Anlagen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Anzeige von Zust\u00C3\u0192\u00C2\u00A4nden",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Kontrollierte Eingriffe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sp\u00C3\u0192\u00C2\u00A4tere Spiegelung / Steuerung von Leitwartenbildschirmen",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Berechtigung vorhanden",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Definierte Freigaberegeln",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abstimmung mit Personal vor Ort",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Protokollierung \u00C3\u0192\u00C2\u00BCber M805",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Keine automatische Blindsteuerung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Maschine / SPS beh\u00C3\u0192\u00C2\u00A4lt Sicherheitsoberhand",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Ersetzung physischer Sicherheitsmechanismen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

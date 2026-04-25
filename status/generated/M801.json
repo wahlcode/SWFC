@@ -1,0 +1,44 @@
+{
+  "ModuleCode": "M801",
+  "ScorePercent": 100,
+  "Status": "Verified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.0710756+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
+  "WorkItems": [
+    {
+      "Title": "Sicherheitsgrundlagen",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Basiskonzepte",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "\u00C3\u0192\u00C5\u201Cbergreifende Sicherheitsregeln",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Sicherheitsprinzipien f\u00C3\u0192\u00C2\u00BCr alle Module",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Systemweite G\u00C3\u0192\u00C2\u00BCltigkeit",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Keine modulbezogene Fachlogik",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    }
+  ]
+}

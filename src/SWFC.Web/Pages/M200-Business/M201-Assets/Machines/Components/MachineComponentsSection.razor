@@ -1,0 +1,103 @@
+@using SWFC.Application.M200_Business.M201_Assets.MachineComponentAreas
+@using SWFC.Application.M200_Business.M201_Assets.MachineComponents
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M800_Security.M801_Access
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+@inject IExecutionPipeline<GetVisibleMachineComponentAreasQuery, IReadOnlyList<MachineComponentAreaListItemDto>> GetAreasPipeline
+@inject IExecutionPipeline<GetVisibleMachineComponentsByMachineQuery, IReadOnlyList<MachineComponentListItemDto>> GetComponentsPipeline
+@inject IExecutionPipeline<CreateMachineComponentCommand, Guid> CreateComponentPipeline
+@inject IExecutionPipeline<UpdateMachineComponentCommand, bool> UpdateComponentPipeline
+@inject IExecutionPipeline<MoveMachineComponentCommand, bool> MoveComponentPipeline
+@inject IExecutionPipeline<SetMachineComponentActiveStateCommand, bool> SetComponentActiveStatePipeline
+
+<section class="m201-components-section">
+    <div class="m201-components-section__header">
+        <div>
+            <h2>Maschinenkomponenten</h2>
+            <p class="m201-components-section__description">
+                Globale Katalogbereiche, Komponentenstruktur und Sichtbarkeit im Maschinenkontext.
+            </p>
+        </div>
+
+        <div class="m201-components-section__toolbar">
+            <button type="button"
+                    class="m201-button m201-button--secondary"
+                    @onclick="PrepareNewComponent">
+                Neue Komponente
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m201-alert m201-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m201-alert m201-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m201-loading">Lade Komponenten...</div>
+    }
+    else
+    {
+        <div class="m201-components-section__workspace">
+            <div class="m201-card m201-components-section__panel m201-components-section__panel--areas">
+                <MachineComponentAreaSection Areas="_areas"
+                                             SelectedAreaId="_selectedAreaId"
+                                             OnSelectArea="HandleSelectAreaAsync"
+                                             OnReloadRequested="ReloadAllAsync"
+                                             OnMessageChanged="HandleChildMessageChanged" />
+            </div>
+
+            <div class="m201-card m201-components-section__panel m201-components-section__panel--tree">
+                <div class="m201-components-section__panel-header">
+                    <div>
+                        <h3>Komponentenstruktur</h3>
+                        <p class="m201-components-section__panel-text">
+                            @(_selectedAreaName is null
+                                ? "Alle sichtbaren Komponenten"
+                                : $"Gefiltert nach globalem Katalogbereich: {_selectedAreaName}")
+                        </p>
+                    </div>
+                </div>
+
+                <MachineComponentTree RootItems="_rootComponents"
+                                      ChildrenByParentId="_childrenByParentId"
+                                      SelectedComponentId="_selectedComponentId"
+                                      OnSelectComponent="SelectComponentAsync" />
+            </div>
+
+            <div class="m201-card m201-components-section__panel m201-components-section__panel--visibility">
+                <MachineComponentVisibilitySection Target="CurrentVisibilityTarget"
+                                                  OnMessageChanged="HandleChildMessageChanged" />
+            </div>
+        </div>
+
+        <div class="m201-components-section__editor-row">
+            <div class="m201-card m201-components-section__panel">
+                <div class="m201-components-section__panel-header">
+                    <div>
+                        <h3>@(_editorModel.Id.HasValue ? "Komponente bearbeiten" : "Komponente anlegen")</h3>
+                        <p class="m201-components-section__panel-text">
+                            Komponenten referenzieren einen globalen Katalogbereich und werden immer mit Begründung gespeichert.
+                        </p>
+                    </div>
+                </div>
+
+                <MachineComponentForm Model="_editorModel"
+                                      AreaOptions="_areas"
+                                      ParentOptions="_components"
+                                      IsBusy="_isBusy"
+                                      OnSave="SaveComponentAsync"
+                                      OnToggleActive="ToggleComponentActiveStateAsync" />
+            </div>
+        </div>
+    }
+</section>
+

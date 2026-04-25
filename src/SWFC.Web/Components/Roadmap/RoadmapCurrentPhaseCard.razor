@@ -1,0 +1,45 @@
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<article class="roadmap-current-phase-card">
+    <div class="roadmap-current-phase-card__header">
+        <span>@Label</span>
+        @if (Version is not null)
+        {
+            <RoadmapStatusBadge Status="@Version.Status" />
+        }
+    </div>
+
+    @if (Version is null)
+    {
+        <p class="roadmap-current-phase-card__empty">@_emptyText</p>
+    }
+    else
+    {
+        <h2>@Version.AudienceTitle</h2>
+        <p>@Version.Goal</p>
+        <a class="roadmap-current-phase-card__link" href="@($"/roadmap/{Version.Version}")">
+            @string.Format(_viewVersionText, Version.Version)
+        </a>
+    }
+</article>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = "Phase";
+
+    [Parameter]
+    public RoadmapVersion? Version { get; set; }
+
+    private string _emptyText = "No phase available.";
+    private string _viewVersionText = "View {0}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _emptyText = await TextProvider.GetTextAsync("Roadmap.NoPhase", culture);
+        _viewVersionText = await TextProvider.GetTextAsync("Roadmap.ViewVersion", culture);
+    }
+}

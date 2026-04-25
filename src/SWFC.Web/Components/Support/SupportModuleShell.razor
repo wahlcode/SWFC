@@ -1,0 +1,136 @@
+@namespace SWFC.Web.Components
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<div class="m700-shell">
+    <header class="m700-shell__hero m201-card">
+        <div class="m700-shell__hero-main">
+            <div class="m700-shell__hero-text">
+                @if (!string.IsNullOrWhiteSpace(BackHref) && !string.IsNullOrWhiteSpace(BackLabel))
+                {
+                    <a class="m700-shell__back" href="@BackHref">
+                        <span aria-hidden="true">←</span>
+                        <span>@BackLabel</span>
+                    </a>
+                }
+
+                <p class="m700-shell__eyebrow">@Eyebrow</p>
+                <h1>@Title</h1>
+                <p class="m700-shell__subtitle">@Subtitle</p>
+            </div>
+
+            @if (SummaryContent is not null)
+            {
+                <div class="m700-shell__summary">
+                    @SummaryContent
+                </div>
+            }
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(ContextNote))
+    {
+        <section class="m700-shell__context m201-card">
+            <p class="m700-shell__context-eyebrow">@_contextText</p>
+            <p class="m700-shell__context-text">@ContextNote</p>
+        </section>
+    }
+
+    <section class="m700-shell__layout">
+        <aside class="m700-shell__sidebar m201-card">
+            <div class="m700-shell__sidebar-block">
+                <p class="m700-shell__sidebar-eyebrow">@_navigationText</p>
+                <h2 class="m700-shell__sidebar-title">@_supportTitleText</h2>
+                <p class="m700-shell__sidebar-text">@_supportDescriptionText</p>
+            </div>
+
+            <nav class="m700-shell__nav" aria-label="@_navigationAriaLabelText">
+                @foreach (var item in NavigationItems)
+                {
+                    var isCurrent = string.Equals(item.Code, CurrentCode, StringComparison.OrdinalIgnoreCase);
+
+                    <a class="@($"m700-shell__nav-link{(isCurrent ? " is-current" : string.Empty)}")"
+                       href="@item.Route"
+                       aria-current="@(isCurrent ? "page" : null)">
+                        <span class="m700-shell__nav-code">@item.Code</span>
+                        <span class="m700-shell__nav-title">@item.Title</span>
+                    </a>
+                }
+            </nav>
+
+            @if (SidebarContent is not null)
+            {
+                <div class="m700-shell__sidebar-block m700-shell__sidebar-block--muted">
+                    @SidebarContent
+                </div>
+            }
+        </aside>
+
+        <section class="m700-shell__content">
+            @ChildContent
+        </section>
+    </section>
+</div>
+
+@code {
+    private static readonly NavigationItem[] NavigationItems =
+    [
+        new("M700", "Support Overview", "/support"),
+        new("M701", "Bug Tracking", "/support/bug-tracking"),
+        new("M702", "Change Requests", "/support/change-requests"),
+        new("M703", "Support Cases", "/support/cases"),
+        new("M704", "Incident Management", "/support/incidents"),
+        new("M705", "Knowledge Base", "/support/knowledge-base"),
+        new("M706", "Service Levels", "/support/service-levels")
+    ];
+
+    [Parameter]
+    public string Eyebrow { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Subtitle { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BackHref { get; set; } = string.Empty;
+
+    [Parameter]
+    public string BackLabel { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ContextNote { get; set; } = string.Empty;
+
+    [Parameter]
+    public string CurrentCode { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? SummaryContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? SidebarContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string _contextText = "Context";
+    private string _navigationText = "Navigation";
+    private string _navigationAriaLabelText = "M700 Navigation";
+    private string _supportTitleText = "M700 Support";
+    private string _supportDescriptionText = "Support, issues and stability are managed as a dedicated SWFC module family.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _contextText = await TextProvider.GetTextAsync("Support.Context", culture);
+        _navigationText = await TextProvider.GetTextAsync("Support.Navigation", culture);
+        _navigationAriaLabelText = await TextProvider.GetTextAsync("Support.NavigationAriaLabel", culture);
+        _supportTitleText = await TextProvider.GetTextAsync("Support.Title", culture);
+        _supportDescriptionText = await TextProvider.GetTextAsync("Support.Description", culture);
+    }
+
+    private sealed record NavigationItem(string Code, string Title, string Route);
+}

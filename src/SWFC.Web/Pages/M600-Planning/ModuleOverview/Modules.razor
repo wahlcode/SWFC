@@ -1,0 +1,325 @@
+@page "/planning/modules"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Components.Shared
+
+@inject ModuleStatusService ModuleStatusService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Modulübersicht</PageTitle>
+
+<div class="module-overview-page">
+    <section class="module-overview-hero">
+        <div class="module-overview-header">
+            <div class="module-overview-header__copy">
+                <p class="module-overview-eyebrow">SWFC</p>
+                <h1 class="page-title">Modulübersicht</h1>
+                <p class="page-subtitle">
+                    Strukturübersicht für M100 bis M1000 mit getrenntem Plan-Fortschritt und automatisch geprüftem Audit-Reifegrad.
+                </p>
+            </div>
+
+            <div class="module-overview-header__meta">
+                <div class="overview-highlight">
+                    <span class="overview-highlight__label">Modulgruppen</span>
+                    <span class="overview-highlight__value">@Overview.Groups.Count</span>
+                </div>
+
+                <div class="overview-highlight">
+                    <span class="overview-highlight__label">Arbeitspunkte</span>
+                    <span class="overview-highlight__value">@Overview.Summary.TotalWorkItems</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-grid summary-grid--six">
+            <div class="summary-card">
+                <div class="summary-label">Gesamtmodule</div>
+                <div class="summary-value">@Overview.Summary.TotalModules</div>
+            </div>
+
+            <div class="summary-card summary-card--open">
+                <div class="summary-label">Offen</div>
+                <div class="summary-value">@Overview.Summary.OpenCount</div>
+            </div>
+
+            <div class="summary-card summary-card--progress">
+                <div class="summary-label">In Bearbeitung</div>
+                <div class="summary-value">@Overview.Summary.InProgressCount</div>
+            </div>
+
+            <div class="summary-card summary-card--core">
+                <div class="summary-label">Kern abgeschlossen</div>
+                <div class="summary-value">@Overview.Summary.CoreCompleteCount</div>
+            </div>
+
+            <div class="summary-card summary-card--extended">
+                <div class="summary-label">Erweitert abgeschlossen</div>
+                <div class="summary-value">@Overview.Summary.ExtendedCompleteCount</div>
+            </div>
+
+            <div class="summary-card summary-card--full">
+                <div class="summary-label">Vollständig abgeschlossen</div>
+                <div class="summary-value">@Overview.Summary.FullCompleteCount</div>
+            </div>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(StatusMessage))
+    {
+        <div class="module-overview-feedback">@StatusMessage</div>
+    }
+
+    @foreach (var group in Overview.Groups)
+    {
+        var groupCode = group.GroupCode;
+        var isGroupExpanded = State.IsGroupExpanded(groupCode);
+
+        var groupOpen = group.Modules.Count(x => x.Status == ModuleStatuses.Open);
+        var groupInProgress = group.Modules.Count(x => x.Status == ModuleStatuses.InProgress);
+        var groupCoreComplete = group.Modules.Count(x => x.Status == ModuleStatuses.CoreComplete);
+        var groupExtendedComplete = group.Modules.Count(x => x.Status == ModuleStatuses.ExtendedComplete);
+        var groupFullComplete = group.Modules.Count(x => x.Status == ModuleStatuses.FullComplete);
+
+        <section class="module-section">
+            <button type="button"
+                    class="module-section-toggle"
+                    @onclick="@(() => State.ToggleGroup(groupCode))">
+                <div class="module-section-heading">
+                    <h2 class="module-section-title">@group.GroupCode - @group.GroupTitle</h2>
+
+                    @if (!string.IsNullOrWhiteSpace(group.Description))
+                    {
+                        <p class="module-section-description">@group.Description</p>
+                    }
+
+                    <p class="module-section-subtitle">@group.Modules.Count Module in dieser Gruppe</p>
+                </div>
+
+                <div class="module-section-header-right">
+                    <div class="module-section-summary">
+                        <span class="section-pill section-pill--full">Vollständig @groupFullComplete</span>
+                        <span class="section-pill section-pill--extended">Erweitert @groupExtendedComplete</span>
+                        <span class="section-pill section-pill--core">Kern @groupCoreComplete</span>
+                        <span class="section-pill section-pill--progress">In Bearbeitung @groupInProgress</span>
+                        <span class="section-pill section-pill--open">Offen @groupOpen</span>
+                    </div>
+
+                    <span class="module-section-chevron">@(isGroupExpanded ? "-" : "+")</span>
+                </div>
+            </button>
+
+            <div class="module-section-content @(isGroupExpanded ? "module-section-content--open" : string.Empty)">
+                <div class="module-section-content__inner">
+                    <div class="module-card-grid">
+                        @foreach (var module in group.Modules)
+                        {
+                            var moduleKey = $"{group.GroupCode}:{module.Code}";
+                            var isModuleExpanded = State.IsModuleExpanded(moduleKey);
+                            var isAuditExpanded = State.IsAuditExpanded(moduleKey);
+
+                            <article class="module-card-v1 @(isModuleExpanded ? "module-card-v1--open" : string.Empty)">
+                                <button type="button"
+                                        class="module-card-v1__header"
+                                        @onclick="@(() => State.ToggleModule(groupCode, moduleKey))">
+                                    <div class="module-card-v1__title-wrap">
+                                        <div class="module-card-v1__code">@module.Code</div>
+                                        <div class="module-card-v1__title">@module.Title</div>
+                                    </div>
+
+                                    <div class="module-card-v1__header-right">
+                                        <div class="module-card-v1__badges">
+                                            <ThemeLevelBadge Level="@module.Level" />
+                                            <ThemeStatusBadge Status="@module.Status" />
+                                        </div>
+
+                                        <div class="module-card-v1__meta">
+                                            <span class="module-card-v1__progress">Fortschritt @module.ProgressPercent%</span>
+                                            <span class="module-card-v1__chevron">@(isModuleExpanded ? "-" : "+")</span>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                @if (!string.IsNullOrWhiteSpace(module.Description))
+                                {
+                                    <div class="module-card-v1__description">
+                                        @module.Description
+                                    </div>
+                                }
+
+                                <div class="module-card-v1__status-detail">
+                                    @BuildStatusDetail(module)
+                                </div>
+
+                                <div class="audit-summary @(isAuditExpanded ? "audit-summary--open" : string.Empty)">
+                                    <button type="button"
+                                            class="audit-summary__header"
+                                            @onclick="@(() => State.ToggleAudit(moduleKey))">
+                                        <div class="audit-score">
+                                            <span class="audit-score__label">Prüfung</span>
+                                            <span class="audit-score__value">@FormatAuditScore(module)</span>
+                                        </div>
+
+                                        <div class="audit-summary__header-right">
+                                            <span class="audit-status @BuildAuditStatusClass(module.AuditStatus)">
+                                                @FormatAuditStatus(module.AuditStatus)
+                                            </span>
+                                            <span class="audit-summary__chevron">@(isAuditExpanded ? "-" : "+")</span>
+                                        </div>
+                                    </button>
+
+                                    <div class="audit-summary__content @(isAuditExpanded ? "audit-summary__content--open" : string.Empty)">
+                                        <div class="audit-summary__content-inner">
+                                            <div class="audit-summary__grid">
+                                                <div class="audit-summary__item">
+                                                    <span>Code</span>
+                                                    <strong>@FormatAuditPartStatus(module.CodeStatus)</strong>
+                                                </div>
+
+                                                <div class="audit-summary__item">
+                                                    <span>Dokumentation</span>
+                                                    <strong>@FormatAuditPartStatus(module.MdStatus)</strong>
+                                                </div>
+
+                                                <div class="audit-summary__item">
+                                                    <span>Tests</span>
+                                                    <strong>@FormatAuditPartStatus(module.TestStatus)</strong>
+                                                </div>
+                                            </div>
+
+                                            <div class="audit-summary__checked">
+                                                Letzte Prüfung: @FormatLastAudit(module.LastAuditUtc)
+                                            </div>
+
+                                            @if (module.AuditFlags.Count > 0)
+                                            {
+                                                <div class="audit-flags">
+                                                    @foreach (var flag in module.AuditFlags)
+                                                    {
+                                                        <span class="audit-flag">@FormatAuditFlag(flag)</span>
+                                                    }
+                                                </div>
+                                            }
+
+                                            @if (module.AuditIssues.Count > 0)
+                                            {
+                                                <ul class="audit-issue-list">
+                                                    @foreach (var issue in module.AuditIssues)
+                                                    {
+                                                        <li>
+                                                            <strong>@FormatAuditIssueSeverity(issue.Severity):</strong> @issue.Message
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="module-card-v1__bar">
+                                    <svg class="module-card-v1__bar-chart"
+                                         viewBox="0 0 100 10"
+                                         preserveAspectRatio="none"
+                                         role="img"
+                                         aria-label="Statusverteilung">
+                                        <rect class="bar-segment-svg bar-segment-svg--done"
+                                              x="0"
+                                              y="0"
+                                              width="@GetPercent(module.DoneCount, module.TotalCount)"
+                                              height="10" />
+                                        <rect class="bar-segment-svg bar-segment-svg--progress"
+                                              x="@GetPercent(module.DoneCount, module.TotalCount)"
+                                              y="0"
+                                              width="@GetPercent(module.InProgressCount, module.TotalCount)"
+                                              height="10" />
+                                        <rect class="bar-segment-svg bar-segment-svg--open"
+                                              x="@(GetPercent(module.DoneCount, module.TotalCount) + GetPercent(module.InProgressCount, module.TotalCount))"
+                                              y="0"
+                                              width="@GetPercent(module.OpenCount, module.TotalCount)"
+                                              height="10" />
+                                    </svg>
+                                </div>
+
+                                <div class="module-card-v1__stats">
+                                    <div class="module-stat">
+                                        <span class="stat-label">Abgeschlossen</span>
+                                        <span class="stat-value">@module.DoneCount</span>
+                                    </div>
+
+                                    <div class="module-stat">
+                                        <span class="stat-label">In Bearbeitung</span>
+                                        <span class="stat-value">@module.InProgressCount</span>
+                                    </div>
+
+                                    <div class="module-stat">
+                                        <span class="stat-label">Offen</span>
+                                        <span class="stat-value">@module.OpenCount</span>
+                                    </div>
+
+                                    <div class="module-stat">
+                                        <span class="stat-label">Ebene</span>
+                                        <span class="stat-value">@GetLevelLabel(module.Level)</span>
+                                    </div>
+                                </div>
+
+                                <div class="module-card-v1__content @(isModuleExpanded ? "module-card-v1__content--open" : string.Empty)">
+                                    <div class="module-card-v1__content-inner">
+                                        @if (module.WorkItems.Count > 0)
+                                        {
+                                            <div class="workitem-list">
+                                                @foreach (var item in module.WorkItems)
+                                                {
+                                                    var workItemKey = BuildWorkItemKey(group.GroupCode, module.Code, item.Title);
+                                                    var isSaving = SavingWorkItemKey == workItemKey;
+
+                                                    <div class="workitem-row">
+                                                        <div class="workitem-main">
+                                                            <span class="workitem-title">@item.Title</span>
+                                                        </div>
+
+                                                        <div class="workitem-badges">
+                                                            <ThemeLevelBadge Level="@item.Level" />
+
+                                                            @if (CanEditWorkItems)
+                                                            {
+                                                                <select class="workitem-status-select"
+                                                                        value="@ModuleOverviewModuleDto.NormalizeWorkItemStatus(item.Status)"
+                                                                        disabled="@isSaving"
+                                                                        @onchange="@(async e => await OnWorkItemStatusChangedAsync(group.GroupCode, module.Code, item.Title, e.Value?.ToString()))">
+                                                                    <option value="@ModuleWorkItemStatuses.Open">Offen</option>
+                                                                    <option value="@ModuleWorkItemStatuses.InProgress">In Bearbeitung</option>
+                                                                    <option value="@ModuleWorkItemStatuses.Done">Abgeschlossen</option>
+                                                                </select>
+                                                            }
+                                                            else
+                                                            {
+                                                                <ThemeStatusBadge Status="@FormatWorkItemStatus(item.Status)" />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="workitem-empty">
+                                                Keine Arbeitspunkte vorhanden.
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+</div>
+
+

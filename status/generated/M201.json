@@ -1,0 +1,81 @@
+{
+  "ModuleCode": "M201",
+  "ScorePercent": 33,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.5376345+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Technische Stammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Statusinformationen (aktiv / inaktiv)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Asset-Typen",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Parent/Child-Hierarchien",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Freie / erweiterbare Felder",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfungen zu organisatorischen Einheiten (M102)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Optionale Verkn\u00C3\u00BCpfungen zu Energieobjekten (M205)",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Genau ein Parent pro Asset",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Baumstruktur",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Zyklen",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Gemeinsamkeit \u00C3\u00BCber Typen, nicht \u00C3\u00BCber Mehrfachzuordnung derselben Instanz",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine L\u00C3\u00B6schung / nur Deaktivierung oder Historisierung",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

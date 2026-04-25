@@ -1,0 +1,56 @@
+{
+  "ModuleCode": "M805",
+  "ScorePercent": 43,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.1810676+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "AuditLog",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "AuditService",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Protokollierung sicherheitsrelevanter Ereignisse",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nachvollziehbarkeit von \u00C3\u0192\u00E2\u20AC\u017Enderungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nachvollziehbarkeit von Aktionen",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung auditrelevanter Daten",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Wer / wann / was / vorher / nachher nachvollziehbar machen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

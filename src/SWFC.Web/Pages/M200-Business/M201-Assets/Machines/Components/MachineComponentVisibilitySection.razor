@@ -1,0 +1,316 @@
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Application.M800_Security.M803_Visibility.AccessRules
+@using SWFC.Domain.M800_Security.M801_Access
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+@inject IExecutionPipeline<GetAccessRulesByTargetQuery, IReadOnlyList<AccessRuleListItemDto>> GetAccessRulesPipeline
+@inject IExecutionPipeline<CreateAccessRuleCommand, Guid> CreateAccessRulePipeline
+@inject IExecutionPipeline<UpdateAccessRuleCommand, bool> UpdateAccessRulePipeline
+@inject IExecutionPipeline<DeactivateAccessRuleCommand, bool> DeactivateAccessRulePipeline
+
+<div class="m201-visibility-section">
+    <div class="m201-visibility-section__header">
+        <div>
+            <h3>@Target.Title</h3>
+            <div class="m201-visibility-section__target-description">@Target.Description</div>
+        </div>
+
+        <div class="m201-visibility-section__target-badge">
+            @ToTargetLabel(Target.TargetType)
+        </div>
+    </div>
+
+    @if (!Target.CanManageRules)
+    {
+        <div class="m201-muted">
+            Für das aktuelle Ziel können keine Regeln verwaltet werden.
+        </div>
+    }
+    else
+    {
+        <div class="m201-visibility-section__editor">
+            <label class="m201-visibility-section__label">Regel gilt für</label>
+            <select class="m201-input" @bind="_editorModel.SubjectType">
+                @foreach (var value in Enum.GetValues<AccessSubjectType>())
+                {
+                    <option value="@value">@ToSubjectLabel(value)</option>
+                }
+            </select>
+
+            <label class="m201-visibility-section__label">Kennung</label>
+            <input class="m201-input" placeholder="z. B. Benutzer-ID, Rollen-ID oder Organisationseinheits-ID" @bind="_editorModel.SubjectId" />
+
+            <label class="m201-visibility-section__label">Regelmodus</label>
+            <select class="m201-input" @bind="_editorModel.Mode">
+                @foreach (var value in Enum.GetValues<AccessRuleMode>())
+                {
+                    <option value="@value">@ToModeLabel(value)</option>
+                }
+            </select>
+
+            <label class="m201-visibility-section__label">Begründung</label>
+            <input class="m201-input" placeholder="Warum wird diese Regel gesetzt?" @bind="_editorModel.Reason" />
+
+            <button type="button" class="m201-button" @onclick="CreateRuleAsync">
+                Regel anlegen
+            </button>
+        </div>
+
+        @if (_isLoading)
+        {
+            <div class="m201-loading">Lade Regeln...</div>
+        }
+        else if (_rules.Count == 0)
+        {
+            <div class="m201-muted">
+                Keine expliziten Regeln vorhanden. Standardverhalten: sichtbar, solange keine speziellere Verbotsregel greift.
+            </div>
+        }
+        else
+        {
+            <div class="m201-visibility-section__list">
+                @foreach (var rule in _rules)
+                {
+                    <div class="m201-visibility-section__item">
+                        <div class="m201-visibility-section__item-main">
+                            <div class="m201-visibility-section__item-title">
+                                @ToSubjectLabel(rule.SubjectType)
+                            </div>
+                            <div class="m201-visibility-section__item-subtitle">
+                                @rule.SubjectId
+                            </div>
+                        </div>
+
+                        <div class="m201-visibility-section__item-actions">
+                            <select class="m201-input"
+                                    value="@rule.Mode"
+                                    @onchange="e => SelectRuleForModeChange(rule.Id, e.Value?.ToString())">
+                                @foreach (var mode in Enum.GetValues<AccessRuleMode>())
+                                {
+                                    <option value="@mode">@ToModeLabel(mode)</option>
+                                }
+                            </select>
+
+                            <button type="button"
+                                    class="m201-button m201-button--danger"
+                                    @onclick="() => PrepareDeactivate(rule.Id)">
+                                Entfernen
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (_pendingRuleId.HasValue)
+            {
+                <div class="m201-visibility-section__pending">
+                    <div class="m201-visibility-section__label">Begründung für Änderung</div>
+                    <input class="m201-input" placeholder="Begründung" @bind="_pendingReason" />
+
+                    <div class="m201-visibility-section__item-actions">
+                        @if (_pendingMode.HasValue)
+                        {
+                            <button type="button" class="m201-button" @onclick="ConfirmModeChangeAsync">
+                                Modus speichern
+                            </button>
+                        }
+
+                        @if (_pendingDeactivate)
+                        {
+                            <button type="button" class="m201-button m201-button--danger" @onclick="ConfirmDeactivateAsync">
+                                Deaktivierung bestätigen
+                            </button>
+                        }
+
+                        <button type="button" class="m201-button m201-button--secondary" @onclick="ClearPending">
+                            Abbrechen
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public VisibilityTargetVm Target { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<MachineComponentsSection.ComponentMessage> OnMessageChanged { get; set; }
+
+    private bool _isLoading = true;
+    private IReadOnlyList<AccessRuleVm> _rules = Array.Empty<AccessRuleVm>();
+    private AccessRuleEditorModel _editorModel = new();
+
+    private Guid? _pendingRuleId;
+    private AccessRuleMode? _pendingMode;
+    private bool _pendingDeactivate;
+    private string _pendingReason = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ClearPending();
+        _editorModel.Reset();
+        await LoadRulesAsync();
+    }
+
+    private async Task LoadRulesAsync()
+    {
+        if (!Target.CanManageRules || string.IsNullOrWhiteSpace(Target.TargetId))
+        {
+            _rules = Array.Empty<AccessRuleVm>();
+            _isLoading = false;
+            return;
+        }
+
+        _isLoading = true;
+
+        var result = await GetAccessRulesPipeline.ExecuteAsync(
+            new GetAccessRulesByTargetQuery(Target.TargetType, Target.TargetId));
+
+        _rules = result.IsSuccess && result.Value is not null
+            ? result.Value.Select(Map).ToList()
+            : Array.Empty<AccessRuleVm>();
+
+        _isLoading = false;
+    }
+
+    private async Task CreateRuleAsync()
+    {
+        if (!Target.CanManageRules)
+        {
+            return;
+        }
+
+        var result = await CreateAccessRulePipeline.ExecuteAsync(
+            new CreateAccessRuleCommand(
+                Target.TargetType,
+                Target.TargetId,
+                _editorModel.SubjectType,
+                _editorModel.SubjectId,
+                _editorModel.Mode,
+                _editorModel.Reason));
+
+        if (!result.IsSuccess)
+        {
+            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Regel konnte nicht erstellt werden."));
+            return;
+        }
+
+        _editorModel.Reset();
+        await OnMessageChanged.InvokeAsync(new(false, "Regel erstellt."));
+        await LoadRulesAsync();
+    }
+
+    private void SelectRuleForModeChange(Guid ruleId, string? modeText)
+    {
+        if (!Enum.TryParse<AccessRuleMode>(modeText, out var mode))
+        {
+            return;
+        }
+
+        _pendingRuleId = ruleId;
+        _pendingMode = mode;
+        _pendingDeactivate = false;
+        _pendingReason = string.Empty;
+    }
+
+    private void PrepareDeactivate(Guid ruleId)
+    {
+        _pendingRuleId = ruleId;
+        _pendingMode = null;
+        _pendingDeactivate = true;
+        _pendingReason = string.Empty;
+    }
+
+    private async Task ConfirmModeChangeAsync()
+    {
+        if (!_pendingRuleId.HasValue || !_pendingMode.HasValue)
+        {
+            return;
+        }
+
+        var result = await UpdateAccessRulePipeline.ExecuteAsync(
+            new UpdateAccessRuleCommand(_pendingRuleId.Value, _pendingMode.Value, _pendingReason));
+
+        if (!result.IsSuccess)
+        {
+            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Regel konnte nicht aktualisiert werden."));
+            return;
+        }
+
+        await OnMessageChanged.InvokeAsync(new(false, "Regel aktualisiert."));
+        ClearPending();
+        await LoadRulesAsync();
+    }
+
+    private async Task ConfirmDeactivateAsync()
+    {
+        if (!_pendingRuleId.HasValue)
+        {
+            return;
+        }
+
+        var result = await DeactivateAccessRulePipeline.ExecuteAsync(
+            new DeactivateAccessRuleCommand(_pendingRuleId.Value, _pendingReason));
+
+        if (!result.IsSuccess)
+        {
+            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Regel konnte nicht deaktiviert werden."));
+            return;
+        }
+
+        await OnMessageChanged.InvokeAsync(new(false, "Regel deaktiviert."));
+        ClearPending();
+        await LoadRulesAsync();
+    }
+
+    private void ClearPending()
+    {
+        _pendingRuleId = null;
+        _pendingMode = null;
+        _pendingDeactivate = false;
+        _pendingReason = string.Empty;
+    }
+
+    private static string ToSubjectLabel(AccessSubjectType value) =>
+        value switch
+        {
+            AccessSubjectType.User => "Benutzer",
+            AccessSubjectType.Role => "Rolle",
+            AccessSubjectType.OrganizationUnit => "Organisationseinheit",
+            _ => value.ToString()
+        };
+
+    private static string ToModeLabel(AccessRuleMode value) =>
+        value switch
+        {
+            AccessRuleMode.Allow => "Erlauben",
+            AccessRuleMode.Deny => "Verbieten",
+            _ => value.ToString()
+        };
+
+    private static string ToTargetLabel(AccessTargetType value) =>
+        value switch
+        {
+            AccessTargetType.Machine => "Maschine",
+            AccessTargetType.MachineComponentArea => "Katalogbereich",
+            AccessTargetType.MachineComponent => "Komponente",
+            _ => value.ToString()
+        };
+
+    private static AccessRuleVm Map(AccessRuleListItemDto dto)
+        => new()
+        {
+            Id = dto.Id,
+            SubjectType = dto.SubjectType,
+            SubjectId = dto.SubjectId,
+            Mode = dto.Mode
+        };
+}
+
+
+
+

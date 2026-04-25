@@ -1,0 +1,56 @@
+@page "/system/organization"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<section class="m100-page">
+
+    <div class="m100-page__header">
+        <h1 class="m100-page__title">Organization</h1>
+        <p class="m100-page__description">
+            Manage users, organization units, cost centers and shift models.
+        </p>
+    </div>
+
+    <div class="m100-grid">
+
+        <div class="m100-card" @onclick="@(() => Nav("/system/users"))">
+            <h2 class="m100-card__title">Users</h2>
+            <p class="m100-card__text">
+                Manage users and organizational assignments
+            </p>
+        </div>
+
+        <div class="m100-card" @onclick="@(() => Nav("/system/organization-units"))">
+            <h2 class="m100-card__title">Organization Units</h2>
+            <p class="m100-card__text">
+                Manage structure and hierarchy
+            </p>
+        </div>
+
+        <div class="m100-card" @onclick="@(() => Nav("/system/cost-centers"))">
+            <h2 class="m100-card__title">Cost Centers</h2>
+            <p class="m100-card__text">
+                Manage cost center structure
+            </p>
+        </div>
+
+        <div class="m100-card" @onclick="@(() => Nav("/system/shift-models"))">
+            <h2 class="m100-card__title">Shift Models</h2>
+            <p class="m100-card__text">
+                Manage shift models
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+@code {
+    [Inject] NavigationManager NavigationManager { get; set; } = default!;
+
+    private void Nav(string url)
+    {
+        NavigationManager.NavigateTo(url);
+    }
+}

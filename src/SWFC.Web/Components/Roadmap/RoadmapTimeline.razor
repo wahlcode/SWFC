@@ -1,0 +1,50 @@
+<div class="roadmap-street">
+    @foreach (var row in Rows)
+    {
+        <div class="@BuildRowClass(row.Index)">
+            @foreach (var item in row.Items)
+            {
+                <div class="@BuildPhaseClass(item.Version)">
+                    <div class="roadmap-street__index">@item.Number</div>
+                    <RoadmapVersionCard Version="@item.Version" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private const int ItemsPerRow = 5;
+
+    [Parameter]
+    public IReadOnlyList<RoadmapVersion> Versions { get; set; } = Array.Empty<RoadmapVersion>();
+
+    private IReadOnlyList<RoadmapRow> Rows => Versions
+        .Select((version, index) => new RoadmapItem(version, index + 1))
+        .GroupBy(item => (item.Number - 1) / ItemsPerRow)
+        .Select(group => new RoadmapRow(group.Key, group.ToList()))
+        .ToList();
+
+    private static string BuildRowClass(int rowIndex)
+    {
+        return rowIndex % 2 == 1
+            ? "roadmap-street__row roadmap-street__row--reverse"
+            : "roadmap-street__row";
+    }
+
+    private static string BuildPhaseClass(RoadmapVersion version)
+    {
+        var normalized = (version.Status ?? string.Empty).Trim().Replace(" ", string.Empty).ToLowerInvariant();
+
+        return normalized switch
+        {
+            "done" => "roadmap-street__phase roadmap-street__phase--done",
+            "inprogress" => "roadmap-street__phase roadmap-street__phase--current",
+            _ => "roadmap-street__phase roadmap-street__phase--planned"
+        };
+    }
+
+    private sealed record RoadmapItem(RoadmapVersion Version, int Number);
+
+    private sealed record RoadmapRow(int Index, IReadOnlyList<RoadmapItem> Items);
+}

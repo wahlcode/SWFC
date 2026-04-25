@@ -1,0 +1,88 @@
+@using SWFC.Domain.M200_Business.M202_Maintenance.MaintenanceOrders
+
+<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="m202-form">
+        <div class="m202-form__grid">
+            <div class="m202-form__field">
+                <label for="m202-order-number">Nummer</label>
+                <InputText id="m202-order-number"
+                           @bind-Value="Model.Number"
+                           class="m202-form__input"
+                           disabled="@IsEdit" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-title">Titel</label>
+                <InputText id="m202-order-title"
+                           @bind-Value="Model.Title"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-type">Typ</label>
+                <InputSelect id="m202-order-type"
+                             @bind-Value="Model.Type"
+                             class="m202-form__input">
+                    <option value="@MaintenanceOrderType.Planned">Planned</option>
+                    <option value="@MaintenanceOrderType.Unplanned">Unplanned</option>
+                    <option value="@MaintenanceOrderType.Emergency">Emergency</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-targettype">Zieltyp</label>
+                <InputSelect id="m202-order-targettype"
+                             @bind-Value="Model.TargetType"
+                             class="m202-form__input">
+                    <option value="@MaintenanceTargetType.Machine">Machine</option>
+                    <option value="@MaintenanceTargetType.MachineComponent">MachineComponent</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-targetid">TargetId</label>
+                <InputText id="m202-order-targetid"
+                           @bind-Value="Model.TargetIdText"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-materialitem">Material ItemId</label>
+                <InputText id="m202-order-materialitem"
+                           @bind-Value="Model.MaterialItemId"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-materialqty">Material Menge</label>
+                <InputNumber id="m202-order-materialqty"
+                             @bind-Value="Model.MaterialQuantity"
+                             class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field m202-form__field--full">
+                <label for="m202-order-description">Beschreibung</label>
+                <InputTextArea id="m202-order-description"
+                               @bind-Value="Model.Description"
+                               class="m202-form__input m202-form__textarea" />
+            </div>
+        </div>
+
+        <div class="m202-form__actions">
+            <a href="/business/maintenance" class="m201-link">Abbrechen</a>
+            <button type="submit" class="m201-button" disabled="@IsBusy">Speichern</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public MaintenanceOrderFormModel Model { get; set; } = new();
+    [Parameter] public bool IsEdit { get; set; }
+    [Parameter] public bool IsBusy { get; set; }
+    [Parameter] public string? ErrorMessage { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}
+
+

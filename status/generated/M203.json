@@ -1,0 +1,106 @@
+{
+  "ModuleCode": "M203",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.583029+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M203 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M203 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Pr\u00C3\u00BCfpl\u00C3\u00A4ne",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Pr\u00C3\u00BCfauftr\u00C3\u00A4ge / Pr\u00C3\u00BCfungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pr\u00C3\u00BCfergebnisse",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Wiederkehrende Pr\u00C3\u00BCfzyklen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pr\u00C3\u00BCfstatus / Freigabezust\u00C3\u00A4nde",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ergebnislogik (bestanden / nicht bestanden / mit Mangel / Nachpr\u00C3\u0192\u00C2\u00BCfung)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung zu M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Folgeaktionen ausl\u00C3\u0192\u00C2\u00B6sen (M202 / M207 / M208)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pr\u00C3\u0192\u00C2\u00BCfintervalle",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "F\u00C3\u0192\u00C2\u00A4lligkeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine echte L\u00C3\u0192\u00C2\u00B6schung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

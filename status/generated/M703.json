@@ -1,0 +1,56 @@
+{
+  "ModuleCode": "M703",
+  "ScorePercent": 10,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9669643+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M703 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Supportf\u00C3\u0192\u00C2\u00A4lle",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Benutzeranfragen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Problembeschreibungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kann Bug ausl\u00C3\u0192\u00C2\u00B6sen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kann Incident ausl\u00C3\u0192\u00C2\u00B6sen",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+﻿/* =========================================================
+   M201 – Machine Components Section (V3)
+   ========================================================= */
+
+.m201-components-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.m201-components-section__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.m201-components-section__description {
+    margin-top: 4px;
+    color: var(--color-text-secondary);
+}
+
+/* Toolbar */
+.m201-components-section__toolbar {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* =========================================================
+   WORKSPACE LAYOUT (3 Spalten)
+   ========================================================= */
+
+.m201-components-section__workspace {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr) 340px;
+    gap: var(--space-lg);
+    align-items: stretch;
+}
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.m201-components-section__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--gradient-surface-panel);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Panel Header */
+.m201-components-section__panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+    .m201-components-section__panel-header h3 {
+        margin: 0;
+    }
+
+.m201-components-section__panel-text {
+    margin-top: 2px;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* =========================================================
+   SPEZIELLE PANELS
+   ========================================================= */
+
+/* Areas (links) */
+.m201-components-section__panel--areas {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* Tree (mitte) */
+.m201-components-section__panel--tree {
+    min-height: 600px;
+}
+
+/* Visibility (rechts) */
+.m201-components-section__panel--visibility {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+.m201-components-section__editor-row {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+    .m201-components-section__editor-row .m201-components-section__panel {
+        max-width: 720px;
+    }
+
+/* =========================================================
+   STATES
+   ========================================================= */
+
+.m201-loading {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+.m201-alert {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+}
+
+.m201-alert--error {
+    background: var(--color-danger-bg);
+    border: 1px solid var(--color-danger-border);
+    color: var(--color-danger-text);
+}
+
+.m201-alert--success {
+    background: var(--color-success-bg);
+    border: 1px solid var(--color-success-border);
+    color: var(--color-success-text);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    .m201-components-section__workspace {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .m201-components-section__panel--visibility {
+        grid-column: 1 / -1;
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .m201-components-section__workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .m201-components-section__panel--areas,
+    .m201-components-section__panel--visibility {
+        max-height: none;
+    }
+}
+
+

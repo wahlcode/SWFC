@@ -1,0 +1,26 @@
+﻿.m202-help {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+    .m202-help h2 {
+        margin: 0;
+    }
+
+    .m202-help p {
+        margin: 0;
+        color: var(--color-text-secondary);
+    }
+
+    .m202-help ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        color: var(--color-text-secondary);
+    }
+
+    .m202-help li + li {
+        margin-top: 0.35rem;
+    }
+
+

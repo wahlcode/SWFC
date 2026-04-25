@@ -1,0 +1,82 @@
+@page "/roadmap"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Components.Roadmap
+
+@inject RoadmapService RoadmapService
+@inject ModuleStatusService ModuleStatusService
+
+<PageTitle>Roadmap</PageTitle>
+
+<div class="roadmap-page">
+    <section class="roadmap-hero">
+        <div>
+            <p class="roadmap-hero__eyebrow">M601</p>
+            <h1>Roadmap</h1>
+            <p>
+                Geplante Systemreise als Roadmap-Straße mit fachlichen Entwicklungsblöcken.
+            </p>
+        </div>
+
+        <div class="roadmap-hero__meta">
+            <div class="roadmap-highlight">
+                <span>Versionen</span>
+                <strong>@Versions.Count</strong>
+            </div>
+            <div class="roadmap-highlight">
+                <span>Module</span>
+                <strong>@ModuleCount</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="roadmap-command-panel">
+        <div class="roadmap-command-panel__main">
+            <span>Aktuelle Phase</span>
+            <strong>@(CurrentVersion?.AudienceTitle ?? "Keine Phase")</strong>
+            <p>@(CurrentVersion?.Goal ?? "Keine aktive Roadmap-Phase gefunden.")</p>
+        </div>
+
+        <div class="roadmap-command-panel__side">
+            <div>
+                <span>Nächste Phase</span>
+                <strong>@(NextVersion?.AudienceTitle ?? "Nicht geplant")</strong>
+            </div>
+            <a href="@(CurrentVersion is null ? "/roadmap" : $"/roadmap/{CurrentVersion.Version}")">Phase öffnen</a>
+        </div>
+    </section>
+
+    <section class="roadmap-street-section" aria-label="Roadmap-Straße">
+        <div class="roadmap-street-section__header">
+            <div>
+                <span>Systemreise</span>
+                <h2>Versionen als Roadmap-Straße</h2>
+            </div>
+            <p>
+                Jede Kachel ist ein zusammenhängender Entwicklungsschritt.
+                Die Richtung wechselt je Reihe, damit die Roadmap wie eine Straße lesbar bleibt.
+            </p>
+        </div>
+
+        <RoadmapTimeline Versions="@Versions" />
+    </section>
+</div>
+
+@code {
+    private IReadOnlyList<RoadmapVersion> Versions = Array.Empty<RoadmapVersion>();
+    private RoadmapVersion? CurrentVersion;
+    private RoadmapVersion? NextVersion;
+    private int ModuleCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Versions = await RoadmapService.GetVersionsAsync();
+        CurrentVersion = await RoadmapService.GetCurrentVersionAsync();
+        NextVersion = await RoadmapService.GetNextVersionAsync();
+
+        var overview = await ModuleStatusService.GetOverviewAsync();
+        ModuleCount = overview.Summary.TotalModules;
+    }
+}

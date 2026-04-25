@@ -1,0 +1,91 @@
+{
+  "ModuleCode": "M302",
+  "ScorePercent": 29,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8007021+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Reports",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Visualisierungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "KPI-Darstellungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Tabellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Diagramme",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zeitreihen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Filter nach Zeitraum / Anlage / Abteilung / Status",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Drilldown von KPI zu Detaildaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Export PDF / Excel",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Abteilungsspezifische Reports",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Wiederverwendbare Reports",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Benutzerdefinierte Reports",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Integration in M301",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Berechnungslogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

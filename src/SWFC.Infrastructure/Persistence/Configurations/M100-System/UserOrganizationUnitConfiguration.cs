@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SWFC.Domain.M100_System.M102_Organization.Entities;
+using SWFC.Domain.M100_System.M102_Organization.Assignments;
 
 namespace SWFC.Infrastructure.Persistence.Configurations.M100_System;
 
@@ -19,6 +19,9 @@ public sealed class UserOrganizationUnitConfiguration : IEntityTypeConfiguration
             .IsRequired();
 
         entity.Property(x => x.IsPrimary)
+            .IsRequired();
+
+        entity.Property(x => x.IsActive)
             .IsRequired();
 
         entity.HasIndex(x => new { x.UserId, x.OrganizationUnitId })

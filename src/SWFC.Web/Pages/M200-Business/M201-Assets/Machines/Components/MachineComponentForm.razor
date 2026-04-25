@@ -1,0 +1,76 @@
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines
+@using SWFC.Web.Pages.M200_Business.M201_Assets.Machines.Components.ViewModels
+
+<div class="m201-component-form">
+    <div class="m201-component-form__header">
+        <h3>@(Model.Id.HasValue ? "Komponente bearbeiten" : "Komponente anlegen")</h3>
+    </div>
+
+    <input class="m201-input" placeholder="Name" @bind="Model.Name" />
+
+    <select class="m201-input" @bind="Model.MachineComponentAreaId">
+        <option value="">-- Globaler Katalogbereich --</option>
+        @foreach (var area in AreaOptions)
+        {
+            <option value="@area.Id">@area.Name</option>
+        }
+    </select>
+
+    <select class="m201-input" @bind="Model.ParentMachineComponentId">
+        <option value="">-- Parent-Komponente --</option>
+        @foreach (var component in ParentOptions.Where(x => !Model.Id.HasValue || x.Id != Model.Id.Value))
+        {
+            <option value="@component.Id">@component.Name</option>
+        }
+    </select>
+
+    <textarea class="m201-textarea" placeholder="Beschreibung" @bind="Model.Description"></textarea>
+    <textarea class="m201-textarea" placeholder="Begründung" @bind="Model.Reason"></textarea>
+
+    <div class="m201-component-form__actions">
+        <button type="button"
+                class="m201-button"
+                @onclick="HandleSaveAsync"
+                disabled="IsBusy">
+            Speichern
+        </button>
+
+        @if (Model.Id.HasValue)
+        {
+            <button type="button"
+                    class="m201-button m201-button--secondary"
+                    @onclick="HandleToggleActiveAsync"
+                    disabled="IsBusy">
+                @(Model.IsActive ? "Deaktivieren" : "Aktivieren")
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public MachineComponentEditorModel Model { get; set; } = default!;
+
+    [Parameter]
+    public IReadOnlyList<MachineComponentAreaVm> AreaOptions { get; set; } = Array.Empty<MachineComponentAreaVm>();
+
+    [Parameter]
+    public IReadOnlyList<MachineComponentVm> ParentOptions { get; set; } = Array.Empty<MachineComponentVm>();
+
+    [Parameter]
+    public bool IsBusy { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnToggleActive { get; set; }
+
+    private Task HandleSaveAsync()
+        => OnSave.InvokeAsync();
+
+    private Task HandleToggleActiveAsync()
+        => OnToggleActive.InvokeAsync();
+}
+
+

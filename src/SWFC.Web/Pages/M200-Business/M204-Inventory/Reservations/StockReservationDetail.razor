@@ -1,0 +1,196 @@
+@page "/business/stock-reservation/new"
+@page "/business/stock-reservation/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using SWFC.Application.M200_Business.M204_Inventory.Reservations
+@using SWFC.Application.M200_Business.M204_Inventory.Stock
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetStockReservationByIdQuery, StockReservationDetailsDto> GetPipeline
+@inject IExecutionPipeline<CreateStockReservationCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<ConsumeStockReservationCommand, Guid> ConsumePipeline
+@inject IExecutionPipeline<GetStockLookupQuery, IReadOnlyList<StockLookupItem>> StockLookupPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m204-detail">
+
+    <div class="m204-detail__header">
+        <h1>@(IsNew ? "Reservierung anlegen" : "Reservierung")</h1>
+        <a href="/business/stock-reservations" class="m204-button-secondary">Zurück</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m204-alert m204-alert--error">@_error</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m204-loading">Lade Daten...</div>
+    }
+    else if (IsNew)
+    {
+        <div class="m204-card">
+            <EditForm Model="_createModel" OnValidSubmit="CreateAsync">
+                <DataAnnotationsValidator />
+
+                <div class="m204-form-grid">
+
+                    <select class="m204-input" @bind="_createModel.StockReference">
+                        <option value="">-- Stock wählen --</option>
+                        @foreach (var stock in _stocks)
+                        {
+                            <option value="@stock.ToString()">@stock.ToString()</option>
+                        }
+                    </select>
+
+                    <input type="number" min="1" class="m204-input" @bind="_createModel.Quantity" />
+
+                    <textarea class="m204-input" placeholder="Note" @bind="_createModel.Note"></textarea>
+
+                    <textarea class="m204-input" placeholder="Reason" @bind="_createModel.Reason"></textarea>
+
+                </div>
+
+                <div class="m204-actions">
+                    <button class="m204-button" type="submit" disabled="@_isBusy">
+                        Speichern
+                    </button>
+                </div>
+
+            </EditForm>
+        </div>
+    }
+    else if (_item is not null)
+    {
+        <div class="m204-detail-grid">
+
+            <div>
+                <div class="m204-card">
+                    <ul class="m204-list">
+                        <li><strong>Status:</strong> @_item.Status</li>
+                        <li><strong>Quantity:</strong> @_item.Quantity</li>
+                        <li><strong>Stock Id:</strong> @_item.StockId</li>
+                        <li><strong>Note:</strong> @(_item.Note ?? "-")</li>
+                    </ul>
+                </div>
+
+                <div class="m204-card">
+                    <EditForm Model="_consumeModel" OnValidSubmit="ConsumeAsync">
+                        <DataAnnotationsValidator />
+
+                        <div class="m204-form-grid">
+                            <input type="number" min="1" class="m204-input" @bind="_consumeModel.Quantity" />
+                            <input class="m204-input" placeholder="Reason" @bind="_consumeModel.Reason" />
+                        </div>
+
+                        <div class="m204-actions">
+                            <button class="m204-button m204-button-warning" disabled="@_isBusy">
+                                Consume
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+
+            <div class="m204-card">
+                <ul class="m204-list">
+                    <li><strong>Created:</strong> @_item.CreatedAtUtc</li>
+                    <li><strong>Created By:</strong> @_item.CreatedBy</li>
+                    <li><strong>Last Modified:</strong> @(_item.LastModifiedAtUtc?.ToString() ?? "-")</li>
+                    <li><strong>Last Modified By:</strong> @(_item.LastModifiedBy ?? "-")</li>
+                </ul>
+            </div>
+
+        </div>
+    }
+
+</section>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private bool _isLoading = true;
+    private bool _isBusy;
+    private string? _error;
+
+    private StockReservationDetailsDto? _item;
+    private IReadOnlyList<StockLookupItem> _stocks = [];
+    private CreateReservationInput _createModel = new();
+    private ConsumeReservationInput _consumeModel = new();
+
+    private bool IsNew => !Id.HasValue;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isLoading = true;
+
+        if (IsNew)
+        {
+            var lookup = await StockLookupPipeline.ExecuteAsync(new GetStockLookupQuery());
+            if (lookup.IsSuccess && lookup.Value is not null)
+                _stocks = lookup.Value;
+
+            _isLoading = false;
+            return;
+        }
+
+        var result = await GetPipeline.ExecuteAsync(new GetStockReservationByIdQuery(Id!.Value));
+        if (result.IsSuccess && result.Value is not null)
+            _item = result.Value;
+        else
+            _error = result.Error?.Message;
+
+        _isLoading = false;
+    }
+
+    private async Task CreateAsync()
+    {
+        _error = "Create muss noch korrekt verdrahtet werden.";
+        await Task.CompletedTask;
+    }
+
+    private async Task ConsumeAsync()
+    {
+        if (_item is null) return;
+
+        _isBusy = true;
+
+        try
+        {
+            var result = await ConsumePipeline.ExecuteAsync(
+                new ConsumeStockReservationCommand(
+                    _item.Id,
+                    _consumeModel.Quantity,
+                    _consumeModel.Reason));
+
+            if (result.IsSuccess)
+                NavigationManager.NavigateTo($"/business/stock-movement/{result.Value}");
+            else
+                _error = result.Error?.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private sealed class CreateReservationInput
+    {
+        public string StockReference { get; set; } = "";
+        public int Quantity { get; set; } = 1;
+        public string Note { get; set; } = "";
+        [Required] public string Reason { get; set; } = "";
+    }
+
+    private sealed class ConsumeReservationInput
+    {
+        public int Quantity { get; set; } = 1;
+        [Required] public string Reason { get; set; } = "";
+    }
+}
+
+

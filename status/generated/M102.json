@@ -1,0 +1,156 @@
+{
+  "ModuleCode": "M102",
+  "ScorePercent": 23,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.2862879+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "md_incomplete",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "22 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "M102.01 Organization Structure",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Werke / Standorte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Geb\u00E4ude / Hallen (organisatorisch)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Abteilungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Teams",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verantwortungsbereiche",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Hierarchien",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "M102.02 Users",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Benutzerstammdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Organisatorische Zuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Funktion im Unternehmen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schichtzuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Aktiv / Inaktiv",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Externe Personen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Stellvertreter / Eskalationskontakte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Historisierung",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Keine L\u00F6schung",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Verkn\u00FCpfung zu M103",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "M102.03 Cost Centers",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Kostenstellen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kostenstellen-Struktur",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Kostenstellen-Zuordnung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "M102.04 Shift Model",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Schichten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Schicht-Zuordnung",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Schicht-Struktur",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    }
+  ]
+}

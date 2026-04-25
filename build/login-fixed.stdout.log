@@ -1,0 +1,121 @@
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'InventoryItemBarcode' is an optional dependent using table sharing without any required non shared column that could be used to identify whether the entity exists. If all nullable properties contain a 'null' value in database then an object instance won't be created in the query. Add a required property to create instances with 'null' values for other properties or mark the incoming navigation as required to always create an instance.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'InventoryItemManufacturer' is an optional dependent using table sharing without any required non shared column that could be used to identify whether the entity exists. If all nullable properties contain a 'null' value in database then an object instance won't be created in the query. Add a required property to create instances with 'null' values for other properties or mark the incoming navigation as required to always create an instance.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'InventoryItemManufacturerPartNumber' is an optional dependent using table sharing without any required non shared column that could be used to identify whether the entity exists. If all nullable properties contain a 'null' value in database then an object instance won't be created in the query. Add a required property to create instances with 'null' values for other properties or mark the incoming navigation as required to always create an instance.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'EnergyExternalSystem' is an optional dependent using table sharing without any required non shared column that could be used to identify whether the entity exists. If all nullable properties contain a 'null' value in database then an object instance won't be created in the query. Add a required property to create instances with 'null' values for other properties or mark the incoming navigation as required to always create an instance.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[20606]
+      The entity type 'EnergyMeterRfidTag' is an optional dependent using table sharing without any required non shared column that could be used to identify whether the entity exists. If all nullable properties contain a 'null' value in database then an object instance won't be created in the query. Add a required property to create instances with 'null' values for other properties or mark the incoming navigation as required to always create an instance.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+          "MigrationId" character varying(150) NOT NULL,
+          "ProductVersion" character varying(32) NOT NULL,
+          CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "MigrationId", "ProductVersion"
+      FROM "__EFMigrationsHistory"
+      ORDER BY "MigrationId";
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT r."Id", r."Description", r."IsActive", r."IsSystemRole", r."Name", r."AuditInfo_CreatedAtUtc", r."AuditInfo_CreatedBy", r."AuditInfo_LastModifiedAtUtc", r."AuditInfo_LastModifiedBy"
+      FROM core."Roles" AS r
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT r."Id", r."Description", r."IsActive", r."IsSystemRole", r."Name", r."AuditInfo_CreatedAtUtc", r."AuditInfo_CreatedBy", r."AuditInfo_LastModifiedAtUtc", r."AuditInfo_LastModifiedBy"
+      FROM core."Roles" AS r
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."BusinessEmail", u."BusinessPhone", u."CostCenterId", u."DisplayName", u."EmployeeNumber", u."FirstName", u."IdentityKey", u."IsActive", u."JobFunction", u."LastName", u."Location", u."Plant", u."ShiftModelId", u."Status", u."Team", u."UserType", u."Username", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy", u0."Id", u0."IsActive", u0."IsPrimary", u0."OrganizationUnitId", u0."UserId", u0."AuditInfo_CreatedAtUtc", u0."AuditInfo_CreatedBy", u0."AuditInfo_LastModifiedAtUtc", u0."AuditInfo_LastModifiedBy"
+      FROM core."Users" AS u
+      LEFT JOIN core."UserOrganizationUnits" AS u0 ON u."Id" = u0."UserId"
+      ORDER BY u."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[@superAdminRoleId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."IsActive", u."RoleId", u."UserId", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy"
+      FROM core."UserRoles" AS u
+      WHERE u."RoleId" = @superAdminRoleId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT r."Id", r."Description", r."IsActive", r."IsSystemRole", r."Name", r."AuditInfo_CreatedAtUtc", r."AuditInfo_CreatedBy", r."AuditInfo_LastModifiedAtUtc", r."AuditInfo_LastModifiedBy"
+      FROM core."Roles" AS r
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@developerRole_Id='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."IsActive", u."RoleId", u."UserId", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy"
+      FROM core."UserRoles" AS u
+      WHERE u."RoleId" = @developerRole_Id AND u."IsActive"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."BusinessEmail", u."BusinessPhone", u."CostCenterId", u."DisplayName", u."EmployeeNumber", u."FirstName", u."IdentityKey", u."IsActive", u."JobFunction", u."LastName", u."Location", u."Plant", u."ShiftModelId", u."Status", u."Team", u."UserType", u."Username", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy", u0."Id", u0."IsActive", u0."IsPrimary", u0."OrganizationUnitId", u0."UserId", u0."AuditInfo_CreatedAtUtc", u0."AuditInfo_CreatedBy", u0."AuditInfo_LastModifiedAtUtc", u0."AuditInfo_LastModifiedBy"
+      FROM core."Users" AS u
+      LEFT JOIN core."UserOrganizationUnits" AS u0 ON u."Id" = u0."UserId"
+      ORDER BY u."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT o."Id", o."Code", o."IsActive", o."Name", o."ParentOrganizationUnitId", o."AuditInfo_CreatedAtUtc", o."AuditInfo_CreatedBy", o."AuditInfo_LastModifiedAtUtc", o."AuditInfo_LastModifiedBy"
+      FROM core."OrganizationUnits" AS o
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."IsActive", u."IsPrimary", u."OrganizationUnitId", u."UserId", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy"
+      FROM core."UserOrganizationUnits" AS u
+      WHERE u."UserId" = @userId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT l."Id", l."FailedAttempts", l."IsActive", l."LastPasswordChangedAtUtc", l."LockoutUntilUtc", l."PasswordHash", l."UserId"
+      FROM core."LocalCredentials" AS l
+      WHERE l."UserId" = @userId
+      LIMIT 1
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5206
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: P:\SWFC\src\SWFC.Web
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."BusinessEmail", u."BusinessPhone", u."CostCenterId", u."DisplayName", u."EmployeeNumber", u."FirstName", u."IdentityKey", u."IsActive", u."JobFunction", u."LastName", u."Location", u."Plant", u."ShiftModelId", u."Status", u."Team", u."UserType", u."Username", u."AuditInfo_CreatedAtUtc", u."AuditInfo_CreatedBy", u."AuditInfo_LastModifiedAtUtc", u."AuditInfo_LastModifiedBy", u0."Id", u0."IsActive", u0."IsPrimary", u0."OrganizationUnitId", u0."UserId", u0."AuditInfo_CreatedAtUtc", u0."AuditInfo_CreatedBy", u0."AuditInfo_LastModifiedAtUtc", u0."AuditInfo_LastModifiedBy"
+      FROM core."Users" AS u
+      LEFT JOIN core."UserOrganizationUnits" AS u0 ON u."Id" = u0."UserId"
+      ORDER BY u."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT l."UserId", l."PasswordHash", l."IsActive", l."FailedAttempts", l."LockoutUntilUtc", l."LastPasswordChangedAtUtc"
+      FROM core."LocalCredentials" AS l
+      WHERE l."UserId" = @userId
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@credential_UserId='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT l."Id", l."FailedAttempts", l."IsActive", l."LastPasswordChangedAtUtc", l."LockoutUntilUtc", l."PasswordHash", l."UserId"
+      FROM core."LocalCredentials" AS l
+      WHERE l."UserId" = @credential_UserId
+      LIMIT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?', @p5='?', @p6='?', @p7='?', @p8='?', @p9='?', @p10='?', @p11='?', @p12='?', @p13='?', @p14='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+      INSERT INTO core."AuditLogs" ("Id", "Action", "Username", "UserId", "ApprovedByUserId", "ClientInfo", "ClientIp", "Module", "NewValues", "EntityId", "Entity", "OldValues", "Reason", "TargetUserId", "TimestampUtc")
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);

@@ -1,0 +1,57 @@
+@page "/roadmap/{VersionNumber}"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Components.Roadmap
+
+@inject RoadmapService RoadmapService
+@inject ModuleStatusService ModuleStatusService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>@(Version?.AudienceTitle ?? "Roadmap")</PageTitle>
+
+<div class="roadmap-version-page">
+    <a class="roadmap-version-page__back" href="/roadmap">Zur Roadmap</a>
+
+    @if (Version is null)
+    {
+        <section class="roadmap-version-page__empty">
+            <h1>Version nicht gefunden</h1>
+            <p>Die angeforderte Roadmap-Version ist nicht vorhanden.</p>
+        </section>
+    }
+    else
+    {
+        <RoadmapVersionDetail Version="@Version"
+                              Modules="@Modules"
+                              ShowDeveloperDetails="@ShowDeveloperDetails" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string VersionNumber { get; set; } = string.Empty;
+
+    private RoadmapVersion? Version;
+    private IReadOnlyList<ModuleOverviewModuleDto> Modules = Array.Empty<ModuleOverviewModuleDto>();
+    private bool ShowDeveloperDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        ShowDeveloperDetails = string.Equals(
+            authState.User.Identity?.Name,
+            "developer",
+            StringComparison.OrdinalIgnoreCase);
+
+        Version = await RoadmapService.GetVersionAsync(VersionNumber);
+
+        if (ShowDeveloperDetails)
+        {
+            var overview = await ModuleStatusService.GetOverviewAsync();
+            Modules = overview.Groups.SelectMany(x => x.Modules).ToList();
+        }
+    }
+}

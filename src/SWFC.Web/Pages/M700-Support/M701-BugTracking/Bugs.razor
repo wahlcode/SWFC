@@ -1,0 +1,185 @@
+@page "/support/bug-tracking"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M701_BugTracking
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M700_Support.M701_BugTracking
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M701 · BugTracking"
+                    Title="Bugs"
+                    Subtitle="Fehlerbeschreibung, Reproduzierbarkeit und Status werden getrennt von SupportCases gefuehrt."
+                    BackHref="/support"
+                    BackLabel="Zurueck"
+                    CurrentCode="M701">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Gesamt</span>
+            <strong class="m700-summary-card__value">@_items.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Offen</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Status == BugStatus.Open)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">In Arbeit</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Status == BugStatus.InProgress)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Geloest</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Status == BugStatus.Resolved)</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">M701 speichert keine SupportCase-Daten. Eine Eskalation aus M703 legt einen echten Bug an und verlinkt den SupportCase per Id.</p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_success))
+        {
+            <div class="m700-state m700-state--success">@_success</div>
+        }
+
+        <section class="m700-workspace">
+            <aside class="m700-toolbar">
+                <div class="m700-toolbar__head">
+                    <div>
+                        <h2 class="m700-toolbar__title">Bugliste</h2>
+                        <p class="m700-toolbar__text">Statusgefuehrte Fehler mit Reproduzierbarkeit.</p>
+                    </div>
+                    <span class="m700-tag">@_filteredItems.Count</span>
+                </div>
+
+                <input class="m201-input m700-input"
+                       placeholder="Beschreibung oder Reproduzierbarkeit suchen"
+                       value="@_searchText"
+                       @oninput="OnSearchChanged" />
+
+                <button type="button" class="m201-button" @onclick="OpenCreateForm">Bug erfassen</button>
+
+                @if (_isLoading)
+                {
+                    <div class="m700-state">Lade Bugs...</div>
+                }
+                else if (_filteredItems.Count == 0)
+                {
+                    <div class="m700-state">Keine Bugs gefunden.</div>
+                }
+                else
+                {
+                    <div class="m700-item-list">
+                        @foreach (var item in _filteredItems)
+                        {
+                            <button type="button"
+                                    class="@($"m700-item-button{(_selectedId == item.Id ? " is-selected" : string.Empty)}")"
+                                    @onclick="() => SelectItem(item.Id)">
+                                <span class="m700-item-button__top">
+                                    <span class="m700-item-button__title">@Preview(item.Description)</span>
+                                    <span class="m700-tag">@FormatStatus(item.Status)</span>
+                                </span>
+                                <span class="m700-item-button__text">@Preview(item.Reproducibility)</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m700-detail">
+                @if (SelectedItem is null)
+                {
+                    <div class="m700-detail-card">
+                        <p class="m700-muted">Waehle einen Bug oder lege einen neuen Eintrag an.</p>
+                    </div>
+                }
+                else
+                {
+                    <article class="m700-detail-card">
+                        <div class="m700-detail-card__head">
+                            <div>
+                                <p class="m700-panel__eyebrow">Bugdetails</p>
+                                <h2 class="m700-detail-card__title">@Preview(SelectedItem.Description, 120)</h2>
+                            </div>
+                            <div class="m700-detail-card__meta">
+                                <span class="m700-tag">@FormatStatus(SelectedItem.Status)</span>
+                            </div>
+                        </div>
+
+                        <dl class="m700-definition-list">
+                            <div>
+                                <dt>Beschreibung</dt>
+                                <dd>@SelectedItem.Description</dd>
+                            </div>
+                            <div>
+                                <dt>Reproduzierbarkeit</dt>
+                                <dd>@SelectedItem.Reproducibility</dd>
+                            </div>
+                            <div>
+                                <dt>Erstellt</dt>
+                                <dd>@FormatDate(SelectedItem.CreatedAtUtc)</dd>
+                            </div>
+                            <div>
+                                <dt>Letzte Aenderung</dt>
+                                <dd>@(SelectedItem.LastModifiedAtUtc.HasValue ? FormatDate(SelectedItem.LastModifiedAtUtc.Value) : "-")</dd>
+                            </div>
+                        </dl>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="OpenEditForm">Bearbeiten</button>
+                        </div>
+                    </article>
+                }
+
+                @if (_showForm)
+                {
+                    <section class="m700-detail-card">
+                        <div class="m700-panel__header">
+                            <p class="m700-panel__eyebrow">@(_isEdit ? "Bug aktualisieren" : "Bug erfassen")</p>
+                            <h2 class="m700-panel__title">@(_isEdit ? "Bestehenden Bug bearbeiten" : "Neuen Bug anlegen")</h2>
+                        </div>
+
+                        <div class="m700-form-grid">
+                            <div class="m700-field m700-field--full">
+                                <label>Beschreibung</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Description"></textarea>
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Reproduzierbarkeit</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Reproducibility"></textarea>
+                            </div>
+                            <div class="m700-field">
+                                <label>Status</label>
+                                <select class="m201-input m700-select" @bind="_form.Status">
+                                    @foreach (BugStatus status in Enum.GetValues<BugStatus>())
+                                    {
+                                        <option value="@status">@FormatStatus(status)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="m700-field">
+                                <label>Begruendung</label>
+                                <input class="m201-input m700-input" @bind="_form.Reason" />
+                            </div>
+                        </div>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="SaveAsync" disabled="@_isSubmitting">
+                                @(_isSubmitting ? "Speichert..." : "Speichern")
+                            </button>
+                            <button type="button" class="m201-button m201-button--secondary" @onclick="CloseForm" disabled="@_isSubmitting">Abbrechen</button>
+                        </div>
+                    </section>
+                }
+            </section>
+        </section>
+    </ChildContent>
+</SupportModuleShell>

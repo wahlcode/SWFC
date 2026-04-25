@@ -1,0 +1,53 @@
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+
+<section class="m202-card">
+    <header class="m202-card__header">
+        <h2>Auftragsdetails</h2>
+    </header>
+
+    <dl class="m202-detail-list">
+        <div><dt>Beschreibung</dt><dd>@Item.Description</dd></div>
+        <div><dt>Zieltyp</dt><dd>@Item.TargetType</dd></div>
+        <div><dt>Ziel</dt><dd>@Item.TargetId</dd></div>
+        <div><dt>Status</dt><dd>@Item.Status</dd></div>
+        <div><dt>Typ</dt><dd>@Item.Type</dd></div>
+        <div><dt>Fällig</dt><dd>@(Item.DueAtUtc?.ToString("dd.MM.yyyy") ?? "-")</dd></div>
+        <div><dt>Angelegt</dt><dd>@Item.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</dd></div>
+    </dl>
+
+    <header class="m202-card__header">
+        <h2>Materialbedarf</h2>
+    </header>
+
+    @if (Item.Materials.Count == 0)
+    {
+        <p>Kein Materialbedarf vorhanden.</p>
+    }
+    else
+    {
+        <table class="m202-table">
+            <thead>
+                <tr>
+                    <th>ItemId</th>
+                    <th>Menge</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var material in Item.Materials)
+                {
+                    <tr>
+                        <td>@material.ItemId</td>
+                        <td>@material.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public MaintenanceOrderDetailsDto Item { get; set; } = null!;
+}
+
+

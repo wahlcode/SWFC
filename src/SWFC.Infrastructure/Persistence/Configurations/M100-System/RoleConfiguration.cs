@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SWFC.Domain.M100_System.M102_Organization.Entities;
-using SWFC.Domain.M100_System.M102_Organization.ValueObjects;
+using SWFC.Domain.M800_Security.M806_AccessControl.Roles;
 
 namespace SWFC.Infrastructure.Persistence.Configurations.M100_System;
 
@@ -23,6 +22,14 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         entity.Property(x => x.Description)
             .HasMaxLength(500)
             .IsRequired(false);
+
+        entity.Property(x => x.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        entity.Property(x => x.IsSystemRole)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         entity.HasIndex(x => x.Name)
             .IsUnique();

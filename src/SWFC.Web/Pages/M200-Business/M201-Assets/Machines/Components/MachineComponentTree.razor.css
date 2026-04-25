@@ -1,0 +1,7 @@
+﻿.m201-component-tree {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+

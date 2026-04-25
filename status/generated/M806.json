@@ -1,0 +1,71 @@
+{
+  "ModuleCode": "M806",
+  "ScorePercent": 45,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:42.2346607+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Complete",
+  "TestStatus": "Incomplete",
+  "Flags": [
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "RBAC",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "ABAC",
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
+    },
+    {
+      "Title": "Kontextregeln",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Allow / Deny",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Vererbung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Sichtbarkeit vs. Aktion",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Freigaben f\u00C3\u0192\u00C2\u00BCr sicherheitskritische Aktionen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zentrale Auswertung von Berechtigungen",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Keine verteilte Schattenlogik",
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
+    },
+    {
+      "Title": "Zugriff und Aktion getrennt bewerten",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "ModuleCode": "M402",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.8601326+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M402 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M402 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "REST API",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Endpunkte f\u00C3\u0192\u00C2\u00BCr Module",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Authentifizierte Zugriffe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Strukturierte Datenbereitstellung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "GET",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "POST / PUT",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Definierte Aktionen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zugriff nur \u00C3\u0192\u00C2\u00BCber Authentifizierung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Berechtigungspr\u00C3\u0192\u00C2\u00BCfung \u00C3\u0192\u00C2\u00BCber M800",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nutzung von Fachmodulen",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Zusammenarbeit mit M406",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine direkte Datenbankfreigabe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine Umgehung von Fachlogik",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

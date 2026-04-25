@@ -1,0 +1,56 @@
+{
+  "ModuleCode": "M706",
+  "ScorePercent": 20,
+  "Status": "PartiallyVerified",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.9870805+00:00",
+  "CodeStatus": "Incomplete",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M706 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Priorit\u00C3\u0192\u00C2\u00A4ten",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Reaktionszeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Bearbeitungszeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Nutzung f\u00C3\u0192\u00C2\u00BCr Support",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    },
+    {
+      "Title": "Nutzung f\u00C3\u00BCr Incident Management",
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+@page "/presentation/localization"
+@page "/m306"
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Models
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@inject CultureFormattingService CultureFormatter
+@inject ICurrentUserService CurrentUserService
+@inject LanguageCatalogService LanguageCatalog
+@inject LocalizationTextProvider TextProvider
+@inject LocalizationValidationMessageCatalog ValidationMessageCatalog
+@inject NavigationModuleLabelService NavigationModuleLabelService
+
+<PageTitle>@_pageTitle</PageTitle>
+
+<div class="m306-page">
+    <section class="m306-hero">
+        <div class="m306-hero__copy">
+            <p class="m306-hero__eyebrow">M306</p>
+            <h1>@_title</h1>
+            <p>@_subtitle</p>
+        </div>
+
+        <div class="m306-hero__status">
+            <span>@_userCultureText</span>
+            <strong>@_userCultureName</strong>
+            <small>@_userCultureDisplayName</small>
+        </div>
+    </section>
+
+    <section class="m306-language-panel">
+        <div>
+            <span class="m306-section-label">@_currentLanguageText</span>
+            <h2>@_selectedLanguage.NativeName</h2>
+            <p>@_languagePreviewInfoText</p>
+        </div>
+
+        <div class="m306-language-grid" aria-label="@_availableLanguagesText">
+            @foreach (var language in _languages)
+            {
+                <button type="button"
+                        class="m306-language-card @(IsSelected(language) ? "m306-language-card--selected" : string.Empty)"
+                        @onclick="@(() => SelectLanguageAsync(language.CultureName))">
+                    <span>@language.CultureName</span>
+                    <strong>@language.NativeName</strong>
+                    <small>@language.DisplayName</small>
+                    @if (language.IsDefault)
+                    {
+                        <em>@_defaultLanguageText</em>
+                    }
+                </button>
+            }
+        </div>
+    </section>
+
+    <section class="m306-dashboard-grid">
+        <article class="m306-card">
+            <div class="m306-card__header">
+                <span class="m306-section-label">@_formatPreviewText</span>
+                <strong>@_selectedCultureName</strong>
+            </div>
+
+            <dl class="m306-format-list">
+                <div>
+                    <dt>@_dateText</dt>
+                    <dd>@_datePreview</dd>
+                </div>
+                <div>
+                    <dt>@_dateTimeText</dt>
+                    <dd>@_dateTimePreview</dd>
+                </div>
+                <div>
+                    <dt>@_numberText</dt>
+                    <dd>@_numberPreview</dd>
+                </div>
+                <div>
+                    <dt>@_currencyText</dt>
+                    <dd>@_currencyPreview</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="m306-card">
+            <div class="m306-card__header">
+                <span class="m306-section-label">@_uiTextResourcesText</span>
+                <strong>@_resourceCount</strong>
+            </div>
+
+            <div class="m306-key-list">
+                @foreach (var item in _sampleTexts)
+                {
+                    <div>
+                        <span>@item.Key</span>
+                        <strong>@item.Value</strong>
+                    </div>
+                }
+            </div>
+        </article>
+
+        <article class="m306-card">
+            <div class="m306-card__header">
+                <span class="m306-section-label">@_validationMessagesText</span>
+                <strong>@_validationMessages.Count</strong>
+            </div>
+
+            <div class="m306-key-list">
+                @foreach (var item in _validationMessages)
+                {
+                    <div>
+                        <span>@item.Key</span>
+                        <strong>@item.Value</strong>
+                    </div>
+                }
+            </div>
+        </article>
+    </section>
+
+    <section class="m306-card m306-card--wide">
+        <div class="m306-card__header">
+            <span class="m306-section-label">@_navigationModuleLabelsText</span>
+            <strong>@_navigationLabels.Count</strong>
+        </div>
+
+        <div class="m306-module-label-grid">
+            @foreach (var module in _navigationLabels.Take(24))
+            {
+                <a class="m306-module-label @(module.IsActive ? "m306-module-label--active" : string.Empty)"
+                   href="@GetModuleHref(module)">
+                    <span>@module.ModuleCode</span>
+                    <strong>@module.ModuleLabel</strong>
+                    <small>@module.GroupLabel</small>
+                </a>
+            }
+        </div>
+    </section>
+</div>
+
+@code {
+    private static readonly DateTime PreviewDateTime = new(2026, 4, 24, 16, 30, 0, DateTimeKind.Local);
+    private static readonly decimal PreviewNumber = 1234567.89m;
+    private static readonly decimal PreviewCurrency = 42890.5m;
+
+    private IReadOnlyList<LanguageOption> _languages = Array.Empty<LanguageOption>();
+    private LanguageOption _selectedLanguage = new(
+        LocalizationTextProvider.DefaultCultureName,
+        "English (United States)",
+        "English (United States)",
+        true);
+
+    private IReadOnlyDictionary<string, string> _sampleTexts = new Dictionary<string, string>();
+    private IReadOnlyDictionary<string, string> _validationMessages = new Dictionary<string, string>();
+    private IReadOnlyList<NavigationModuleLabel> _navigationLabels = Array.Empty<NavigationModuleLabel>();
+
+    private string _selectedCultureName = LocalizationTextProvider.DefaultCultureName;
+    private string _userCultureName = LocalizationTextProvider.DefaultCultureName;
+    private string _userCultureDisplayName = "English (United States)";
+
+    private string _pageTitle = "M306 Localization";
+    private string _title = "Localization";
+    private string _subtitle = "Manage language, culture and UI texts centrally.";
+    private string _userCultureText = "User culture";
+    private string _currentLanguageText = "Current language";
+    private string _availableLanguagesText = "Available languages";
+    private string _defaultLanguageText = "Default language";
+    private string _languagePreviewInfoText = "The selection controls the preview of UI texts and formats. The persistent user preference remains part of M102.";
+    private string _formatPreviewText = "Format preview";
+    private string _dateText = "Date";
+    private string _dateTimeText = "Date and time";
+    private string _numberText = "Number";
+    private string _currencyText = "Currency";
+    private string _uiTextResourcesText = "UI Text Resources";
+    private string _validationMessagesText = "Validation & Messages Localization";
+    private string _navigationModuleLabelsText = "Navigation & Module Labels";
+
+    private string _datePreview = string.Empty;
+    private string _dateTimePreview = string.Empty;
+    private string _numberPreview = string.Empty;
+    private string _currencyPreview = string.Empty;
+    private int _resourceCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _languages = LanguageCatalog.GetAvailableLanguages();
+
+        var securityContext = await CurrentUserService.GetSecurityContextAsync();
+        _userCultureName = LanguageCatalog.NormalizeCultureName(securityContext.PreferredCultureName);
+        _selectedCultureName = _userCultureName;
+        _userCultureDisplayName = CultureFormatter.GetCulture(_userCultureName).NativeName;
+
+        await LoadPreviewAsync(_selectedCultureName);
+    }
+
+    private async Task SelectLanguageAsync(string cultureName)
+    {
+        _selectedCultureName = LanguageCatalog.NormalizeCultureName(cultureName);
+        await LoadPreviewAsync(_selectedCultureName);
+    }
+
+    private async Task LoadPreviewAsync(string cultureName)
+    {
+        _selectedLanguage = _languages.FirstOrDefault(x =>
+            string.Equals(x.CultureName, cultureName, StringComparison.OrdinalIgnoreCase))
+            ?? new LanguageOption(
+                LocalizationTextProvider.DefaultCultureName,
+                "English (United States)",
+                "English (United States)",
+                true);
+
+        _pageTitle = await TextProvider.GetTextAsync("Localization.PageTitle", cultureName);
+        _title = await TextProvider.GetTextAsync("Localization.Title", cultureName);
+        _subtitle = await TextProvider.GetTextAsync("Localization.Subtitle", cultureName);
+        _userCultureText = await TextProvider.GetTextAsync("Localization.UserCulture", cultureName);
+        _currentLanguageText = await TextProvider.GetTextAsync("Localization.CurrentLanguage", cultureName);
+        _availableLanguagesText = await TextProvider.GetTextAsync("Localization.AvailableLanguages", cultureName);
+        _defaultLanguageText = await TextProvider.GetTextAsync("Localization.DefaultLanguage", cultureName);
+        _languagePreviewInfoText = await TextProvider.GetTextAsync("Localization.LanguagePreviewInfo", cultureName);
+        _formatPreviewText = await TextProvider.GetTextAsync("Localization.FormatPreview", cultureName);
+        _dateText = await TextProvider.GetTextAsync("Localization.Date", cultureName);
+        _dateTimeText = await TextProvider.GetTextAsync("Localization.DateTime", cultureName);
+        _numberText = await TextProvider.GetTextAsync("Localization.Number", cultureName);
+        _currencyText = await TextProvider.GetTextAsync("Localization.Currency", cultureName);
+        _uiTextResourcesText = await TextProvider.GetTextAsync("Localization.UiTextResources", cultureName);
+        _validationMessagesText = await TextProvider.GetTextAsync("Localization.ValidationMessages", cultureName);
+        _navigationModuleLabelsText = await TextProvider.GetTextAsync("Localization.NavigationModuleLabels", cultureName);
+
+        _datePreview = CultureFormatter.FormatDate(PreviewDateTime, cultureName);
+        _dateTimePreview = CultureFormatter.FormatDateTime(PreviewDateTime, cultureName);
+        _numberPreview = CultureFormatter.FormatNumber(PreviewNumber, cultureName);
+        _currencyPreview = CultureFormatter.FormatCurrency(PreviewCurrency, cultureName);
+
+        var texts = await TextProvider.GetTextsAsync(cultureName);
+        _resourceCount = texts.Count;
+        _sampleTexts = new Dictionary<string, string>
+        {
+            ["Common.Save"] = await TextProvider.GetTextAsync("Common.Save", cultureName),
+            ["Common.Cancel"] = await TextProvider.GetTextAsync("Common.Cancel", cultureName),
+            ["Navigation.Localization"] = await TextProvider.GetTextAsync("Navigation.Localization", cultureName),
+            ["Sidebar.Logout"] = await TextProvider.GetTextAsync("Sidebar.Logout", cultureName)
+        };
+
+        _validationMessages = await ValidationMessageCatalog.GetValidationMessagesAsync(cultureName);
+        _navigationLabels = await NavigationModuleLabelService.GetNavigationModuleLabelsAsync(cultureName);
+    }
+
+    private bool IsSelected(LanguageOption language)
+    {
+        return string.Equals(language.CultureName, _selectedCultureName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetModuleHref(NavigationModuleLabel module)
+    {
+        return module.IsActive && !string.IsNullOrWhiteSpace(module.Route)
+            ? module.Route
+            : "/presentation/localization";
+    }
+}

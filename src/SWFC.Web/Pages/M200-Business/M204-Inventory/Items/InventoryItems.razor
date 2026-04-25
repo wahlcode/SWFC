@@ -1,0 +1,165 @@
+@page "/business/inventory-items"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M204_Inventory.Items
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetInventoryItemsQuery, IReadOnlyList<InventoryItemListItem>> Pipeline
+
+<section class="m204-items">
+
+    <div class="m204-items__header">
+        <div>
+            <h1>Inventory Items</h1>
+            <p class="m204-muted">
+                Übersicht über Artikel, Bestand und Verfügbarkeit.
+            </p>
+        </div>
+
+        <div class="m204-items__actions">
+            <input class="m204-input"
+                   placeholder="Suche..."
+                   @bind="_searchText"
+                   @oninput="OnSearchChanged" />
+
+            <label class="m204-checkbox">
+                <input type="checkbox" checked="@_onlyActive" @onchange="OnOnlyActiveChanged" />
+                Nur aktiv
+            </label>
+
+            <a href="/business/inventory-item/new" class="m204-button">
+                Artikel anlegen
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">@_errorMessage</div>
+    }
+
+    <div class="m204-card">
+
+        @if (_isLoading)
+        {
+            <div class="m204-loading">Lade Daten...</div>
+        }
+        else if (_filteredItems.Count == 0)
+        {
+            <div>Keine Artikel gefunden.</div>
+        }
+        else
+        {
+            <table class="m204-table">
+                <thead>
+                    <tr>
+                        <th>Artikelnummer</th>
+                        <th>Name</th>
+                        <th>Einheit</th>
+                        <th>Aktiv</th>
+                        <th>Stock</th>
+                        <th>On Hand</th>
+                        <th>Reserved</th>
+                        <th>Available</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in _filteredItems)
+                    {
+                        <tr>
+                            <td>@item.ArticleNumber</td>
+                            <td>@item.Name</td>
+                            <td>@item.Unit</td>
+                            <td>
+                                <span class="m204-badge @(item.IsActive ? "m204-badge--active" : "m204-badge--inactive")">
+                                    @(item.IsActive ? "Ja" : "Nein")
+                                </span>
+                            </td>
+                            <td>@item.StockCount</td>
+                            <td>@item.QuantityOnHand</td>
+                            <td>@item.ReservedQuantity</td>
+                            <td>@item.AvailableQuantity</td>
+                            <td>
+                                <a href="@($"/business/inventory-item/{item.Id}")" class="m204-link">
+                                    Details ?
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private string _searchText = string.Empty;
+    private bool _onlyActive;
+
+    private IReadOnlyList<InventoryItemListItem> _items = [];
+    private List<InventoryItemListItem> _filteredItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetInventoryItemsQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _items = result.Value;
+            ApplyFilter();
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<InventoryItemListItem> query = _items;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var s = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.ArticleNumber.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                x.Name.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                x.Unit.Contains(s, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (_onlyActive)
+            query = query.Where(x => x.IsActive);
+
+        _filteredItems = query
+            .OrderBy(x => x.Name)
+            .ThenBy(x => x.ArticleNumber)
+            .ToList();
+    }
+
+    private Task OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? "";
+        ApplyFilter();
+        return Task.CompletedTask;
+    }
+
+    private Task OnOnlyActiveChanged(ChangeEventArgs e)
+    {
+        _onlyActive = (bool)e.Value!;
+        ApplyFilter();
+        return Task.CompletedTask;
+    }
+}
+
+

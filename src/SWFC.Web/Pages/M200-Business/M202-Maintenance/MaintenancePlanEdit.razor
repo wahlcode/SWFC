@@ -1,0 +1,181 @@
+@page "/business/maintenance/plans/new"
+@page "/business/maintenance/plans/{Id:guid}/edit"
+@using SWFC.Web.Pages.M200_Business.M202_Maintenance.Components
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@inject IExecutionPipeline<CreateMaintenancePlanCommand, Guid> CreatePipeline
+@inject IExecutionPipeline<UpdateMaintenancePlanCommand, bool> UpdatePipeline
+@inject IExecutionPipeline<GetMaintenancePlanByIdQuery, MaintenancePlanDetailsDto> DetailsPipeline
+@inject NavigationManager Navigation
+
+<PageTitle>M202 Wartungsplan</PageTitle>
+
+<section class="m201-machine-detail">
+    <div class="m201-machine-detail__header">
+        <div class="m201-machine-detail__title-block">
+            <div class="m202-page__eyebrow">M202</div>
+            <h1>@(IsEdit ? "Wartungsplan bearbeiten" : "Wartungsplan anlegen")</h1>
+            <p class="m201-machine-detail__subtitle">
+                @(IsEdit
+                    ? "Wartungsplan strukturiert bearbeiten."
+                    : "Neuen Wartungsplan strukturiert anlegen.")
+            </p>
+        </div>
+
+        <div class="m201-machine-detail__actions">
+            <a href="/business/maintenance" class="m201-link">Zurück</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m201-alert m201-alert--error">@_errorMessage</div>
+    }
+
+    <div class="m201-machine-detail__layout">
+        <div class="m201-card">
+            <MaintenancePlanForm Model="_model"
+                                 IsEdit="IsEdit"
+                                 IsBusy="_isBusy"
+                                 ErrorMessage="_errorMessage"
+                                 OnValidSubmit="HandleSubmitAsync" />
+        </div>
+
+        <div class="m201-machine-detail__side-column">
+            <div class="m201-card">
+                <div class="m201-machine-summary">
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Name</span>
+                        <strong>@DisplayOrDash(_model.Name)</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Intervall</span>
+                        <strong>@_model.IntervalValue @_model.IntervalUnit</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Zieltyp</span>
+                        <strong>@_model.TargetType</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Aktiv</span>
+                        <strong>@(_model.IsActive ? "Ja" : "Nein")</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    private MaintenancePlanFormModel _model = new();
+    private string? _errorMessage;
+    private bool _isBusy;
+    private bool IsEdit => Id.HasValue && Id.Value != Guid.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _errorMessage = null;
+
+        if (!IsEdit)
+        {
+            _model = new MaintenancePlanFormModel();
+            return;
+        }
+
+        var result = await DetailsPipeline.ExecuteAsync(
+            new GetMaintenancePlanByIdQuery(Id!.Value),
+            CancellationToken.None);
+
+        var item = result.Value;
+        if (item is null)
+        {
+            _errorMessage = "Wartungsplan konnte nicht geladen werden.";
+            return;
+        }
+
+        _model = new MaintenancePlanFormModel
+        {
+            Name = item.Name,
+            Description = item.Description,
+            TargetType = item.TargetType,
+            TargetIdText = item.TargetId.ToString(),
+            IntervalValue = item.IntervalValue,
+            IntervalUnit = item.IntervalUnit,
+            NextDueAt = item.NextDueAtUtc,
+            IsActive = item.IsActive
+        };
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        _errorMessage = null;
+        _isBusy = true;
+
+        try
+        {
+            if (!Guid.TryParse(_model.TargetIdText, out var targetId))
+            {
+                _errorMessage = "TargetId ist ungültig.";
+                return;
+            }
+
+            if (IsEdit)
+            {
+                var updateResult = await UpdatePipeline.ExecuteAsync(
+                    new UpdateMaintenancePlanCommand(
+                        Id!.Value,
+                        _model.Name,
+                        _model.Description,
+                        _model.TargetType,
+                        targetId,
+                        _model.IntervalValue,
+                        _model.IntervalUnit,
+                        _model.NextDueAt,
+                        _model.IsActive),
+                    CancellationToken.None);
+
+                if (updateResult.IsFailure)
+                {
+                    _errorMessage = "Speichern fehlgeschlagen.";
+                    return;
+                }
+            }
+            else
+            {
+                var createResult = await CreatePipeline.ExecuteAsync(
+                    new CreateMaintenancePlanCommand(
+                        _model.Name,
+                        _model.Description,
+                        _model.TargetType,
+                        targetId,
+                        _model.IntervalValue,
+                        _model.IntervalUnit,
+                        _model.NextDueAt),
+                    CancellationToken.None);
+
+                if (createResult.IsFailure)
+                {
+                    _errorMessage = "Anlegen fehlgeschlagen.";
+                    return;
+                }
+            }
+
+            Navigation.NavigateTo("/business/maintenance");
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string DisplayOrDash(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}
+
+

@@ -1,0 +1,195 @@
+@page "/support/incidents"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M700_Support.M704_Incident_Management
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Domain.M700_Support.M704_Incident_Management
+@using SWFC.Web.Components
+
+
+<SupportModuleShell Eyebrow="M704 · Incident Management"
+                    Title="Incidents"
+                    Subtitle="Anlagenstillstand, Systemausfall und Security Incident mit Eskalation und Reaktionssteuerung."
+                    BackHref="/support"
+                    BackLabel="Zurueck"
+                    CurrentCode="M704">
+    <SummaryContent>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Gesamt</span>
+            <strong class="m700-summary-card__value">@_items.Count</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Anlage</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Category == IncidentCategory.PlantShutdown)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">System</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Category == IncidentCategory.SystemOutage)</strong>
+        </div>
+        <div class="m700-summary-card">
+            <span class="m700-summary-card__label">Security</span>
+            <strong class="m700-summary-card__value">@_items.Count(x => x.Category == IncidentCategory.SecurityIncident)</strong>
+        </div>
+    </SummaryContent>
+
+    <SidebarContent>
+        <p class="m700-muted">M303- und M500-Bezuege sind als Referenzen umgesetzt. Eine harte Integration wird nicht improvisiert, solange die Ziel-UseCases nicht eindeutig angebunden sind.</p>
+    </SidebarContent>
+
+    <ChildContent>
+        @if (!string.IsNullOrWhiteSpace(_error))
+        {
+            <div class="m700-state m700-state--error">@_error</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_success))
+        {
+            <div class="m700-state m700-state--success">@_success</div>
+        }
+
+        <section class="m700-workspace">
+            <aside class="m700-toolbar">
+                <div class="m700-toolbar__head">
+                    <div>
+                        <h2 class="m700-toolbar__title">Incident-Liste</h2>
+                        <p class="m700-toolbar__text">Kategorie, Eskalation und Reaktionssteuerung.</p>
+                    </div>
+                    <span class="m700-tag">@_filteredItems.Count</span>
+                </div>
+
+                <input class="m201-input m700-input"
+                       placeholder="Incident oder Referenz suchen"
+                       value="@_searchText"
+                       @oninput="OnSearchChanged" />
+
+                <button type="button" class="m201-button" @onclick="OpenCreateForm">Incident erfassen</button>
+
+                @if (_isLoading)
+                {
+                    <div class="m700-state">Lade Incidents...</div>
+                }
+                else if (_filteredItems.Count == 0)
+                {
+                    <div class="m700-state">Keine Incidents gefunden.</div>
+                }
+                else
+                {
+                    <div class="m700-item-list">
+                        @foreach (var item in _filteredItems)
+                        {
+                            <button type="button"
+                                    class="@($"m700-item-button{(_selectedId == item.Id ? " is-selected" : string.Empty)}")"
+                                    @onclick="() => SelectItem(item.Id)">
+                                <span class="m700-item-button__top">
+                                    <span class="m700-item-button__title">@Preview(item.Description)</span>
+                                    <span class="m700-tag">@FormatCategory(item.Category)</span>
+                                </span>
+                                <span class="m700-item-button__text">@Preview(item.ReactionControl)</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <section class="m700-detail">
+                @if (SelectedItem is null)
+                {
+                    <div class="m700-detail-card">
+                        <p class="m700-muted">Waehle einen Incident oder lege einen neuen Eintrag an.</p>
+                    </div>
+                }
+                else
+                {
+                    <article class="m700-detail-card">
+                        <div class="m700-detail-card__head">
+                            <div>
+                                <p class="m700-panel__eyebrow">Incident Details</p>
+                                <h2 class="m700-detail-card__title">@Preview(SelectedItem.Description, 120)</h2>
+                            </div>
+                            <span class="m700-tag">@FormatCategory(SelectedItem.Category)</span>
+                        </div>
+
+                        <dl class="m700-definition-list">
+                            <div>
+                                <dt>Beschreibung</dt>
+                                <dd>@SelectedItem.Description</dd>
+                            </div>
+                            <div>
+                                <dt>Eskalation</dt>
+                                <dd>@SelectedItem.Escalation</dd>
+                            </div>
+                            <div>
+                                <dt>Reaktionssteuerung</dt>
+                                <dd>@SelectedItem.ReactionControl</dd>
+                            </div>
+                            <div>
+                                <dt>M303 / M500</dt>
+                                <dd>@BuildReferenceLine(SelectedItem)</dd>
+                            </div>
+                        </dl>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="OpenEditForm">Bearbeiten</button>
+                        </div>
+                    </article>
+                }
+
+                @if (_showForm)
+                {
+                    <section class="m700-detail-card">
+                        <div class="m700-panel__header">
+                            <p class="m700-panel__eyebrow">@(_isEdit ? "Incident aktualisieren" : "Incident erfassen")</p>
+                            <h2 class="m700-panel__title">@(_isEdit ? "Bestehenden Incident bearbeiten" : "Neuen Incident anlegen")</h2>
+                        </div>
+
+                        <div class="m700-form-grid">
+                            <div class="m700-field">
+                                <label>Kategorie</label>
+                                <select class="m201-input m700-select" @bind="_form.Category">
+                                    @foreach (IncidentCategory category in Enum.GetValues<IncidentCategory>())
+                                    {
+                                        <option value="@category">@FormatCategory(category)</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="m700-field">
+                                <label>Begruendung</label>
+                                <input class="m201-input m700-input" @bind="_form.Reason" />
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Beschreibung</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Description"></textarea>
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Eskalation</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.Escalation"></textarea>
+                            </div>
+                            <div class="m700-field m700-field--full">
+                                <label>Reaktionssteuerung</label>
+                                <textarea class="m201-textarea m700-textarea" @bind="_form.ReactionControl"></textarea>
+                            </div>
+                            <div class="m700-field">
+                                <label>M303-Referenz</label>
+                                <input class="m201-input m700-input" @bind="_form.NotificationReference" />
+                            </div>
+                            <div class="m700-field">
+                                <label>M500-Referenz</label>
+                                <input class="m201-input m700-input" @bind="_form.RuntimeReference" />
+                            </div>
+                        </div>
+
+                        <div class="m700-actions">
+                            <button type="button" class="m201-button" @onclick="SaveAsync" disabled="@_isSubmitting">
+                                @(_isSubmitting ? "Speichert..." : "Speichern")
+                            </button>
+                            <button type="button" class="m201-button m201-button--secondary" @onclick="CloseForm" disabled="@_isSubmitting">Abbrechen</button>
+                        </div>
+                    </section>
+                }
+            </section>
+        </section>
+    </ChildContent>
+</SupportModuleShell>

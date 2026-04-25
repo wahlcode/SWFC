@@ -1,0 +1,134 @@
+@page "/business/locations"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M200_Business.M204_Inventory.Locations
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetLocationsQuery, IReadOnlyList<LocationListItem>> Pipeline
+
+<section class="m204-locations">
+
+    <div class="m204-locations__header">
+        <div>
+            <h1>Locations</h1>
+            <p class="m204-muted">
+                Lagerorte und Hierarchien verwalten.
+            </p>
+        </div>
+
+        <div class="m204-locations__actions">
+            <input class="m204-input"
+                   placeholder="Suche nach Name oder Code"
+                   @bind="_searchText"
+                   @oninput="OnSearchChanged" />
+
+            <a href="/business/location/new" class="m204-button">
+                Lagerort anlegen
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="m204-alert m204-alert--error">@_errorMessage</div>
+    }
+
+    <div class="m204-card">
+
+        @if (_isLoading)
+        {
+            <div class="m204-loading">Lade Daten...</div>
+        }
+        else if (_filteredItems.Count == 0)
+        {
+            <div>Keine Locations gefunden.</div>
+        }
+        else
+        {
+            <table class="m204-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Parent</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in _filteredItems)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Code</td>
+                            <td>@(string.IsNullOrWhiteSpace(item.ParentLocationName) ? "-" : item.ParentLocationName)</td>
+                            <td>
+                                <a href="@($"/business/location/{item.Id}")" class="m204-link">
+                                    Details ?
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private string _searchText = string.Empty;
+
+    private IReadOnlyList<LocationListItem> _items = [];
+    private List<LocationListItem> _filteredItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Pipeline.ExecuteAsync(new GetLocationsQuery());
+
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _items = result.Value;
+            ApplyFilter();
+        }
+        else
+        {
+            _errorMessage = result.Error?.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<LocationListItem> query = _items;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var s = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.Name.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                x.Code.Contains(s, StringComparison.OrdinalIgnoreCase));
+        }
+
+        _filteredItems = query
+            .OrderBy(x => x.Name)
+            .ThenBy(x => x.Code)
+            .ToList();
+    }
+
+    private Task OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? "";
+        ApplyFilter();
+        return Task.CompletedTask;
+    }
+}
+
+

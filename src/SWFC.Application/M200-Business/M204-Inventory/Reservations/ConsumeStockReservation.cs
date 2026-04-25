@@ -1,0 +1,212 @@
+using System.Text.Json;
+using SWFC.Domain.M100_System.M101_Foundation.Abstractions;
+using SWFC.Domain.M100_System.M101_Foundation.Results;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
+using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
+using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
+using SWFC.Domain.M100_System.M101_Foundation.Errors;
+using SWFC.Domain.M100_System.M101_Foundation.ValueObjects;
+using SWFC.Domain.M200_Business.M204_Inventory.Items;
+using SWFC.Domain.M200_Business.M204_Inventory.Locations;
+using SWFC.Domain.M200_Business.M204_Inventory.Stock;
+using SWFC.Domain.M200_Business.M204_Inventory.Reservations;
+
+namespace SWFC.Application.M200_Business.M204_Inventory.Reservations;
+
+public sealed record ConsumeStockReservationCommand(
+    Guid StockReservationId,
+    int Quantity,
+    string Reason);
+
+public sealed class ConsumeStockReservationValidator : ICommandValidator<ConsumeStockReservationCommand>
+{
+    public Task<ValidationResult> ValidateAsync(
+        ConsumeStockReservationCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var errors = new List<ValidationError>();
+
+        if (command.StockReservationId == Guid.Empty)
+        {
+            errors.Add(new ValidationError("StockReservationId", "StockReservationId is required."));
+        }
+
+        if (command.Quantity <= 0)
+        {
+            errors.Add(new ValidationError("Quantity", "Quantity must be greater than zero."));
+        }
+
+        if (string.IsNullOrWhiteSpace(command.Reason))
+        {
+            errors.Add(new ValidationError("Reason", "Reason is required."));
+        }
+
+        return Task.FromResult(
+            errors.Count == 0
+                ? ValidationResult.Success()
+                : ValidationResult.Failure(errors.ToArray()));
+    }
+}
+
+public sealed class ConsumeStockReservationPolicy : IAuthorizationPolicy<ConsumeStockReservationCommand>
+{
+    public AuthorizationRequirement GetRequirement(ConsumeStockReservationCommand request)
+    {
+        return new AuthorizationRequirement(
+            requiredPermissions: new[] { "stock.write" });
+    }
+}
+
+public sealed class ConsumeStockReservationHandler : IUseCaseHandler<ConsumeStockReservationCommand, Guid>
+{
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IStockReservationWriteRepository _stockReservationWriteRepository;
+    private readonly Stock.IStockMovementWriteRepository _stockMovementWriteRepository;
+    private readonly IAuditService _auditService;
+
+    public ConsumeStockReservationHandler(
+        ICurrentUserService currentUserService,
+        IStockReservationWriteRepository stockReservationWriteRepository,
+        Stock.IStockMovementWriteRepository stockMovementWriteRepository,
+        IAuditService auditService)
+    {
+        _currentUserService = currentUserService;
+        _stockReservationWriteRepository = stockReservationWriteRepository;
+        _stockMovementWriteRepository = stockMovementWriteRepository;
+        _auditService = auditService;
+    }
+
+    public async Task<Result<Guid>> HandleAsync(
+        ConsumeStockReservationCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var reservation = await _stockReservationWriteRepository.GetByIdAsync(
+            command.StockReservationId,
+            cancellationToken);
+
+        if (reservation is null)
+        {
+            return Result<Guid>.Failure(new Error(
+                GeneralErrorCodes.NotFound,
+                $"Stock reservation '{command.StockReservationId}' was not found.",
+                ErrorCategory.NotFound));
+        }
+
+        var stock = await _stockReservationWriteRepository.GetStockByIdAsync(
+            reservation.StockId,
+            cancellationToken);
+
+        if (stock is null)
+        {
+            return Result<Guid>.Failure(new Error(
+                GeneralErrorCodes.NotFound,
+                $"Stock '{reservation.StockId}' was not found.",
+                ErrorCategory.NotFound));
+        }
+
+        if (reservation.Status != StockReservationStatus.Active)
+        {
+            return Result<Guid>.Failure(new Error(
+                ValidationErrorCodes.Invalid,
+                "Only active reservations can be consumed.",
+                ErrorCategory.Validation));
+        }
+
+        if (command.Quantity > reservation.Quantity)
+        {
+            return Result<Guid>.Failure(new Error(
+                ValidationErrorCodes.Invalid,
+                "Consumption quantity exceeds reserved quantity.",
+                ErrorCategory.Validation));
+        }
+
+        if (command.Quantity > stock.QuantityOnHand)
+        {
+            return Result<Guid>.Failure(new Error(
+                ValidationErrorCodes.Invalid,
+                "Consumption quantity exceeds stock on hand.",
+                ErrorCategory.Validation));
+        }
+
+        var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
+        var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
+
+        var oldValues = JsonSerializer.Serialize(new
+        {
+            ReservationId = reservation.Id,
+            ReservationStockId = reservation.StockId,
+            reservation.Quantity,
+            reservation.Note,
+            reservation.Status,
+            ReservationTargetType = reservation.TargetType,
+            ReservationTargetReference = reservation.TargetReference,
+            ReservationCreatedAtUtc = reservation.AuditInfo.CreatedAtUtc,
+            ReservationCreatedBy = reservation.AuditInfo.CreatedBy,
+            ReservationLastModifiedAtUtc = reservation.AuditInfo.LastModifiedAtUtc,
+            ReservationLastModifiedBy = reservation.AuditInfo.LastModifiedBy,
+            StockId = stock.Id,
+            stock.InventoryItemId,
+            stock.QuantityOnHand,
+            ReservedQuantity = stock.GetReservedQuantity(),
+            AvailableQuantity = stock.GetAvailableQuantity()
+        });
+
+        reservation.Consume(command.Quantity, changeContext);
+
+        var movement = StockMovement.Create(
+            stock.Id,
+            StockMovementType.GoodsIssue,
+            -command.Quantity,
+            changeContext,
+            reservation.TargetType,
+            reservation.TargetReference);
+
+        stock.ApplyMovement(movement, changeContext);
+
+        await _stockMovementWriteRepository.AddAsync(movement, cancellationToken);
+
+        var newValues = JsonSerializer.Serialize(new
+        {
+            ReservationId = reservation.Id,
+            ReservationStockId = reservation.StockId,
+            reservation.Quantity,
+            reservation.Note,
+            reservation.Status,
+            ReservationTargetType = reservation.TargetType,
+            ReservationTargetReference = reservation.TargetReference,
+            ReservationCreatedAtUtc = reservation.AuditInfo.CreatedAtUtc,
+            ReservationCreatedBy = reservation.AuditInfo.CreatedBy,
+            ReservationLastModifiedAtUtc = reservation.AuditInfo.LastModifiedAtUtc,
+            ReservationLastModifiedBy = reservation.AuditInfo.LastModifiedBy,
+            StockId = stock.Id,
+            stock.InventoryItemId,
+            stock.QuantityOnHand,
+            ReservedQuantity = stock.GetReservedQuantity(),
+            AvailableQuantity = stock.GetAvailableQuantity(),
+            MovementId = movement.Id,
+            MovementStockId = movement.StockId,
+            movement.MovementType,
+            movement.QuantityDelta,
+            MovementTargetType = movement.TargetType,
+            MovementTargetReference = movement.TargetReference,
+            command.Reason
+        });
+
+        await _auditService.WriteAsync(
+            userId: securityContext.UserId,
+            username: securityContext.Username,
+            action: "ConsumeStockReservation",
+            entity: "StockReservation",
+            entityId: reservation.Id.ToString(),
+            timestampUtc: changeContext.ChangedAtUtc,
+            oldValues: oldValues,
+            newValues: newValues,
+            cancellationToken: cancellationToken);
+
+        await _stockMovementWriteRepository.SaveChangesAsync(cancellationToken);
+
+        return Result<Guid>.Success(movement.Id);
+    }
+}
+

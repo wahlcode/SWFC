@@ -1,0 +1,106 @@
+{
+  "ModuleCode": "M209",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7658843+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Complete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M209 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M209 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Projekte",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ma\u00C3\u0192\u00C5\u00B8nahmen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Aufgaben / Tasks",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Statusmodell",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zeitplanung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verantwortlichkeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Hierarchie Projekt \u003E Ma\u00C3\u0192\u00C5\u00B8nahme \u003E Aufgabe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Materialbezug \u00C3\u0192\u00C2\u00BCber M204",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Zuordnung zu M102",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "KVP-Unterst\u00C3\u0192\u00C2\u00BCtzung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Projekten / Ma\u00C3\u0192\u00C5\u00B8nahmen",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

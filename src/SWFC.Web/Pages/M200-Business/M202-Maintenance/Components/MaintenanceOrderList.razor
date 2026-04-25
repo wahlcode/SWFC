@@ -1,0 +1,48 @@
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders
+
+<section class="m202-card">
+    <header class="m202-card__header">
+        <h2>Arbeitsaufträge</h2>
+        <span class="m202-card__count">@Items.Count</span>
+    </header>
+
+    @if (Items.Count == 0)
+    {
+        <p class="m202-card__empty">Keine Arbeitsaufträge vorhanden.</p>
+    }
+    else
+    {
+        <table class="m202-table">
+            <thead>
+                <tr>
+                    <th>Nummer</th>
+                    <th>Titel</th>
+                    <th>Status</th>
+                    <th>Typ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    <tr>
+                        <td>
+                            <a class="m202-link" href="@($"/business/maintenance/orders/{item.Id}")">
+                                @item.Number
+                            </a>
+                        </td>
+                        <td>@item.Title</td>
+                        <td>@item.Status</td>
+                        <td>@item.Type</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<MaintenanceOrderListItemDto> Items { get; set; } = Array.Empty<MaintenanceOrderListItemDto>();
+}
+
+

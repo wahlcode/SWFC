@@ -1,0 +1,25 @@
+.m305-forms-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.m305-forms-page__actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.m305-forms-page__button {
+    min-height: var(--size-button-height-md);
+    padding: 0 var(--space-lg);
+    border-radius: var(--radius-button);
+    border: 1px solid var(--color-primary);
+    background: var(--gradient-surface-primary);
+    color: var(--color-text-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+}

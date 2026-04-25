@@ -1,0 +1,111 @@
+{
+  "ModuleCode": "M212",
+  "ScorePercent": 0,
+  "Status": "NotChecked",
+  "Source": "Generated",
+  "LastAuditUtc": "2026-04-25T17:01:41.7781854+00:00",
+  "CodeStatus": "Missing",
+  "MdStatus": "Incomplete",
+  "TestStatus": "Missing",
+  "Flags": [
+    "missing_code",
+    "md_incomplete",
+    "missing_tests",
+    "workitems_not_verified"
+  ],
+  "Issues": [
+    {
+      "Severity": "Warning",
+      "Message": "Keine Implementierung f\u00FCr M212 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
+    },
+    {
+      "Severity": "Info",
+      "Message": "Keine Tests mit Bezug zu M212 gefunden."
+    },
+    {
+      "Severity": "Info",
+      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+    }
+  ],
+  "WorkItems": [
+    {
+      "Title": "Maschinenzust\u00C3\u0192\u00C2\u00A4nde",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Produktionsdaten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Laufzeiten",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Stillst\u00C3\u0192\u00C2\u00A4nde",
+      "Status": "Open",
+      "Evidence": "Keine Evidenz"
+    },
+    {
+      "Title": "Produktionsauftr\u00C3\u0192\u00C2\u00A4ge (operativ)",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Produktionsmengen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Ausschuss",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Produktionsstatus",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "R\u00C3\u0192\u00C2\u00BCckmeldungen",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M205",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Option B \u00C3\u00A2\u00E2\u201A\u00AC\u00E2\u20AC\u0153 mittlere Tiefe",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Erweiterbarkeit zu vollst\u00C3\u0192\u00C2\u00A4ndiger Produktionssteuerung",
+      "Status": "Open",
+      "Evidence": "MD"
+    },
+    {
+      "Title": "Keine ERP-Fertigungsplanung",
+      "Status": "Open",
+      "Evidence": "MD"
+    }
+  ]
+}

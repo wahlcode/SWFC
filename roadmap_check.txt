@@ -1,0 +1,5925 @@
+{
+  "Versions": [
+    {
+      "Version": "v0.1.0",
+      "Name": "System Foundation",
+      "AudienceTitle": "Systembasis",
+      "Goal": "Die technische und organisatorische Grundlage der Plattform steht stabil.",
+      "UserDescription": "SWFC bekommt eine sichere Basis mit Anmeldung, Oberfläche, Theme und nachvollziehbaren Systemaktionen.",
+      "DeveloperDescription": "Foundation, Authentifizierung, AppShell, Theme, Audit Logging und Zugriffskontrolle bilden den Startpunkt.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M101"],
+      "RequiredModules": ["M103", "M106", "M301", "M805", "M806"],
+      "Milestones": [
+        { "Title": "Basisarchitektur", "Description": "Schichten, Fehlerbehandlung und Grundmuster sind festgelegt.", "Status": "Done" },
+        { "Title": "Sicherer Einstieg", "Description": "Anmeldung und grundlegende Zugriffskontrolle sind nutzbar.", "Status": "InProgress" },
+        { "Title": "Nachvollziehbarkeit", "Description": "Audit Logging ist als Systembasis vorhanden.", "Status": "InProgress" }
+      ],
+      "Result": "Eine tragfähige Plattformbasis für alle weiteren Module."
+    },
+    {
+      "Version": "v0.2.0",
+      "Name": "Organization & Configuration",
+      "AudienceTitle": "Organisation und Konfiguration",
+      "Goal": "Organisation, Benutzerstammdaten und zentrale Einstellungen werden verwaltbar.",
+      "UserDescription": "Benutzer, Organisationseinheiten, Kostenstellen und Grundeinstellungen werden sauber strukturiert.",
+      "DeveloperDescription": "M102 und M105 erweitern die Systembasis um organisatorische Daten und Konfiguration.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M102", "M105"],
+      "RequiredModules": ["M101", "M103", "M301", "M805", "M806"],
+      "Milestones": [
+        { "Title": "Organisationseinheiten", "Description": "Struktur der Organisation ist verwaltbar.", "Status": "InProgress" },
+        { "Title": "Benutzerstammdaten", "Description": "Benutzerprofile und organisatorische Zuordnung sind abbildbar.", "Status": "InProgress" },
+        { "Title": "Konfigurationsrahmen", "Description": "Zentrale Einstellungen sind geplant und abgrenzbar.", "Status": "Planned" }
+      ],
+      "Result": "Eine verwaltbare organisatorische Grundlage für fachliche Module."
+    },
+    {
+      "Version": "v0.3.0",
+      "Name": "Asset Foundation",
+      "AudienceTitle": "Anlagen- und Maschinenbasis",
+      "Goal": "Der technische Zwilling für Anlagen und Maschinen entsteht.",
+      "UserDescription": "Maschinen, Anlagen und Komponenten können strukturiert gepflegt werden.",
+      "DeveloperDescription": "M201 nutzt M102 für organisatorische Bezüge und bleibt technisch abgegrenzt.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M201"],
+      "RequiredModules": ["M101", "M102", "M301", "M806"],
+      "Milestones": [
+        { "Title": "Maschinen", "Description": "Maschinenstammdaten sind verwaltbar.", "Status": "InProgress" },
+        { "Title": "Komponenten", "Description": "Komponenten und Bereiche sind strukturiert abbildbar.", "Status": "InProgress" }
+      ],
+      "Result": "Ein technischer Zwilling als Basis für Wartung, Energie und Prüfungen."
+    },
+    {
+      "Version": "v0.4.0",
+      "Name": "Inventory & Material Flow",
+      "AudienceTitle": "Lager und Materialfluss",
+      "Goal": "Artikel, Lagerorte, Bestände, Reservierungen und Bewegungen werden nachvollziehbar.",
+      "UserDescription": "Material kann für Betrieb und Wartung transparent verwaltet werden.",
+      "DeveloperDescription": "M204 führt Bestand über Bewegungen und bleibt alleinige Quelle für Bestandsänderungen.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M204"],
+      "RequiredModules": ["M201", "M102", "M805", "M806"],
+      "Milestones": [
+        { "Title": "Artikel und Lagerorte", "Description": "Grunddaten für Lagerverwaltung sind verfügbar.", "Status": "InProgress" },
+        { "Title": "Bewegungen", "Description": "Bestandsveränderungen werden nachvollziehbar erfasst.", "Status": "InProgress" }
+      ],
+      "Result": "Transparenter Materialbestand für operative Prozesse."
+    },
+    {
+      "Version": "v0.5.0",
+      "Name": "Maintenance System",
+      "AudienceTitle": "Wartungssystem",
+      "Goal": "Wartungspläne und Wartungsaufträge werden operativ nutzbar.",
+      "UserDescription": "Wartung wird planbar, nachvollziehbar und mit Anlagen sowie Material verbunden.",
+      "DeveloperDescription": "M202 baut auf Assets, Organisation, Lager und Audit auf.",
+      "Status": "Planned",
+      "PrimaryModules": ["M202"],
+      "RequiredModules": ["M201", "M204", "M102", "M805"],
+      "Milestones": [
+        { "Title": "Wartungspläne", "Description": "Regelmäßige Wartung ist planbar.", "Status": "InProgress" },
+        { "Title": "Wartungsaufträge", "Description": "Aufträge sind erfassbar und auswertbar.", "Status": "InProgress" }
+      ],
+      "Result": "Operative Wartung wird systematisch geführt."
+    },
+    {
+      "Version": "v0.6.0",
+      "Name": "Inspection & Quality Basis",
+      "AudienceTitle": "Prüfung und Qualität",
+      "Goal": "Prüfungen und Qualitätsabweichungen bekommen eine gemeinsame Grundlage.",
+      "UserDescription": "Prüfergebnisse und Qualitätsfälle werden getrennt von Wartung, aber verbunden mit Assets geführt.",
+      "DeveloperDescription": "M203 prüft, M207 steuert Qualität; beide nutzen Assets, Wartung, Organisation und Audit.",
+      "Status": "Planned",
+      "PrimaryModules": ["M203", "M207"],
+      "RequiredModules": ["M201", "M202", "M102", "M805"],
+      "Milestones": [
+        { "Title": "Prüfgrundlagen", "Description": "Prüfpläne und Ergebnisse werden vorbereitet.", "Status": "Planned" },
+        { "Title": "Qualitätsbasis", "Description": "Abweichungen und Maßnahmen werden strukturiert.", "Status": "Planned" }
+      ],
+      "Result": "Qualität und Prüfung werden nachvollziehbar und auswertbar."
+    },
+    {
+      "Version": "v0.7.0",
+      "Name": "Energy System",
+      "AudienceTitle": "Energiesystem",
+      "Goal": "Energiezähler, Medien und Messwerte werden strukturiert erfasst.",
+      "UserDescription": "Energieflüsse werden sichtbar und können später ausgewertet werden.",
+      "DeveloperDescription": "M205 speichert Messwerte, nicht abgeleiteten Verbrauch als Primärlogik.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M205"],
+      "RequiredModules": ["M201", "M102", "M805"],
+      "Milestones": [
+        { "Title": "Zähler", "Description": "Energiezähler sind verwaltbar.", "Status": "InProgress" },
+        { "Title": "Messwerte", "Description": "Energiehistorie ist erfassbar.", "Status": "InProgress" }
+      ],
+      "Result": "Energie wird messbar und fachlich zuordenbar."
+    },
+    {
+      "Version": "v0.8.0",
+      "Name": "Runtime & Automation",
+      "AudienceTitle": "Laufzeit und Automatisierung",
+      "Goal": "Scheduler, Automatisierung und Job-Ausführung bilden die Laufzeitschicht.",
+      "UserDescription": "Wiederkehrende Abläufe und systemseitige Aufgaben können kontrolliert ausgeführt werden.",
+      "DeveloperDescription": "M501 bis M503 bauen auf Wartung, Prüfung, Energie, Messaging und Security auf.",
+      "Status": "Planned",
+      "PrimaryModules": ["M501", "M502", "M503"],
+      "RequiredModules": ["M202", "M203", "M205", "M405", "M805", "M806"],
+      "Milestones": [
+        { "Title": "Scheduler", "Description": "Zeitgesteuerte Aufgaben werden möglich.", "Status": "Planned" },
+        { "Title": "Job-Ausführung", "Description": "Aufgaben laufen nachvollziehbar und kontrolliert.", "Status": "Planned" }
+      ],
+      "Result": "SWFC kann Prozesse kontrolliert im Hintergrund ausführen."
+    },
+    {
+      "Version": "v0.9.0",
+      "Name": "Leitwarte / Control",
+      "AudienceTitle": "Leitwarte und Steuerung",
+      "Goal": "Leitwarte und Echtzeitverarbeitung werden vorbereitet.",
+      "UserDescription": "Betriebszustände können zentral beobachtet und kontrolliert eingeordnet werden.",
+      "DeveloperDescription": "M504 und M505 dürfen Sicherheitsregeln nicht umgehen und benötigen klare Freigaben.",
+      "Status": "Planned",
+      "PrimaryModules": ["M504", "M505"],
+      "RequiredModules": ["M500", "M800", "M201", "M404", "M405"],
+      "Milestones": [
+        { "Title": "Leitwarte", "Description": "Zentrale Sicht auf Laufzeit- und Anlagenzustände.", "Status": "Planned" },
+        { "Title": "Echtzeit", "Description": "Echtzeitnahe Verarbeitung wird vorbereitet.", "Status": "Planned" }
+      ],
+      "Result": "Grundlage für kontrollierte Betriebsführung."
+    },
+    {
+      "Version": "v0.10.0",
+      "Name": "Integration Layer",
+      "AudienceTitle": "Integrationsschicht",
+      "Goal": "Externe Systeme werden über definierte Integrationsmodule angebunden.",
+      "UserDescription": "Import, Export, API und externe Systeme werden nachvollziehbar integrierbar.",
+      "DeveloperDescription": "M400 enthält Integrationslogik ohne Fachlogik zu übernehmen.",
+      "Status": "Planned",
+      "PrimaryModules": ["M400"],
+      "RequiredModules": ["M201", "M202", "M204", "M205", "M500"],
+      "Milestones": [
+        { "Title": "API und Import", "Description": "Datenaustausch wird vorbereitet.", "Status": "Planned" },
+        { "Title": "Messaging", "Description": "Ereignisse und Übergaben werden definiert.", "Status": "Planned" }
+      ],
+      "Result": "SWFC kann kontrolliert mit externen Systemen sprechen."
+    },
+    {
+      "Version": "v0.11.0",
+      "Name": "Transparency & Audit",
+      "AudienceTitle": "Transparenz und Prüfung",
+      "Goal": "Versionierung, Audit und Modulreife werden sichtbar.",
+      "UserDescription": "Der Zustand des Systems wird nachvollziehbar und prüfbar dargestellt.",
+      "DeveloperDescription": "M1005 verbindet Versionierung mit M601, M301 und M805, ohne Modulstatus selbst zu erfinden.",
+      "Status": "InProgress",
+      "PrimaryModules": ["M1005"],
+      "RequiredModules": ["M101", "M301", "M601", "M805"],
+      "Milestones": [
+        { "Title": "Audit-Reports", "Description": "Generierte Prüfstände sind sichtbar.", "Status": "InProgress" },
+        { "Title": "Plan gegen Realität", "Description": "Planfortschritt und Audit-Reifegrad bleiben getrennt.", "Status": "InProgress" }
+      ],
+      "Result": "Planung, Zustand und Realität werden unterscheidbar."
+    },
+    {
+      "Version": "v0.12.0",
+      "Name": "Intelligence",
+      "AudienceTitle": "Intelligenz und Analyse",
+      "Goal": "Analytics, Vorhersage und Optimierung werden nachvollziehbar vorbereitet.",
+      "UserDescription": "Daten werden auswertbar, ohne operative Freigaben zu ersetzen.",
+      "DeveloperDescription": "M900 nutzt Energie, Qualität, Analytics, Runtime und Audit als Grundlage.",
+      "Status": "Planned",
+      "PrimaryModules": ["M900"],
+      "RequiredModules": ["M205", "M207", "M211", "M500", "M805"],
+      "Milestones": [
+        { "Title": "Analysebasis", "Description": "Auswertung und Kennzahlen werden vorbereitet.", "Status": "Planned" },
+        { "Title": "Governance", "Description": "Nachvollziehbarkeit und Freigaben bleiben verbindlich.", "Status": "Planned" }
+      ],
+      "Result": "SWFC kann Daten intelligent auswerten, ohne Black-Box-Steuerung."
+    },
+    {
+      "Version": "v0.13.0",
+      "Name": "Platform",
+      "AudienceTitle": "Plattform",
+      "Goal": "Plugin-System, SDK und Erweiterungsverwaltung entstehen.",
+      "UserDescription": "SWFC wird erweiterbar, ohne den Kern unkontrolliert zu verändern.",
+      "DeveloperDescription": "M1000 baut auf Versionierung, Audit, Zugriff und DevSecOps auf.",
+      "Status": "Planned",
+      "PrimaryModules": ["M1000"],
+      "RequiredModules": ["M1005", "M805", "M806", "M804"],
+      "Milestones": [
+        { "Title": "Plugin-Grundlage", "Description": "Erweiterungen werden strukturiert möglich.", "Status": "Planned" },
+        { "Title": "SDK", "Description": "Entwicklerplattform wird vorbereitet.", "Status": "Planned" }
+      ],
+      "Result": "Die Plattform kann kontrolliert erweitert werden."
+    },
+    {
+      "Version": "v0.14.0",
+      "Name": "Productization",
+      "AudienceTitle": "Produktisierung",
+      "Goal": "Distribution, Updates, Lizenzierung und Betrieb werden produktfähig.",
+      "UserDescription": "SWFC wird auslieferbar, aktualisierbar und betreibbar.",
+      "DeveloperDescription": "M1100 nutzt Plattform, Versionierung, Setup und Audit als Grundlage.",
+      "Status": "Planned",
+      "PrimaryModules": ["M1100"],
+      "RequiredModules": ["M1000", "M1005", "M107", "M805"],
+      "Milestones": [
+        { "Title": "Distribution", "Description": "Auslieferung wird vorbereitet.", "Status": "Planned" },
+        { "Title": "Updatefähigkeit", "Description": "Updates werden kontrolliert planbar.", "Status": "Planned" }
+      ],
+      "Result": "SWFC wird produkt- und betriebsfähig."
+    },
+    {
+      "Version": "v1.0.0",
+      "Name": "Full System",
+      "AudienceTitle": "Vollständiges System",
+      "Goal": "Alle Hauptbereiche bilden eine zusammenhängende operative Plattform.",
+      "UserDescription": "SWFC deckt System, Business, Präsentation, Integration, Laufzeit, Planung, Support, Sicherheit, Intelligenz, Plattform und Produktbetrieb ab.",
+      "DeveloperDescription": "v1.0.0 bündelt alle vorherigen Versionen zu einem prüfbaren Gesamtsystem.",
+      "Status": "Planned",
+      "PrimaryModules": ["M100", "M200", "M300", "M400", "M500", "M600", "M700", "M800", "M900", "M1000", "M1100"],
+      "RequiredModules": ["v0.1.0", "v0.2.0", "v0.3.0", "v0.4.0", "v0.5.0", "v0.6.0", "v0.7.0", "v0.8.0", "v0.9.0", "v0.10.0", "v0.11.0", "v0.12.0", "v0.13.0", "v0.14.0"],
+      "Milestones": [
+        { "Title": "Gesamtabnahme", "Description": "Alle Hauptbereiche sind integriert und prüfbar.", "Status": "Planned" },
+        { "Title": "Betriebsfähigkeit", "Description": "Systembetrieb, Updates und Support sind vorbereitet.", "Status": "Planned" }
+      ],
+      "Result": "SWFC ist als vollständige modulare Unternehmensplattform nutzbar."
+    }
+  ]
+}
+
+--- MODULES ---
+
+{
+  "Groups": [
+    {
+      "GroupCode": "M100",
+      "GroupTitle": "System",
+      "Description": "Grundlegende Systemmodule wie Organisation, Authentifizierung und Konfiguration.",
+      "Modules": [
+        {
+          "Code": "M101",
+          "Title": "Foundation",
+          "Description": "Systemweite Grundlagen, Basiskonzepte und technische Kernbausteine f\u00C3\u00BCr alle Module.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Result / Error Handling",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Guards",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "ValueObjects / Basis-Primitives",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Globale ID-Grundlagen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zeit-/Timestamp-Basis (UTC)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Einheiten-Basis",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Audit-Basisfelder",
+              "Status": "InProgress",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 2,
+          "OpenCount": 5,
+          "TotalCount": 7,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M102",
+          "Title": "Organization",
+          "Description": "Organisatorischer Zwilling der Firma mit Struktur, Benutzern, Kostenstellen und Schichtmodell.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "M102.01 Organization Structure",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Werke / Standorte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Geb\u00C3\u00A4ude / Hallen (organisatorisch)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abteilungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Teams",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verantwortungsbereiche",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Hierarchien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "M102.02 Users",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Benutzerstammdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Organisatorische Zuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Funktion im Unternehmen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schichtzuordnung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Aktiv / Inaktiv",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Externe Personen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Stellvertreter / Eskalationskontakte",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Historisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine L\u00C3\u00B6schung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u00BCpfung zu M103",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "M102.03 Cost Centers",
+              "Status": "InProgress",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Kostenstellen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Kostenstellen-Struktur",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Kostenstellen-Zuordnung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "M102.04 Shift Model",
+              "Status": "InProgress",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Schichten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Schicht-Zuordnung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Schicht-Struktur",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 4,
+          "OpenCount": 22,
+          "TotalCount": 26,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 15,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 9,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 2,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M103",
+          "Title": "Authentication",
+          "Description": "Identit\u00C3\u00A4t, Anmeldung und technische Authentifizierungsbasis des Systems.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Login",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Auth Provider",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "SSO",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Session",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Current User",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Claims",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Passwortregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "MFA (vorbereitet)",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 4,
+          "OpenCount": 4,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M104",
+          "Title": "Documents",
+          "Description": "Systemweite Dokumentenbasis mit Versionierung, Historie und Verkn\u00C3\u00BCpfung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Dokumentobjekte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Upload",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Historie",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u00BCpfung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "DMS-Anbindung",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Keine L\u00C3\u00B6schung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 7,
+          "TotalCount": 7,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 6,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M105",
+          "Title": "Configuration",
+          "Description": "Systemweite Steuerung \u00C3\u00BCber Einstellungen, Standards und Aktivierungen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Systemeinstellungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Feature Flags",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modulaktivierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Standardwerte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Einheitenanzeige",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lokalisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zeitzonenanzeige",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Audit-Parameter",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 8,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M106",
+          "Title": "Theme",
+          "Description": "Designsystem, Theme-Regeln, Farben und Layout-Tokens des Frontends.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Theme",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Farben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Statusfarben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Layout Tokens",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dark Mode",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Benutzer-Theme",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 6,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M107",
+          "Title": "Setup / Deployment",
+          "Description": "Interne Setup-, Bootstrap- und Migrationslogik fuer ein startfaehiges System.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Setup-State / Bootstrap-Zustaende",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Erstinstallation / Bootstrap-Kontext",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "DB-Verbindungspruefung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "DB-Erstellung / DB-Vorbereitung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Initiale Migrationen im Setup-Kontext",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Technische Erstinitialisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Setup-Abschlusslogik",
+              "Status": "InProgress",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 3,
+          "OpenCount": 4,
+          "TotalCount": 7,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M200",
+      "GroupTitle": "Business",
+      "Description": "Fachmodule f\u00C3\u00BCr Assets, Wartung, Lager und operative Prozesse.",
+      "Modules": [
+        {
+          "Code": "M201",
+          "Title": "Assets",
+          "Description": "Technischer Zwilling der Anlagenstruktur mit Baumstruktur und Typmodell.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Technische Stammdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Statusinformationen (aktiv / inaktiv)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Asset-Typen",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Parent/Child-Hierarchien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Freie / erweiterbare Felder",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfungen zu organisatorischen Einheiten (M102)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Optionale Verkn\u00C3\u00BCpfungen zu Energieobjekten (M205)",
+              "Status": "InProgress",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Genau ein Parent pro Asset",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Baumstruktur",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Zyklen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gemeinsamkeit \u00C3\u00BCber Typen, nicht \u00C3\u00BCber Mehrfachzuordnung derselben Instanz",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine L\u00C3\u00B6schung / nur Deaktivierung oder Historisierung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 3,
+          "OpenCount": 9,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 10,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M202",
+          "Title": "Maintenance",
+          "Description": "Vollst\u00C3\u00A4ndige fachliche Wahrheit der Instandhaltung und Wartung.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Wartungspl\u00C3\u00A4ne",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wartungsauftr\u00C3\u00A4ge",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wartungshistorie",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ungeplante Wartung / St\u00C3\u00B6rungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Notdienst / Soforteins\u00C3\u0192\u00C2\u00A4tze",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Priorit\u00C3\u00A4ten / Kritikalit\u00C3\u00A4t",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Statusmodell (geplant / in Arbeit / abgeschlossen / abgebrochen)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u00BCpfung zu M201",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Material nur referenzieren",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Lagerbestands\u00C3\u00A4nderung in M202",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zuordnung zu M102",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wartungsintervalle",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "F\u00C3\u00A4lligkeiten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Planung von Wartungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine echte L\u00C3\u0192\u00C2\u00B6schung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 3,
+          "OpenCount": 13,
+          "TotalCount": 16,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 13,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M203",
+          "Title": "Inspections",
+          "Description": "Fachliche Wahrheit aller Pr\u00C3\u00BCfungen, Inspektionen und Bewertungen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Pr\u00C3\u00BCfpl\u00C3\u00A4ne",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u00BCfauftr\u00C3\u00A4ge / Pr\u00C3\u00BCfungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u00BCfergebnisse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wiederkehrende Pr\u00C3\u00BCfzyklen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u00BCfstatus / Freigabezust\u00C3\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ergebnislogik (bestanden / nicht bestanden / mit Mangel / Nachpr\u00C3\u0192\u00C2\u00BCfung)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zuordnung zu M102",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Folgeaktionen ausl\u00C3\u0192\u00C2\u00B6sen (M202 / M207 / M208)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u0192\u00C2\u00BCfintervalle",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "F\u00C3\u0192\u00C2\u00A4lligkeiten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine echte L\u00C3\u0192\u00C2\u00B6schung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 14,
+          "TotalCount": 14,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 12,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M204",
+          "Title": "Inventory",
+          "Description": "Einzige Quelle f\u00C3\u0192\u00C2\u00BCr Material-, Lager- und Bestandsver\u00C3\u0192\u00C2\u00A4nderungen.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Artikel",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lager",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lagerorte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Best\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bewegungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Buchungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Preise / Werte",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Nur M204 darf Best\u00C3\u0192\u00C2\u00A4nde ver\u00C3\u0192\u00C2\u00A4ndern",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zug\u00C3\u0192\u00C2\u00A4nge",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abg\u00C3\u0192\u00C2\u00A4nge",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Umlagerungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Korrekturen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kein direktes Setzen von Best\u00C3\u0192\u00C2\u00A4nden",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Inventurprozesse",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Bestandskorrekturen mit Begr\u00C3\u0192\u00C2\u00BCndung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Barcode / Scanner / mobile Nutzung",
+              "Status": "InProgress",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Bewegungen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 2,
+          "OpenCount": 15,
+          "TotalCount": 17,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 14,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M205",
+          "Title": "Energy",
+          "Description": "Fachliche Wahrheit aller Energie- und Medienmesswerte.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "EnergyMeter",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "EnergyReading",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Messwerte / Z\u00C3\u0192\u00C2\u00A4hlerst\u00C3\u0192\u00C2\u00A4nde statt Verbrauch als Prim\u00C3\u0192\u00C2\u00A4rdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Erweiterbare Medien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Manuelle Erfassung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Automatische Erfassung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kombinierte Erfassung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vergleich automatisch / manuell",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Hauptz\u00C3\u0192\u00C2\u00A4hler / Unterz\u00C3\u0192\u00C2\u00A4hler / Parent-Child",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Optionale Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Plausibilisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Energiekennzahlen (EnPI)",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "RFID \u002B manuelle Eingabe als Standard",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ausnahmebetrieb ohne RFID nachvollziehbar machen",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Offline-F\u00C3\u0192\u00C2\u00A4higkeit",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Auff\u00C3\u0192\u00C2\u00A4llige Werte markieren statt verwerfen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Echtzeitverarbeitung \u00C3\u0192\u00C2\u00BCber M404 / M505",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung fachlich relevanter Messwerte",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 2,
+          "InProgressCount": 4,
+          "OpenCount": 12,
+          "TotalCount": 18,
+          "CoreDoneCount": 2,
+          "CoreTotalCount": 16,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 11
+        },
+        {
+          "Code": "M206",
+          "Title": "Purchasing",
+          "Description": "Operative Steuerung des Einkaufsprozesses mit ERP-Abgrenzung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Bedarfe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bestellungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lieferanten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wareneingang",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Angebotsanfragen (RFQ)",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Bestellvorschl\u00C3\u0192\u00C2\u00A4ge (manuell / automatisch)",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Bedarf aus M202 / M204 / M209",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wareneingang l\u00C3\u0192\u00C2\u00B6st M204-Buchung aus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "SWFC ist operativ f\u00C3\u0192\u00C2\u00BChrend",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "ERP bleibt kaufm\u00C3\u0192\u00C2\u00A4nnisch f\u00C3\u0192\u00C2\u00BChrend",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine doppelte Datenhaltung im operativen Einkauf",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 12,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M207",
+          "Title": "Quality",
+          "Description": "Systemische Steuerung aller Qualit\u00C3\u0192\u00C2\u00A4tsabweichungen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Qualit\u00C3\u0192\u00C2\u00A4tsmeldungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abweichungen / Fehler / Beanstandungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ursachenanalysen (Root Cause)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Korrekturma\u00C3\u0192\u00C5\u00B8nahmen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vorbeugema\u00C3\u0192\u00C5\u00B8nahmen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Statusmodell (offen / in Bearbeitung / gel\u00C3\u0192\u00C2\u00B6st / abgeschlossen)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eskalationslogik",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M203",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zuordnung zu M102",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Qualit\u00C3\u0192\u00C2\u00A4tsf\u00C3\u0192\u00C2\u00A4llen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 13,
+          "TotalCount": 13,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 11,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M208",
+          "Title": "Safety",
+          "Description": "Entscheidungsbasis f\u00C3\u0192\u00C2\u00BCr sichere und erlaubte Aktionen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Gef\u00C3\u0192\u00C2\u00A4hrdungsbeurteilungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Risiken und Bewertungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitsma\u00C3\u0192\u00C5\u00B8nahmen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schutzvorgaben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Freigaben / Erlaubnisse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zuordnung zu M102",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr Leitwarte / Eingriffe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung sicherheitsrelevanter Daten",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 12,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M209",
+          "Title": "Projects",
+          "Description": "Umsetzungsebene f\u00C3\u0192\u00C2\u00BCr geplante Ver\u00C3\u0192\u00C2\u00A4nderungen, Ma\u00C3\u0192\u00C5\u00B8nahmen und Aufgaben.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Projekte",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Ma\u00C3\u0192\u00C5\u00B8nahmen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Aufgaben / Tasks",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Statusmodell",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zeitplanung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verantwortlichkeiten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Hierarchie Projekt \u003E Ma\u00C3\u0192\u00C5\u00B8nahme \u003E Aufgabe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Materialbezug \u00C3\u0192\u00C2\u00BCber M204",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zuordnung zu M102",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "KVP-Unterst\u00C3\u0192\u00C2\u00BCtzung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung von Projekten / Ma\u00C3\u0192\u00C5\u00B8nahmen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 13,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M210",
+          "Title": "Customers",
+          "Description": "Schlanke operative Kundenbasis ohne CRM-Overhead.",
+          "Status": "Open",
+          "Level": "Extension",
+          "WorkItems": [
+            {
+              "Title": "Kundenstammdaten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Ansprechpartner",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zuordnungen zu Anlagen / Projekten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zuordnung von Qualit\u00C3\u0192\u00C2\u00A4tsf\u00C3\u0192\u00C2\u00A4llen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "ERP-Referenz ohne doppelte Pflege",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Keine CRM-Logik",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Deaktivierung / Historisierung statt L\u00C3\u0192\u00C2\u00B6schung",
+              "Status": "Open",
+              "Level": "Extension"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 0,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 8,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M211",
+          "Title": "Analytics",
+          "Description": "Sicht auf das gesamte System \u00C3\u0192\u00C2\u00BCber KPIs, Reports und Dashboards.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "KPIs",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Reports",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Dashboards",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Auswertungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Abteilungsspezifische Dashboards",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Energieauswertung auf Basis M205",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wartungsauswertung auf Basis M202",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Qualit\u00C3\u0192\u00C2\u00A4tsauswertung auf Basis M207",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Flexible Reports / individuelle KPIs",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Export PDF / Excel",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine eigenen fachlichen Daten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine doppelte Datenhaltung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 12,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 9,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M212",
+          "Title": "Production / Operations",
+          "Description": "Abbild des realen Produktionsgeschehens mit operativer Steuerungsperspektive.",
+          "Status": "Open",
+          "Level": "Extension",
+          "WorkItems": [
+            {
+              "Title": "Maschinenzust\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Produktionsdaten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Laufzeiten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Stillst\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Produktionsauftr\u00C3\u0192\u00C2\u00A4ge (operativ)",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Produktionsmengen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Ausschuss",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Produktionsstatus",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "R\u00C3\u0192\u00C2\u00BCckmeldungen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M205",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Option B \u00C3\u00A2\u00E2\u201A\u00AC\u00E2\u20AC\u0153 mittlere Tiefe",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Erweiterbarkeit zu vollst\u00C3\u0192\u00C2\u00A4ndiger Produktionssteuerung",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Keine ERP-Fertigungsplanung",
+              "Status": "Open",
+              "Level": "Extension"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 0,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 15,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M213",
+          "Title": "Workforce",
+          "Description": "Abbild der menschlichen Arbeit und operative Steuerung von Mitarbeitereins\u00C3\u0192\u00C2\u00A4tzen.",
+          "Status": "Open",
+          "Level": "Extension",
+          "WorkItems": [
+            {
+              "Title": "T\u00C3\u0192\u00C2\u00A4tigkeiten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Arbeitszuordnungen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zeitbezug",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Einsatzinformationen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Einsatzplanung",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zuordnung zu Aufgaben",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "R\u00C3\u0192\u00C2\u00BCckmeldungen von T\u00C3\u0192\u00C2\u00A4tigkeiten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M102",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M209",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Schichtbezug aus M102",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Option B \u00C3\u00A2\u00E2\u201A\u00AC\u00E2\u20AC\u0153 Einsatzplanung \u002B R\u00C3\u0192\u00C2\u00BCckmeldung",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Keine HR- oder Gehaltslogik",
+              "Status": "Open",
+              "Level": "Extension"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 14,
+          "TotalCount": 14,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 0,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 14,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M300",
+      "GroupTitle": "Presentation",
+      "Description": "UI-Schicht f\u00C3\u00BCr Darstellung, Navigation und Benutzerinteraktion.",
+      "Modules": [
+        {
+          "Code": "M301",
+          "Title": "AppShell",
+          "Description": "Struktur- und Navigationsrahmen des gesamten Systems.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Globales Layout",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Hauptnavigation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sidebar",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modulorientierte Navigation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Globale UI-Elemente",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Einstiegspunkte / Startbereiche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Standardisierte Seitenstrukturen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mehrere Navigationsebenen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Rollenbasierte Navigation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Header",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Breadcrumbs",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Benutzerbereich",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Schnellzugriffe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Globale Statusanzeigen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Kontextbezogene Navigation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Individuelle Startseiten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Listenansichten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Detailseiten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Seitenlayouts",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Tabs / Unterbereiche / Detailnavigation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mobile / Responsive Vorbereitung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 22,
+          "TotalCount": 22,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 13,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 9,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M302",
+          "Title": "Reporting",
+          "Description": "Visualisierung aller Auswertungen und Kennzahlen aus M211.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Reports",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Visualisierungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "KPI-Darstellungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Tabellen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Diagramme",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zeitreihen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Filter nach Zeitraum / Anlage / Abteilung / Status",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Drilldown von KPI zu Detaildaten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Export PDF / Excel",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Abteilungsspezifische Reports",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wiederverwendbare Reports",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Benutzerdefinierte Reports",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Integration in M301",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Berechnungslogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 14,
+          "TotalCount": 14,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 11,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M303",
+          "Title": "Notifications",
+          "Description": "Alarmsystem und Kommunikationskanal des Systems.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Systemmeldungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Alerts",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Benachrichtigungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Eskalationen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zust\u00C3\u0192\u00C2\u00A4nde von Meldungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Info / Warnung / kritisch",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Priorit\u00C3\u0192\u00C2\u00A4ten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zielgruppen (Benutzer / Rollen / Abteilungen)",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Kan\u00C3\u0192\u00C2\u00A4le UI / E-Mail",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Teams / Slack",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zust\u00C3\u0192\u00C2\u00A4nde ungelesen / gelesen / erledigt",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Eskalationsmechanismen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verlinkung zu Fachmodulen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Integration in M301 Header / Status / Schnellzugriffe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 3,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 11,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M304",
+          "Title": "Search",
+          "Description": "Schneller Zugriff auf alle relevanten Informationen im System.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Globale Suche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Modul\u00C3\u0192\u00C2\u00BCbergreifende Ergebnisse",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Filtermechanismen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Ergebnisdarstellung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Navigation zu Objekten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Gruppierung nach Modulen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Filter nach Modul / Zeitraum / Status / Objekt",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Direktsprung zum Objekt",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Autocomplete",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Freie Textsuche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "ID-basierte Suche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Strukturierte Suche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr gro\u00C3\u0192\u00C5\u00B8e Datenmengen / externe Suche",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Rechte- und Sichtbarkeitsfilter",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Integration in M301",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 16,
+          "TotalCount": 16,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 3,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 12,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M305",
+          "Title": "Forms / Input",
+          "Description": "Standardisierte Eingabeschicht f\u00C3\u0192\u00C2\u00BCr das gesamte System.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Formulare",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eingabemasken",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bearbeitungsansichten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Validierungsdarstellung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eingabe- und Speichermuster",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Konsistente Formular-UX",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pflichtfeldanzeige",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Fehlermeldungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eingabehinweise",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modi Neu / Bearbeiten / Nur Lesen / Best\u00C3\u0192\u00C2\u00A4tigen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mobile Eingabe / reduzierte Masken / schnelle Erfassung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zusammenarbeit mit M301",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M106",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Fachlogik / keine Berechnungen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 14,
+          "TotalCount": 14,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 13,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M306",
+          "Title": "Localization / Mehrsprachigkeit",
+          "Description": "Sprachabhaengige Darstellung, Culture-Logik und Navigationstexte des Systems.",
+          "Status": "Full Complete",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "UI Text Resources",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Culture \u0026 Formatting",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Language Selection",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Validation \u0026 Messages Localization",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Navigation \u0026 Module Labels",
+              "Status": "Done",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 5,
+          "InProgressCount": 0,
+          "OpenCount": 0,
+          "TotalCount": 5,
+          "CoreDoneCount": 5,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 100
+        },
+        {
+          "Code": "M307",
+          "Title": "User Personalization / Experience",
+          "Description": "Benutzerbezogene Personalisierung von Dashboard, Sichtbarkeit und UI-Praeferenzen.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Dashboard Configuration",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Widget Management",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Visibility \u0026 Preferences",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "User UI Settings",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Persistierte Benutzerpraeferenzen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 1,
+          "OpenCount": 4,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M400",
+      "GroupTitle": "Integration",
+      "Description": "Anbindung externer Systeme wie APIs, ERP und IoT.",
+      "Modules": [
+        {
+          "Code": "M401",
+          "Title": "Import / Export",
+          "Description": "Technische Ein- und Ausfuhr strukturierter Daten.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Dateiimporte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dateiexporte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mapping externer Datenstrukturen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Validierung technischer Importformate",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00C5\u201Cbergabe an Fachmodule",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "CSV",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Excel",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Import f\u00C3\u0192\u00C2\u00BCr Assets",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Import f\u00C3\u0192\u00C2\u00BCr Lagerdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Import f\u00C3\u0192\u00C2\u00BCr Energie-Messwerte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Import f\u00C3\u0192\u00C2\u00BCr Stammdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Import f\u00C3\u0192\u00C2\u00BCr externe Listen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Export f\u00C3\u0192\u00C2\u00BCr Berichte",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Export f\u00C3\u0192\u00C2\u00BCr Stammdaten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Export f\u00C3\u0192\u00C2\u00BCr Bewegungsdaten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Export f\u00C3\u0192\u00C2\u00BCr Audit-Nachweise",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Spaltenzuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Feldzuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Formatkonvertierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Technische Fehleranzeige",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Protokollierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Teilweises Ablehnen fehlerhafter Datens\u00C3\u0192\u00C2\u00A4tze",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 23,
+          "TotalCount": 23,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 17,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 6,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M402",
+          "Title": "API",
+          "Description": "Kontrollierter Zugangspunkt f\u00C3\u0192\u00C2\u00BCr externe Systeme.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "REST API",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Endpunkte f\u00C3\u0192\u00C2\u00BCr Module",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Authentifizierte Zugriffe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Strukturierte Datenbereitstellung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "GET",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "POST / PUT",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Definierte Aktionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriff nur \u00C3\u0192\u00C2\u00BCber Authentifizierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Berechtigungspr\u00C3\u0192\u00C2\u00BCfung \u00C3\u0192\u00C2\u00BCber M800",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung von Fachmodulen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M406",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine direkte Datenbankfreigabe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Umgehung von Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 13,
+          "TotalCount": 13,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 13,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M403",
+          "Title": "ERP Integration",
+          "Description": "Verbindung zwischen operativem Betrieb und ERP.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Synchronisation von Stammdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00C5\u201Cbergabe von Einkaufsdaten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Referenzierung von ERP-Objekten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lieferanten aus ERP",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bestellungen aus M206",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kunden aus ERP",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "ERP kaufm\u00C3\u0192\u00C2\u00A4nnisch f\u00C3\u0192\u00C2\u00BChrend",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "SWFC operativ f\u00C3\u0192\u00C2\u00BChrend",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine doppelte Datenhaltung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 9,
+          "TotalCount": 9,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M404",
+          "Title": "IoT / Maschinen",
+          "Description": "Verbindung zur realen Welt aus Maschinen, Sensoren und Leitsystemen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Maschinenanbindung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sensorintegration",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Daten\u00C3\u0192\u00C2\u00BCbertragung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schnittstellen zu Leitsystemen (z. B. PCS)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zust\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Messwerte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ereignisse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M205",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M212",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M303",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine fachliche Interpretation",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 11,
+          "TotalCount": 11,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 10,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M405",
+          "Title": "Messaging / Events",
+          "Description": "Nervensystem des Systems f\u00C3\u0192\u00C2\u00BCr Events und Reaktionen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Event-Verarbeitung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Message-Verteilung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Event-Trigger",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Asynchrone Kommunikation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Maschine meldet St\u00C3\u0192\u00C2\u00B6rung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wartung wird ausgel\u00C3\u0192\u00C2\u00B6st",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Notification entsteht",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Lose gekoppelte Systeme",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M303",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M202",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung durch M212",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 12,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M406",
+          "Title": "Identity Integration",
+          "Description": "Verbindung zu externen Login- und Identit\u00C3\u0192\u00C2\u00A4tssystemen.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "SSO Integration",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Active Directory / Azure AD",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Benutzerabgleich",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Zusammenarbeit mit M103",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Externe Systeme liefern Identit\u00C3\u0192\u00C2\u00A4t",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine eigene Auth-Logik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 6,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 3,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M407",
+          "Title": "DMS / File Integration",
+          "Description": "Externe Dokumentenwelt \u00C3\u0192\u00C2\u00BCber DMS und Dateiablage anbinden.",
+          "Status": "Open",
+          "Level": "Extension",
+          "WorkItems": [
+            {
+              "Title": "Verbindung zu DMS",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Dateiablage extern",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Referenzierung von Dokumenten",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Zusammenarbeit mit M104",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gro\u00C3\u0192\u00C5\u00B8e Dateien extern speichern",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Dokumente verlinken statt speichern",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "SWFC bleibt Referenzsystem",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "DMS bleibt Speicher",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 3,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 5,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M500",
+      "GroupTitle": "Runtime",
+      "Description": "Laufzeitsteuerung, Automatisierung und Echtzeitprozesse.",
+      "Modules": [
+        {
+          "Code": "M501",
+          "Title": "Scheduler",
+          "Description": "Zeitgesteuerter Ausl\u00C3\u0192\u00C2\u00B6ser der Runtime f\u00C3\u0192\u00C2\u00BCr geplante Prozesse.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Zeitpl\u00C3\u0192\u00C2\u00A4ne",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Periodische Trigger",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Terminbasierte Ausl\u00C3\u0192\u00C2\u00B6sung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "F\u00C3\u0192\u00C2\u00A4lligkeitsausl\u00C3\u0192\u00C2\u00B6sung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Geplante Runtime-Starts",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wartungsf\u00C3\u0192\u00C2\u00A4lligkeiten (M202)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklen (M203)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Geplante Jobs",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Periodische Auswertungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Automatische Kontrolll\u00C3\u0192\u00C2\u00A4ufe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Scheduler l\u00C3\u0192\u00C2\u00B6st aus, entscheidet aber nicht fachlich",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 11,
+          "TotalCount": 11,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 2,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M502",
+          "Title": "Automation",
+          "Description": "Definierte automatische Reaktionslogik des Systems.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Automatisierungsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bedingung \u00C3\u00A2\u00E2\u20AC\u00A0\u00E2\u20AC\u2122 Reaktion",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Definierte Ablaufketten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Automatische Systemreaktionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "F\u00C3\u0192\u00C2\u00A4llige Wartung erzeugt Auftrag",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Negativer Pr\u00C3\u0192\u00C2\u00BCfstatus erzeugt Folgeprozess",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mindestbestand erzeugt Einkaufsbedarf",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ereignis erzeugt Benachrichtigung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine automatische Umgehung von Sicherheitsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine automatische kritische Steuerung ohne Freigabemechanismen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Automatisierung auditierbar halten",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 11,
+          "TotalCount": 11,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 11,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M503",
+          "Title": "Job Execution",
+          "Description": "Ausf\u00C3\u0192\u00C2\u00BChrungsmaschine geplanter Runtime-Prozesse und Hintergrundjobs.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Ausf\u00C3\u0192\u00C2\u00BChrung geplanter Jobs",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrollierte Prozessausf\u00C3\u0192\u00C2\u00BChrung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wiederholungslogik",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ausf\u00C3\u0192\u00C2\u00BChrungsstatus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Fehler- und Wiederanlaufverhalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Geplante Wartungsjobs",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklus-Ausf\u00C3\u0192\u00C2\u00BChrung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Periodische Synchronisationen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Automatisierte Hintergrundl\u00C3\u0192\u00C2\u00A4ufe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Fehler protokollieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Umgehung von Sicherheits- oder Fachregeln",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 11,
+          "TotalCount": 11,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 11,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M504",
+          "Title": "Control / Leitwarte",
+          "Description": "Leit- und Bedienebene von SWFC f\u00C3\u0192\u00C2\u00BCr Live-Monitoring und kontrollierte Eingriffe.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Live-Ansichten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Leitwartenoberfl\u00C3\u0192\u00C2\u00A4chen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00C5\u201Cbersicht mehrerer Anlagen / Bereiche",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bedien- und Eingriffsoberfl\u00C3\u0192\u00C2\u00A4chen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zentrale Kontrollansichten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schaltwarte / Leitwarte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00C5\u201Cberwachung laufender Anlagen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Anzeige von Zust\u00C3\u0192\u00C2\u00A4nden",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrollierte Eingriffe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sp\u00C3\u0192\u00C2\u00A4tere Spiegelung / Steuerung von Leitwartenbildschirmen",
+              "Status": "Open",
+              "Level": "Extension"
+            },
+            {
+              "Title": "Berechtigung vorhanden",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Definierte Freigaberegeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abstimmung mit Personal vor Ort",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Protokollierung \u00C3\u0192\u00C2\u00BCber M805",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine automatische Blindsteuerung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Maschine / SPS beh\u00C3\u0192\u00C2\u00A4lt Sicherheitsoberhand",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Ersetzung physischer Sicherheitsmechanismen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 1,
+          "OpenCount": 17,
+          "TotalCount": 18,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 17,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 1,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M505",
+          "Title": "Real-Time Processing",
+          "Description": "Echtzeitverarbeitung der laufenden Betriebsdaten.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Echtzeitdatenverarbeitung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Stream-/Event-Aggregation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Live-Zustandsbildung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Reaktion auf eingehende Runtime-Daten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Maschinenzust\u00C3\u0192\u00C2\u00A4nde laufend aktualisieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Messwerte in Echtzeit verarbeiten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ereignisse aggregieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Live-Status f\u00C3\u0192\u00C2\u00BCr Leitwarte bereitstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M404",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M405",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M504",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M212",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenarbeit mit M205",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Sicherheitsumgehung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine fachliche Stammdatenhaltung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 15,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M600",
+      "GroupTitle": "Planning",
+      "Description": "Planung, Strukturierung und Weiterentwicklung des Systems.",
+      "Modules": [
+        {
+          "Code": "M601",
+          "Title": "Roadmap",
+          "Description": "Plan der zuk\u00C3\u0192\u00C2\u00BCnftigen Systementwicklung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Geplante Funktionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modul-Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zeitplanung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Version-Ziele",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Meilensteine",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gliederung nach Modulen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gliederung nach Versionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gliederung nach Zeitr\u00C3\u0192\u00C2\u00A4umen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Gliederung nach Priorit\u00C3\u0192\u00C2\u00A4ten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung von M606",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung von M607",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung von M604",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine spontane Umsetzung ohne Planung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungen nachvollziehbar halten",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 14,
+          "TotalCount": 14,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 14,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M602",
+          "Title": "Concepts",
+          "Description": "Ideen- und Konzeptbereich des Systems.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Fachliche Konzepte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Architekturideen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "L\u00C3\u0192\u00C2\u00B6sungsvarianten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modulideen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Explorative Erarbeitung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M606",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M604",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine automatische Umsetzung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bewertung und Entscheidung erforderlich",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 9,
+          "TotalCount": 9,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M603",
+          "Title": "Prototypes",
+          "Description": "Testumgebung f\u00C3\u0192\u00C2\u00BCr Ideen, UI-Prototypen und technische Experimente.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "UI-Prototypen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Testimplementierungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Experimentelle Abl\u00C3\u0192\u00C2\u00A4ufe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Nicht produktiv",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Isoliert",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verwerfbar",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M604",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine direkte \u00C3\u0192\u00C5\u201Cbernahme in Produktion",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bewertung erforderlich",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 10,
+          "TotalCount": 10,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M604",
+          "Title": "Decisions",
+          "Description": "Ged\u00C3\u0192\u00C2\u00A4chtnis der Architekturentscheidungen und verbindlichen Systemregeln.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Architekturentscheidungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modulgrenzen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Systemregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Begr\u00C3\u0192\u00C2\u00BCndungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Entscheidungsverl\u00C3\u0192\u00C2\u00A4ufe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionierbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Dokumentationspflicht",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungen begr\u00C3\u0192\u00C2\u00BCnden",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine impliziten Entscheidungen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 9,
+          "TotalCount": 9,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M605",
+          "Title": "Standards / Guidelines",
+          "Description": "Regelwerk f\u00C3\u0192\u00C2\u00BCr einheitliche Umsetzung im gesamten System.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Naming-Konventionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "UI-Richtlinien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "API-Regeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Datenstandards",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Strukturvorgaben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Benennung von Modulen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "UI-Aufbau",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "API-Struktur",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Datenformate",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Standards einhalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abweichungen begr\u00C3\u0192\u00C2\u00BCnden",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 11,
+          "TotalCount": 11,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 11,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M606",
+          "Title": "Requirements",
+          "Description": "Eingangspunkt f\u00C3\u0192\u00C2\u00BCr neue Anforderungen und \u00C3\u0192\u00E2\u20AC\u017Enderungsw\u00C3\u0192\u00C2\u00BCnsche.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Feature-Anforderungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungsw\u00C3\u0192\u00C2\u00BCnsche",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abteilungsanforderungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Externe Anforderungen (z. B. ISO)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Noch nicht umgesetzt",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Noch nicht bewertet",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Offen f\u00C3\u0192\u00C2\u00BCr Analyse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M607",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Anforderungen sammeln, nicht direkt umsetzen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bewertung erforderlich",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 12,
+          "TotalCount": 12,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 12,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M607",
+          "Title": "Evaluation",
+          "Description": "Entscheidungsbasis f\u00C3\u0192\u00C2\u00BCr Priorit\u00C3\u0192\u00C2\u00A4ten, Nutzen und Umsetzbarkeit.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Priorisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bewertung von Anforderungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Risikoabsch\u00C3\u0192\u00C2\u00A4tzung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzenanalyse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Business Value",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Risiko",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Aufwand",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abh\u00C3\u0192\u00C2\u00A4ngigkeiten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M606",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Umsetzung ohne Bewertung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Priorisierung nachvollziehbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 13,
+          "TotalCount": 13,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 13,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M700",
+      "GroupTitle": "Support",
+      "Description": "Supportprozesse wie Bugs, Incidents und Wissensmanagement.",
+      "Modules": [
+        {
+          "Code": "M701",
+          "Title": "BugTracking",
+          "Description": "Technische Fehler systematisch erfassen und beheben.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Bugs",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Fehlerbeschreibungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Reproduzierbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Status (offen / in Arbeit / gel\u00C3\u0192\u00C2\u00B6st)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit jedes Bugs",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Vermischung mit Supportf\u00C3\u0192\u00C2\u00A4llen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 2,
+          "OpenCount": 4,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 6,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M702",
+          "Title": "ChangeRequests",
+          "Description": "\u00C3\u0192\u00E2\u20AC\u017Enderungsbedarf strukturiert erfassen und an Planung anbinden.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungsw\u00C3\u0192\u00C2\u00BCnsche",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verbesserungsideen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Erweiterungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M606",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 3,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M703",
+          "Title": "SupportCases",
+          "Description": "Nutzerprobleme und Anfragen strukturiert bearbeiten.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Supportf\u00C3\u0192\u00C2\u00A4lle",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Benutzeranfragen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Problembeschreibungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kann Bug ausl\u00C3\u0192\u00C2\u00B6sen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kann Incident ausl\u00C3\u0192\u00C2\u00B6sen",
+              "Status": "InProgress",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 1,
+          "OpenCount": 4,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M704",
+          "Title": "Incident Management",
+          "Description": "Kritische Situationen schnell und kontrolliert behandeln.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Incident-Erfassung",
+              "Status": "InProgress",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eskalation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Reaktionssteuerung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Anlagenstillstand",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Systemausfall",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitsvorf\u00C3\u00A4lle",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u00BCpfung zu M303",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verkn\u00C3\u00BCpfung zu M500",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 1,
+          "OpenCount": 7,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 8,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M705",
+          "Title": "Knowledge Base",
+          "Description": "Wissen systematisch speichern und f\u00C3\u0192\u00C2\u00BCr schnelleren Support nutzen.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Probleml\u00C3\u0192\u00C2\u00B6sungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Anleitungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Best Practices",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wiederverwendung von Wissen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Schneller Support",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 0,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 5,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M706",
+          "Title": "SLA / Service Levels",
+          "Description": "Reaktions- und Bearbeitungszeiten definieren und einhalten.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Priorit\u00C3\u0192\u00C2\u00A4ten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Reaktionszeiten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Bearbeitungszeiten",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Nutzung f\u00C3\u0192\u00C2\u00BCr Support",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Nutzung f\u00C3\u00BCr Incident Management",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 0,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 5,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M800",
+      "GroupTitle": "Security",
+      "Description": "Sicherheits-, Compliance- und Auditfunktionen f\u00C3\u00BCr Zugriff, Nachvollziehbarkeit und Schutz des Systems.",
+      "Modules": [
+        {
+          "Code": "M801",
+          "Title": "Security Foundation",
+          "Description": "Fundament aller Sicherheitsregeln im System.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Sicherheitsgrundlagen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Basiskonzepte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "\u00C3\u0192\u00C5\u201Cbergreifende Sicherheitsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitsprinzipien f\u00C3\u0192\u00C2\u00BCr alle Module",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Systemweite G\u00C3\u0192\u00C2\u00BCltigkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine modulbezogene Fachlogik",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 6,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 6,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M802",
+          "Title": "Application Security",
+          "Description": "Technische Sicherheit der Anwendung gegen Angriffe und Fehlverhalten.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Schutz gegen typische Web-/App-Angriffe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Eingabeabsicherung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichere Request-/Response-Verarbeitung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Technische Autorisierungsdurchsetzung auf Anwendungsebene",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schutz vor Injection",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schutz vor Manipulation",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schutz vor unsicheren Eingaben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Umgehung von Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 8,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M803",
+          "Title": "Data Security",
+          "Description": "Schutz der Daten im System hinsichtlich Vertraulichkeit, Integrit\u00C3\u0192\u00C2\u00A4t und Zugriff.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Verschl\u00C3\u0192\u00C2\u00BCsselung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriffsschutz auf Datenebene",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Schutz sensibler Informationen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichere Speicherung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Besonderer Schutz sensibler Daten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriff nach Sicherheits- und Berechtigungsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 6,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 6,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M804",
+          "Title": "DevSecOps",
+          "Description": "Sicherheit in Entwicklung und Auslieferung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "CI/CD-Sicherheitsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Pipeline-Sicherheit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen im Entwicklungsprozess",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichere Bereitstellung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherheitspr\u00C3\u0192\u00C2\u00BCfungen als Teil des Entwicklungsprozesses",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kein unsicheres Deployment",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 6,
+          "TotalCount": 6,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 6,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M805",
+          "Title": "Audit Logging",
+          "Description": "Revisionssichere Nachvollziehbarkeit des Systems.",
+          "Status": "In Progress",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "AuditLog",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "AuditService",
+              "Status": "Done",
+              "Level": "Core"
+            },
+            {
+              "Title": "Protokollierung sicherheitsrelevanter Ereignisse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit von \u00C3\u0192\u00E2\u20AC\u017Enderungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit von Aktionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung auditrelevanter Daten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wer / wann / was / vorher / nachher nachvollziehbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 2,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 7,
+          "CoreDoneCount": 2,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 29
+        },
+        {
+          "Code": "M806",
+          "Title": "Access Control",
+          "Description": "Zentrale Entscheidungsinstanz f\u00C3\u0192\u00C2\u00BCr Berechtigungen und Zugriff.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "RBAC",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "ABAC",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontextregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Allow / Deny",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vererbung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichtbarkeit vs. Aktion",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Freigaben f\u00C3\u0192\u00C2\u00BCr sicherheitskritische Aktionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zentrale Auswertung von Berechtigungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine verteilte Schattenlogik",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriff und Aktion getrennt bewerten",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 10,
+          "TotalCount": 10,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 10,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M807",
+          "Title": "Secrets \u0026 Key Management",
+          "Description": "Sichere Verwaltung aller geheimen Systemzug\u00C3\u0192\u00C2\u00A4nge.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "API Keys",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Tokens",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zertifikate",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verschl\u00C3\u0192\u00C2\u00BCsselungsschl\u00C3\u0192\u00C2\u00BCssel",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichere Ablage",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sichere Nutzung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Secrets im Code",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kein unkontrollierter Zugriff",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung nachvollziehbar und abgesichert",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 9,
+          "TotalCount": 9,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M808",
+          "Title": "Security Monitoring / Detection",
+          "Description": "Aktive Sicherheitswache des Systems f\u00C3\u0192\u00C2\u00BCr Erkennung und Alarmierung.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Erkennung ungew\u00C3\u0192\u00C2\u00B6hnlicher Zugriffe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Erkennung verd\u00C3\u0192\u00C2\u00A4chtiger Muster",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Sicherheitsalarme",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Monitoring sicherheitsrelevanter Ereignisse",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Viele Fehlanmeldungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnliche API-Zugriffe",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Auff\u00C3\u0192\u00C2\u00A4llige Nutzungsmuster",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Verd\u00C3\u0192\u00C2\u00A4chtige Aktivit\u00C3\u0192\u00C2\u00A4ten im System",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Nicht nur loggen, sondern aktiv \u00C3\u0192\u00C2\u00BCberwachen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kritische Auff\u00C3\u0192\u00C2\u00A4lligkeiten erzeugen Reaktion / Alarm",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 10,
+          "TotalCount": 10,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 8,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M809",
+          "Title": "Compliance / Policies",
+          "Description": "Verbindliches Sicherheits- und Compliance-Regelwerk des Systems.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Sicherheitsrichtlinien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriffsrichtlinien",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Policy-Vorgaben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Compliance-Regeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachweisbare Regelwerke",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Policies sind verbindlich",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Abweichungen nachvollziehbar und begr\u00C3\u0192\u00C2\u00BCndet machen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Policies wirken auf Konfiguration, Zugriff und Prozesse",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 8,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M900",
+      "GroupTitle": "Intelligence",
+      "Description": "Analyse, Vorhersage und Optimierung von Systemdaten.",
+      "Modules": [
+        {
+          "Code": "M901",
+          "Title": "Analytics / Intelligence Engine",
+          "Description": "Zentrale Analyse-Engine des Systems.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Datenanalyse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Korrelationen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Mustererkennung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zusammenf\u00C3\u0192\u00C2\u00BChrung von Daten aus verschiedenen Modulen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Energie vs. Produktion",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wartung vs. Stillst\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Qualit\u00C3\u0192\u00C2\u00A4t vs. Ausschuss",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Steuerung von Prozessen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ergebnisse nachvollziehbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 9,
+          "TotalCount": 9,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 9,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M902",
+          "Title": "Prediction / Forecasting",
+          "Description": "Vorhersage zuk\u00C3\u0192\u00C2\u00BCnftiger Entwicklungen auf Basis vorhandener Daten.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Prognosen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Trends",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Vorhersagen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Energieverbrauch",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wartungsbedarf",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Produktionsentwicklung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Vorhersagen sind Empfehlungen, keine Entscheidungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Unsicherheiten ber\u00C3\u0192\u00C2\u00BCcksichtigen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 6,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M903",
+          "Title": "Optimization",
+          "Description": "Optimierung des Systems und der Prozesse durch nachvollziehbare Vorschl\u00C3\u0192\u00C2\u00A4ge.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Verbesserungsvorschl\u00C3\u0192\u00C2\u00A4ge",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Optimierungslogik",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Effizienzanalysen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Energieeinsparung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Wartungsoptimierung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Produktionsoptimierung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Keine automatische Umsetzung ohne Freigabe",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vorschl\u00C3\u0192\u00C2\u00A4ge nachvollziehbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 6,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M904",
+          "Title": "Anomaly Detection",
+          "Description": "Erkennung ungew\u00C3\u0192\u00C2\u00B6hnlicher oder kritischer Abweichungen im System.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Abweichungserkennung",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Musterabweichungen",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnliche Zust\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnlicher Energieverbrauch",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Atypische Maschinenzust\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Unerwartete Produktionswerte",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Anomalien erkl\u00C3\u0192\u00C2\u00A4rbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Ergebnisse k\u00C3\u0192\u00C2\u00B6nnen Alerts ausl\u00C3\u0192\u00C2\u00B6sen (M303)",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 8,
+          "TotalCount": 8,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 2,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 6,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M905",
+          "Title": "Intelligence Governance",
+          "Description": "Regelwerk f\u00C3\u0192\u00C2\u00BCr sichere und kontrollierte Intelligenzfunktionen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Richtlinien f\u00C3\u0192\u00C2\u00BCr KI-Nutzung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Freigaberegeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Auditf\u00C3\u0192\u00C2\u00A4higkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine unkontrollierte KI-Entscheidung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Modelle und Analysen \u00C3\u0192\u00C2\u00BCberpr\u00C3\u0192\u00C2\u00BCfbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nutzung unterliegt Sicherheits- und Compliance-Regeln",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 7,
+          "TotalCount": 7,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 7,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M1000",
+      "GroupTitle": "Platform",
+      "Description": "Technische Plattform f\u00C3\u00BCr Erweiterbarkeit, Plugins und Versionierung.",
+      "Modules": [
+        {
+          "Code": "M1001",
+          "Title": "Plugin System",
+          "Description": "Kontrollierte Erweiterbarkeit des Systemkerns durch definierte Plugins.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Plugin-Struktur definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Plugin-Schnittstellen definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Standardisierte Erweiterungspunkte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrolliertes Laden von Plugins",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Laufzeitanbindung von Plugins",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Plugin-Initialisierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Isolation von Plugins sicherstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Trennung Core vs Plugin erzwingen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zugriff nur \u00C3\u0192\u00C2\u00BCber definierte Schnittstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Plugin-Lifecycle (Load / Unload)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Fehlerisolation von Plugins",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Drittmodule",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr Plattformf\u00C3\u0192\u00C2\u00A4higkeit",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 13,
+          "TotalCount": 13,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 12,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1002",
+          "Title": "Developer Platform / SDK",
+          "Description": "Technische Grundlage f\u00C3\u0192\u00C2\u00BCr saubere Erweiterungsentwicklung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Entwickler-Schnittstellen definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Standardisierte APIs f\u00C3\u0192\u00C2\u00BCr Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vertr\u00C3\u0192\u00C2\u00A4ge f\u00C3\u0192\u00C2\u00BCr Erweiterungen festlegen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "SDK-Struktur definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "SDK-Prinzipien festlegen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Hilfsstrukturen f\u00C3\u0192\u00C2\u00BCr Plugin-Entwicklung bereitstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Technische Standards f\u00C3\u0192\u00C2\u00BCr Erweiterungen definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Architekturkonforme Entwicklung sicherstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Einhaltung von Plattformregeln pr\u00C3\u0192\u00C2\u00BCfen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine Umgehung definierter APIs erm\u00C3\u0192\u00C2\u00B6glichen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verwendung nur \u00C3\u0192\u00C2\u00BCber definierte Schnittstellen erzwingen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Unterst\u00C3\u0192\u00C2\u00BCtzung f\u00C3\u0192\u00C2\u00BCr interne Entwickler",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr externe Entwickler",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Sicherstellung technischer Konsistenz",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr skalierbare Erweiterungsentwicklung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 14,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1003",
+          "Title": "Extension Management",
+          "Description": "Verwaltung des Lebenszyklus von Erweiterungen.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Installation von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Installationsstatus verwalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Aktivierung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Aktivierungsstatus verwalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Deaktivierung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Deaktivierungsstatus verwalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionsverwaltung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionen nachvollziehbar verwalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Zustands\u00C3\u0192\u00C2\u00A4nderungen protokollieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit aller \u00C3\u0192\u00E2\u20AC\u017Enderungen sicherstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrollierte Verwaltung des Erweiterungszustands",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verhinderung unkontrollierter Aktivierung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Trennung von Plugin-Core (M1001)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr stabilen Plattformbetrieb",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Unterst\u00C3\u0192\u00C2\u00BCtzung f\u00C3\u0192\u00C2\u00BCr Wartbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 15,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1004",
+          "Title": "Marketplace",
+          "Description": "Verteilungsschicht f\u00C3\u0192\u00C2\u00BCr Erweiterungen und verf\u00C3\u0192\u00C2\u00BCgbare Module.",
+          "Status": "Open",
+          "Level": "OptionalCore",
+          "WorkItems": [
+            {
+              "Title": "Bereitstellung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verf\u00C3\u0192\u00C2\u00BCgbare Erweiterungen registrieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Katalogisierung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Strukturierte Darstellung verf\u00C3\u0192\u00C2\u00BCgbarer Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verteilungsmechanismen definieren",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bereitstellung \u00C3\u0192\u00C2\u00BCber definierte Kan\u00C3\u0192\u00C2\u00A4le",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Referenzen auf Erweiterungen verwalten",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Metadaten zu Erweiterungen bereitstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Trennung von Plugin-Core (M1001)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Trennung von Extension Management (M1003)",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Keine automatische Aktivierung von Erweiterungen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Verf\u00C3\u0192\u00C2\u00BCgbarkeit \u00C3\u00A2\u00E2\u20AC\u00B0\u00C2\u00A0 Nutzung sicherstellen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Einhaltung von Plattform- und Sicherheitsregeln",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr \u00C3\u0192\u00E2\u20AC\u201Ckosystem-F\u00C3\u0192\u00C2\u00A4higkeit",
+              "Status": "Open",
+              "Level": "OptionalCore"
+            },
+            {
+              "Title": "Unterst\u00C3\u0192\u00C2\u00BCtzung skalierbarer Erweiterungsverteilung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 14,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 1,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1005",
+          "Title": "Versioning \u0026 Update Management",
+          "Description": "Kontrollierte Verwaltung von Versionen und Updates der Plattform.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Systemversionen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Update-St\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrollierte Updateprozesse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Nachvollziehbarkeit von \u00C3\u0192\u00E2\u20AC\u017Enderungen auf Plattformebene",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionsst\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Updateverwaltung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Updatehistorie",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kontrollierte Rollout-Informationen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Updates nachvollziehbar machen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versionen klar zuordnen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Plattform\u00C3\u0192\u00C2\u00A4nderungen kontrolliert ausrollen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Updater aus M500 herausl\u00C3\u0192\u00C2\u00B6sen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Versioning aus M500 herausl\u00C3\u0192\u00C2\u00B6sen",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr kontrollierte Weiterentwicklung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Stabile und nachvollziehbare Plattformst\u00C3\u0192\u00C2\u00A4nde",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 15,
+          "TotalCount": 15,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 15,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    },
+    {
+      "GroupCode": "M1100",
+      "GroupTitle": "Productization / Distribution",
+      "Description": "Produktisierung, Auslieferung, Lizenzierung und Betrieb des ausgelieferten SWFC-Produkts.",
+      "Modules": [
+        {
+          "Code": "M1101",
+          "Title": "Distribution",
+          "Description": "Auslieferung und Bereitstellung des SWFC-Produkts.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Distributionslogik",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Bereitstellungspakete",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Rollout-Bereitstellung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Auslieferungskontexte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Produktbezogene Verteilungsprofile",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1102",
+          "Title": "Updates",
+          "Description": "Produktbezogene Update-Verteilung und Update-Orchestrierung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Update-Auslieferung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Rollout-Logik",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Update-Freigabestatus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Update-Verteilung im Produktkontext",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Kundenbezogene Updatezuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1103",
+          "Title": "Product Versioning",
+          "Description": "Version des ausgelieferten Produkts im Kunden- und Produktkontext.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Produktversion",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Release-Zuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Installierte Version beim Kunden",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Freigegebene Version",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Produktbezogene Versionsnachvollziehbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1104",
+          "Title": "Licensing",
+          "Description": "Lizenzierung des SWFC-Produkts im ausgelieferten Kontext.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Lizenzstatus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lizenzzuordnung",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lizenzgueltigkeit",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Lizenzabhaengige Produktfreigaben",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Produktnutzungsrahmen im Lizenzkontext",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1105",
+          "Title": "Backup / Restore",
+          "Description": "Produktbezogene Backup- und Restore-Verantwortung.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Backup-Strategien im Produktkontext",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Restore-Prozesse",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Recovery-Kontexte",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Sicherungsstatus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Wiederherstellungsnachvollziehbarkeit",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        },
+        {
+          "Code": "M1106",
+          "Title": "Product Operations",
+          "Description": "Produktbezogener Betriebs- und Operationskontext des ausgelieferten Produkts.",
+          "Status": "Open",
+          "Level": "Core",
+          "WorkItems": [
+            {
+              "Title": "Kundenbetriebsstatus",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Betriebsprofile",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Deployment-Profile",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Produktbezogene Health-Sicht",
+              "Status": "Open",
+              "Level": "Core"
+            },
+            {
+              "Title": "Betriebsfaehigkeit im Produktkontext",
+              "Status": "Open",
+              "Level": "Core"
+            }
+          ],
+          "DoneCount": 0,
+          "InProgressCount": 0,
+          "OpenCount": 5,
+          "TotalCount": 5,
+          "CoreDoneCount": 0,
+          "CoreTotalCount": 5,
+          "OptionalCoreDoneCount": 0,
+          "OptionalCoreTotalCount": 0,
+          "ExtensionDoneCount": 0,
+          "ExtensionTotalCount": 0,
+          "ProgressPercent": 0
+        }
+      ]
+    }
+  ]
+}

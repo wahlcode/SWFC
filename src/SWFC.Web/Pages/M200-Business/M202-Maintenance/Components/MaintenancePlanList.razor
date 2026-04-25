@@ -1,0 +1,48 @@
+@using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans
+
+<section class="m202-card">
+    <header class="m202-card__header">
+        <h2>Wartungspläne</h2>
+        <span class="m202-card__count">@Items.Count</span>
+    </header>
+
+    @if (Items.Count == 0)
+    {
+        <p class="m202-card__empty">Keine Wartungspläne vorhanden.</p>
+    }
+    else
+    {
+        <table class="m202-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Intervall</th>
+                    <th>Nächster Termin</th>
+                    <th>Aktiv</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    <tr>
+                        <td>
+                            <a class="m202-link" href="@($"/business/maintenance/plans/{item.Id}")">
+                                @item.Name
+                            </a>
+                        </td>
+                        <td>@item.IntervalValue @item.IntervalUnit</td>
+                        <td>@item.NextDueAtUtc.ToString("dd.MM.yyyy")</td>
+                        <td>@(item.IsActive ? "Ja" : "Nein")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<MaintenancePlanListItemDto> Items { get; set; } = Array.Empty<MaintenancePlanListItemDto>();
+}
+
+

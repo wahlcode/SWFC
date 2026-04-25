@@ -1,0 +1,384 @@
+@page "/system/organization-units"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
+@using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+
+@inject IExecutionPipeline<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>> GetOrganizationUnitsPipeline
+@inject IExecutionPipeline<CreateOrganizationUnitCommand, Guid> CreateOrganizationUnitPipeline
+@inject NavigationManager NavigationManager
+
+<section class="m100-ou">
+
+    <header class="m100-card m100-ou__hero">
+        <div class="m100-ou__hero-main">
+            <div class="m100-ou__hero-text">
+                <a href="/system/organization" class="m100-ou__back">Back</a>
+                <p class="m100-ou__eyebrow">M102 · Organization</p>
+                <h1>Organization Units</h1>
+                <p>Organizational parent/child structure using real M102 name, code and parent data.</p>
+            </div>
+
+            <div class="m100-ou__summary">
+                <div class="m100-ou__summary-item">
+                    <span>Total</span>
+                    <strong>@_units.Count</strong>
+                </div>
+                <div class="m100-ou__summary-item">
+                    <span>Active</span>
+                    <strong>@_units.Count(x => x.IsActive)</strong>
+                </div>
+                <div class="m100-ou__summary-item">
+                    <span>Roots</span>
+                    <strong>@_units.Count(x => !x.ParentId.HasValue)</strong>
+                </div>
+                <div class="m100-ou__summary-item">
+                    <span>Matches</span>
+                    <strong>@_filteredUnits.Count</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    <div class="m100-ou__toolbar m100-card">
+        <input class="m100-input"
+               placeholder="Search name or code"
+               value="@_searchText"
+               @oninput="OnSearchChanged" />
+
+        <button class="m100-button" @onclick="OpenCreatePanel">
+            New unit
+        </button>
+    </div>
+
+    <div class="m100-ou__layout">
+
+        <div class="m100-card">
+
+            @if (_isLoading)
+            {
+                <div class="m100-loading">Loading organization units...</div>
+            }
+            else if (_filteredUnits.Count == 0)
+            {
+                <div class="m100-empty">No organization units found.</div>
+            }
+            else
+            {
+                <div class="m100-ou-tree">
+                    @foreach (var row in TreeRows)
+                    {
+                        <article class="m100-ou-tree__row">
+                            <div class="m100-ou-tree__main">
+                                <div class="m100-ou-tree__indent" aria-hidden="true">
+                                    @for (var level = 0; level < row.Level; level++)
+                                    {
+                                        <span class="m100-ou-tree__indent-step"></span>
+                                    }
+                                </div>
+
+                                <div class="m100-ou-tree__content">
+                                    <div class="m100-ou-tree__title">@row.Unit.Name</div>
+                                    <div class="m100-ou-tree__meta">
+                                        <span>@row.Unit.Code</span>
+
+                                        @if (row.Unit.ParentId.HasValue)
+                                        {
+                                            <span>@BuildParentLabel(row.Unit)</span>
+                                        }
+
+                                        @if (row.ChildCount > 0)
+                                        {
+                                            <span>@(row.ChildCount == 1 ? "1 child unit" : $"{row.ChildCount} child units")</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="m100-ou-tree__side">
+                                <span class="@($"m100-ou-tree__status{(row.Unit.IsActive ? " is-active" : string.Empty)}")">
+                                    @(row.Unit.IsActive ? "Active" : "Inactive")
+                                </span>
+
+                                <a href="@($"/system/organization-units/{row.Unit.Id}")">
+                                    Details
+                                </a>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+
+        </div>
+
+        @if (_showCreatePanel)
+        {
+            <div class="m100-card m100-ou__create">
+
+                <h3>New organization unit</h3>
+                <p>The assignment to a parent unit uses the existing parent structure.</p>
+
+                <label class="m100-ou__field">
+                    <span>Name</span>
+                    <input class="m100-input"
+                           placeholder="Name"
+                           @bind="_createModel.Name" />
+                </label>
+
+                <label class="m100-ou__field">
+                    <span>Code</span>
+                    <input class="m100-input"
+                           placeholder="Code"
+                           @bind="_createModel.Code" />
+                </label>
+
+                <label class="m100-ou__field">
+                    <span>Parent unit</span>
+                    <select class="m100-input"
+                            @bind="_createModel.ParentId">
+                        <option value="">-- no parent --</option>
+                        @foreach (var unit in _units.OrderBy(x => x.Name).ThenBy(x => x.Code))
+                        {
+                            <option value="@unit.Id">@unit.Name (@unit.Code)</option>
+                        }
+                    </select>
+                </label>
+
+                <label class="m100-ou__field">
+                    <span>Reason</span>
+                    <textarea class="m100-textarea"
+                              placeholder="Reason"
+                              @bind="_createModel.Reason"></textarea>
+                </label>
+
+                <div class="m100-actions">
+                    <button class="m100-button"
+                            @onclick="CreateAsync"
+                            disabled="@_isSubmitting">
+                        Save
+                    </button>
+
+                    <button class="m100-button m100-button--secondary"
+                            @onclick="CloseCreatePanel">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+@code {
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+    private bool _showCreatePanel;
+
+    private string? _error;
+    private string? _success;
+    private string _searchText = string.Empty;
+
+    private IReadOnlyList<OrganizationUnitListItem> _units = [];
+    private List<OrganizationUnitListItem> _filteredUnits = [];
+
+    private CreateOrganizationUnitInputModel _createModel = new();
+
+    private IReadOnlyList<OrganizationUnitTreeRow> TreeRows => BuildTreeRows(_filteredUnits);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            var result = await GetOrganizationUnitsPipeline.ExecuteAsync(new GetOrganizationUnitsQuery());
+
+            if (!result.IsSuccess || result.Value is null)
+            {
+                _units = Array.Empty<OrganizationUnitListItem>();
+                _filteredUnits = [];
+                _error = result.Error?.Message;
+                return;
+            }
+
+            _units = result.Value;
+            ApplyFilter();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void ApplyFilter()
+    {
+        IEnumerable<OrganizationUnitListItem> query = _units;
+
+        if (!string.IsNullOrWhiteSpace(_searchText))
+        {
+            var searchText = _searchText.Trim();
+
+            query = query.Where(x =>
+                x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                x.Code.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        _filteredUnits = query
+            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? string.Empty;
+        ApplyFilter();
+    }
+
+    private void OpenCreatePanel()
+    {
+        _createModel = new();
+        _showCreatePanel = true;
+        _error = null;
+        _success = null;
+    }
+
+    private void CloseCreatePanel()
+    {
+        if (!_isSubmitting)
+        {
+            _showCreatePanel = false;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        _error = null;
+        _success = null;
+        _isSubmitting = true;
+
+        try
+        {
+            var result = await CreateOrganizationUnitPipeline.ExecuteAsync(
+                new CreateOrganizationUnitCommand(
+                    _createModel.Name,
+                    _createModel.Code,
+                    _createModel.ParentId,
+                    _createModel.Reason));
+
+            if (!result.IsSuccess)
+            {
+                _error = result.Error?.Message;
+                return;
+            }
+
+            _success = "Organization unit created.";
+            _showCreatePanel = false;
+
+            await LoadAsync();
+
+            NavigationManager.NavigateTo($"/system/organization-units/{result.Value}");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private static string BuildParentLabel(OrganizationUnitListItem item)
+    {
+        if (!string.IsNullOrWhiteSpace(item.ParentName) && !string.IsNullOrWhiteSpace(item.ParentCode))
+        {
+            return $"{item.ParentName} ({item.ParentCode})";
+        }
+
+        return item.ParentName ?? item.ParentCode ?? "-";
+    }
+
+    private static IReadOnlyList<OrganizationUnitTreeRow> BuildTreeRows(IReadOnlyList<OrganizationUnitListItem> units)
+    {
+        if (units.Count == 0)
+        {
+            return [];
+        }
+
+        var visibleIds = units.Select(x => x.Id).ToHashSet();
+        var childrenByParent = units
+            .Where(x => x.ParentId.HasValue)
+            .GroupBy(x => x.ParentId!.Value)
+            .ToDictionary(
+                group => group.Key,
+                group => group
+                    .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+                    .ToList());
+
+        var rows = new List<OrganizationUnitTreeRow>(units.Count);
+
+        var roots = units
+            .Where(x => !x.ParentId.HasValue || !visibleIds.Contains(x.ParentId.Value))
+            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var root in roots)
+        {
+            Append(root, level: 0);
+        }
+
+        return rows;
+
+        void Append(OrganizationUnitListItem unit, int level)
+        {
+            childrenByParent.TryGetValue(unit.Id, out var children);
+
+            rows.Add(new OrganizationUnitTreeRow(
+                unit,
+                level,
+                children?.Count ?? 0));
+
+            if (children is null)
+            {
+                return;
+            }
+
+            foreach (var child in children)
+            {
+                Append(child, level + 1);
+            }
+        }
+    }
+
+    private sealed record OrganizationUnitTreeRow(
+        OrganizationUnitListItem Unit,
+        int Level,
+        int ChildCount);
+
+    private sealed class CreateOrganizationUnitInputModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public Guid? ParentId { get; set; }
+        public string Reason { get; set; } = string.Empty;
+    }
+}

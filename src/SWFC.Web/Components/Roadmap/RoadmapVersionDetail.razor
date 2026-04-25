@@ -1,0 +1,140 @@
+@using SWFC.Web.Components.ModuleOverview
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+
+@inject LocalizationTextProvider TextProvider
+
+<article class="roadmap-version-detail">
+    <div class="roadmap-version-detail__header">
+        <div>
+            <p>@Version.Version</p>
+            <h1>@Version.AudienceTitle</h1>
+        </div>
+
+        <RoadmapStatusBadge Status="@Version.Status" />
+    </div>
+
+    <section class="roadmap-version-detail__section">
+        <h2>@_goalText</h2>
+        <p>@Version.Goal</p>
+    </section>
+
+    <section class="roadmap-version-detail__section">
+        <h2>@_benefitText</h2>
+        <p>@Version.UserDescription</p>
+    </section>
+
+    <section class="roadmap-version-detail__section">
+        <h2>@_milestonesText</h2>
+
+        <div class="roadmap-version-detail__milestones">
+            @foreach (var milestone in Version.Milestones)
+            {
+                <div class="roadmap-version-detail__milestone">
+                    <div>
+                        <strong>@milestone.Title</strong>
+                        <span>@milestone.Description</span>
+                    </div>
+
+                    <RoadmapStatusBadge Status="@milestone.Status" />
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="roadmap-version-detail__section">
+        <h2>@_resultText</h2>
+        <p>@Version.Result</p>
+    </section>
+
+    @if (ShowDeveloperDetails)
+    {
+        <section class="roadmap-version-detail__section roadmap-version-detail__section--technical">
+            <h2>@_technicalViewText</h2>
+            <p>@Version.DeveloperDescription</p>
+
+            <h3>@_primaryModulesText</h3>
+            <RoadmapModuleLinkList ModuleCodes="@Version.PrimaryModules" Modules="@Modules" ShowStatus="true" />
+
+            <h3>@_requiredModulesText</h3>
+            <RoadmapModuleLinkList ModuleCodes="@Version.RequiredModules" Modules="@Modules" ShowStatus="true" />
+
+            @if (AuditModules.Count > 0)
+            {
+                <h3>@_auditText</h3>
+
+                <div class="roadmap-version-detail__audit-list">
+                    @foreach (var module in AuditModules)
+                    {
+                        <div class="roadmap-version-detail__audit-item">
+                            <strong>@module.Code</strong>
+                            <span>@FormatAuditStatus(module.AuditStatus)</span>
+                            <span>@(module.AuditScorePercent.HasValue ? $"{module.AuditScorePercent.Value}%" : _notCheckedText)</span>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public RoadmapVersion Version { get; set; } = new();
+
+    [Parameter]
+    public IReadOnlyList<ModuleOverviewModuleDto> Modules { get; set; } = Array.Empty<ModuleOverviewModuleDto>();
+
+    [Parameter]
+    public bool ShowDeveloperDetails { get; set; }
+
+    private string _goalText = "Goal";
+    private string _benefitText = "Benefit";
+    private string _milestonesText = "Milestones";
+    private string _resultText = "Result";
+    private string _technicalViewText = "Technical view";
+    private string _primaryModulesText = "Primary modules";
+    private string _requiredModulesText = "Required modules";
+    private string _auditText = "Audit";
+    private string _notCheckedText = "Not checked";
+    private string _auditVerifiedText = "Fully verified";
+    private string _auditPartiallyVerifiedText = "Partially verified";
+    private string _auditFailedText = "No evidence";
+
+    private IReadOnlyList<ModuleOverviewModuleDto> AuditModules =>
+        Modules
+            .Where(x => Version.PrimaryModules.Concat(Version.RequiredModules)
+                .Any(code => string.Equals(code, x.Code, StringComparison.OrdinalIgnoreCase)))
+            .Where(x => !string.IsNullOrWhiteSpace(x.AuditStatus))
+            .ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _goalText = await TextProvider.GetTextAsync("Roadmap.Goal", culture);
+        _benefitText = await TextProvider.GetTextAsync("Roadmap.Benefit", culture);
+        _milestonesText = await TextProvider.GetTextAsync("Roadmap.Milestones", culture);
+        _resultText = await TextProvider.GetTextAsync("Roadmap.Result", culture);
+        _technicalViewText = await TextProvider.GetTextAsync("Roadmap.TechnicalView", culture);
+        _primaryModulesText = await TextProvider.GetTextAsync("Roadmap.PrimaryModules", culture);
+        _requiredModulesText = await TextProvider.GetTextAsync("Roadmap.RequiredModules", culture);
+        _auditText = await TextProvider.GetTextAsync("Roadmap.Audit", culture);
+        _notCheckedText = await TextProvider.GetTextAsync("Roadmap.NotChecked", culture);
+        _auditVerifiedText = await TextProvider.GetTextAsync("Roadmap.AuditStatus.Verified", culture);
+        _auditPartiallyVerifiedText = await TextProvider.GetTextAsync("Roadmap.AuditStatus.PartiallyVerified", culture);
+        _auditFailedText = await TextProvider.GetTextAsync("Roadmap.AuditStatus.Failed", culture);
+    }
+
+    private string FormatAuditStatus(string? status)
+    {
+        var normalized = (status ?? string.Empty).Trim().Replace(" ", string.Empty).ToLowerInvariant();
+
+        return normalized switch
+        {
+            "verified" => _auditVerifiedText,
+            "partiallyverified" => _auditPartiallyVerifiedText,
+            "failed" => _auditFailedText,
+            _ => _auditFailedText
+        };
+    }
+}

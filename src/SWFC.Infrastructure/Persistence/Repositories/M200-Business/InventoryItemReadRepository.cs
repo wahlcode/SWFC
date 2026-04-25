@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M200_Business.M204_Inventory.Interfaces;
-using SWFC.Application.M200_Business.M204_Inventory.Queries;
-using SWFC.Domain.M200_Business.M204_Inventory.Enums;
+using SWFC.Application.M200_Business.M204_Inventory.Items;
+using SWFC.Application.M200_Business.M204_Inventory.Locations;
+using SWFC.Application.M200_Business.M204_Inventory.Reservations;
+using SWFC.Application.M200_Business.M204_Inventory.Stock;
+using SWFC.Application.M200_Business.M204_Inventory.Shared;
+using SWFC.Domain.M200_Business.M204_Inventory.Stock;
+using SWFC.Domain.M200_Business.M204_Inventory.Reservations;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M200_Business;
@@ -17,30 +21,33 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
 
     public async Task<IReadOnlyList<InventoryItemListItem>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var inventoryItems = await _dbContext.InventoryItems
+        var items = await _dbContext.InventoryItems
             .AsNoTracking()
-            .Include(x => x.Stock)
+            .Include(x => x.Stocks)
                 .ThenInclude(x => x.Reservations)
             .ToListAsync(cancellationToken);
 
-        return inventoryItems
+        return items
             .OrderBy(x => x.Name.Value)
             .Select(x =>
             {
-                var reservedQuantity = x.Stock?.Reservations
+                var quantityOnHand = x.Stocks.Sum(s => s.QuantityOnHand);
+                var reservedQuantity = x.Stocks
+                    .SelectMany(s => s.Reservations)
                     .Where(r => r.Status == StockReservationStatus.Active)
-                    .Sum(r => r.Quantity) ?? 0;
-
-                var quantityOnHand = x.Stock?.QuantityOnHand ?? 0;
-                var availableQuantity = quantityOnHand - reservedQuantity;
+                    .Sum(r => r.Quantity);
 
                 return new InventoryItemListItem(
                     x.Id,
+                    x.ArticleNumber.Value,
                     x.Name.Value,
-                    x.Stock?.Id,
+                    x.Description.Value,
+                    x.Unit.Value,
+                    x.IsActive,
+                    x.Stocks.Count,
                     quantityOnHand,
                     reservedQuantity,
-                    availableQuantity,
+                    quantityOnHand - reservedQuantity,
                     x.AuditInfo.CreatedAtUtc,
                     x.AuditInfo.CreatedBy,
                     x.AuditInfo.LastModifiedAtUtc,
@@ -51,34 +58,80 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
 
     public async Task<InventoryItemDetailsDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var inventoryItem = await _dbContext.InventoryItems
+        var item = await _dbContext.InventoryItems
             .AsNoTracking()
-            .Include(x => x.Stock)
+            .Include(x => x.Stocks)
                 .ThenInclude(x => x.Reservations)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-        if (inventoryItem is null)
+        if (item is null)
         {
             return null;
         }
 
-        var reservedQuantity = inventoryItem.Stock?.Reservations
-            .Where(r => r.Status == StockReservationStatus.Active)
-            .Sum(r => r.Quantity) ?? 0;
+        var locationMap = await _dbContext.Locations
+            .AsNoTracking()
+            .ToDictionaryAsync(x => x.Id, cancellationToken);
 
-        var quantityOnHand = inventoryItem.Stock?.QuantityOnHand ?? 0;
-        var availableQuantity = quantityOnHand - reservedQuantity;
+        var stocks = item.Stocks
+            .OrderBy(s => locationMap.ContainsKey(s.LocationId) ? locationMap[s.LocationId].Name.Value : string.Empty)
+            .ThenBy(s => s.Bin)
+            .Select(s =>
+            {
+                var reserved = s.Reservations
+                    .Where(r => r.Status == StockReservationStatus.Active)
+                    .Sum(r => r.Quantity);
+
+                locationMap.TryGetValue(s.LocationId, out var location);
+
+                return new InventoryItemStockDto(
+                    s.Id,
+                    s.LocationId,
+                    location?.Name.Value ?? string.Empty,
+                    location?.Code.Value ?? string.Empty,
+                    s.Bin,
+                    s.QuantityOnHand,
+                    reserved,
+                    s.QuantityOnHand - reserved);
+            })
+            .ToList();
+
+        var totalOnHand = stocks.Sum(x => x.QuantityOnHand);
+        var totalReserved = stocks.Sum(x => x.ReservedQuantity);
 
         return new InventoryItemDetailsDto(
-            inventoryItem.Id,
-            inventoryItem.Name.Value,
-            inventoryItem.Stock?.Id,
-            quantityOnHand,
-            reservedQuantity,
-            availableQuantity,
-            inventoryItem.AuditInfo.CreatedAtUtc,
-            inventoryItem.AuditInfo.CreatedBy,
-            inventoryItem.AuditInfo.LastModifiedAtUtc,
-            inventoryItem.AuditInfo.LastModifiedBy);
+            item.Id,
+            item.ArticleNumber.Value,
+            item.Name.Value,
+            item.Description.Value,
+            item.Unit.Value,
+            item.Barcode?.Value,
+            item.Manufacturer?.Value,
+            item.ManufacturerPartNumber?.Value,
+            item.IsActive,
+            totalOnHand,
+            totalReserved,
+            totalOnHand - totalReserved,
+            stocks,
+            item.AuditInfo.CreatedAtUtc,
+            item.AuditInfo.CreatedBy,
+            item.AuditInfo.LastModifiedAtUtc,
+            item.AuditInfo.LastModifiedBy);
+    }
+
+    public async Task<IReadOnlyList<InventoryItemLookupItem>> GetLookupAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.InventoryItems
+            .AsNoTracking()
+            .OrderBy(x => x.ArticleNumber.Value)
+            .ThenBy(x => x.Name.Value)
+            .Select(x => new InventoryItemLookupItem(
+                x.Id,
+                x.ArticleNumber.Value,
+                x.Name.Value,
+                x.Unit.Value,
+                x.IsActive))
+            .ToListAsync(cancellationToken);
     }
 }
+

@@ -1,6 +1,7 @@
 # Build
 bin/
 obj/
+*.rz.scp.css
 
 # .NET
 *.user
@@ -13,3 +14,6 @@ obj/
 
 # OS
 Thumbs.db
+
+**/bin/
+**/obj/

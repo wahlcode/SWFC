@@ -1,0 +1,213 @@
+@page "/system/users/{Id:guid}"
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using SWFC.Application.M100_System.M102_Organization.Assignments
+@using SWFC.Application.M100_System.M102_Organization.CostCenters
+@using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
+@using SWFC.Application.M100_System.M102_Organization.ShiftModels
+@using SWFC.Application.M100_System.M102_Organization.Users
+@using SWFC.Domain.M100_System.M102_Organization.Users
+
+<section class="m100-detail">
+    <div class="m100-detail__header">
+        <div>
+            <h1>@_title</h1>
+            <p>@_subtitle</p>
+        </div>
+
+        <div class="m100-actions">
+            <a href="/system/users" class="m100-button m100-button--secondary">@_backText</a>
+            <button class="m100-button" type="button" @onclick="ReloadAsync" disabled="@_isBusy">@_reloadText</button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <div class="m100-alert m100-alert--error">@_error</div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(_success))
+    {
+        <div class="m100-alert m100-alert--success">@_success</div>
+    }
+
+    @if (_isLoading)
+    {
+        <div class="m100-loading">@_loadingText</div>
+    }
+    else if (_user is null)
+    {
+        <div class="m100-empty">@_notFoundText</div>
+    }
+    else
+    {
+        <div class="m100-detail__layout">
+            <div class="m100-detail__main">
+                <EditForm class="m100-card" Model="_editModel" OnValidSubmit="UpdateUserAsync">
+                    <DataAnnotationsValidator />
+
+                    <h2>@_user.DisplayName</h2>
+                    <p>@_masterDataInfoText</p>
+
+                    <input class="m100-input" value="@_user.IdentityKey" disabled />
+                    <input class="m100-input" @bind="_editModel.Username" placeholder="@_usernameText" />
+                    <input class="m100-input" @bind="_editModel.DisplayName" placeholder="@_displayNameText" />
+                    <input class="m100-input" @bind="_editModel.FirstName" placeholder="@_firstNameText" />
+                    <input class="m100-input" @bind="_editModel.LastName" placeholder="@_lastNameText" />
+                    <input class="m100-input" @bind="_editModel.EmployeeNumber" placeholder="@_employeeNumberText" />
+                    <input class="m100-input" @bind="_editModel.BusinessEmail" placeholder="@_businessEmailText" />
+                    <input class="m100-input" @bind="_editModel.BusinessPhone" placeholder="@_businessPhoneText" />
+                    <input class="m100-input" @bind="_editModel.Plant" placeholder="@_plantText" />
+                    <input class="m100-input" @bind="_editModel.Location" placeholder="@_locationText" />
+                    <input class="m100-input" @bind="_editModel.Team" placeholder="@_teamText" />
+
+                    <InputSelect TValue="Guid?" class="m100-input" @bind-Value="_editModel.CostCenterId">
+                        <option value="">@_costCenterSelectText</option>
+                        @foreach (var costCenter in _costCenters)
+                        {
+                            <option value="@costCenter.Id">@costCenter.Name (@costCenter.Code)</option>
+                        }
+                    </InputSelect>
+
+                    <InputSelect TValue="Guid?" class="m100-input" @bind-Value="_editModel.ShiftModelId">
+                        <option value="">@_shiftModelSelectText</option>
+                        @foreach (var shiftModel in _shiftModels)
+                        {
+                            <option value="@shiftModel.Id">@shiftModel.Name (@shiftModel.Code)</option>
+                        }
+                    </InputSelect>
+
+                    <input class="m100-input" @bind="_editModel.JobFunction" placeholder="@_jobFunctionText" />
+
+                    <InputSelect TValue="string" class="m100-input" @bind-Value="_editModel.PreferredCultureName">
+                        <option value="en-US">English (United States)</option>
+                        <option value="de-DE">Deutsch (Deutschland)</option>
+                        <option value="ru-RU">Русский</option>
+                        <option value="it-IT">Italiano</option>
+                        <option value="sr-RS">Srpski</option>
+                        <option value="es-MX">Español (México)</option>
+                        <option value="hu-HU">Magyar</option>
+                        <option value="pl-PL">Polski</option>
+                    </InputSelect>
+
+                    <InputSelect TValue="UserType" class="m100-input" @bind-Value="_editModel.UserType">
+                        @foreach (UserType userType in Enum.GetValues<UserType>())
+                        {
+                            <option value="@userType">@userType</option>
+                        }
+                    </InputSelect>
+
+                    <textarea class="m100-textarea" @bind="_editModel.Reason" placeholder="@_reasonText"></textarea>
+
+                    <button class="m100-button" type="submit" disabled="@_isBusy">
+                        @_saveText
+                    </button>
+                </EditForm>
+
+                <EditForm class="m100-card" Model="_changeStatusModel" OnValidSubmit="ChangeUserStatusAsync">
+                    <DataAnnotationsValidator />
+
+                    <h3>@_statusText</h3>
+                    <p>@_currentStatusText: <strong>@_user.Status</strong></p>
+
+                    <InputSelect TValue="UserStatus" class="m100-input" @bind-Value="_changeStatusModel.Status">
+                        @foreach (UserStatus status in Enum.GetValues<UserStatus>())
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputSelect>
+
+                    <textarea class="m100-textarea" @bind="_changeStatusModel.Reason" placeholder="@_statusReasonText"></textarea>
+
+                    <button class="m100-button" type="submit" disabled="@_isBusy">
+                        @_changeStatusText
+                    </button>
+                </EditForm>
+
+                <div class="m100-card">
+                    <h3>@_organizationUnitsText</h3>
+                    <p>@_organizationUnitsInfoText</p>
+
+                    @if (_user.OrganizationUnits.Count == 0)
+                    {
+                        <p>@_noOrganizationUnitText</p>
+                    }
+                    else
+                    {
+                        @foreach (var u in _user.OrganizationUnits)
+                        {
+                            <div class="m100-list-row">
+                                <span>@u.Name (@u.Code)@(u.IsPrimary ? $" - {_primaryText}" : string.Empty)</span>
+                                <button type="button" @onclick="() => RemoveOrganizationUnitAsync(u.Id)">@_removeText</button>
+                            </div>
+                        }
+                    }
+
+                    <InputSelect class="m100-input" @bind-Value="_assignOrganizationUnitModel.OrganizationUnitId">
+                        <option value="">@_selectText</option>
+                        @foreach (var u in _availableOrganizationUnits)
+                        {
+                            <option value="@u.Id">@u.Name</option>
+                        }
+                    </InputSelect>
+
+                    <label class="m100-checkbox">
+                        <input type="checkbox" @bind="_assignOrganizationUnitModel.IsPrimary" />
+                        @_setPrimaryText
+                    </label>
+
+                    <textarea class="m100-textarea" @bind="_assignOrganizationUnitModel.Reason" placeholder="@_reasonText"></textarea>
+
+                    <button type="button" @onclick="AssignOrganizationUnitAsync">@_assignText</button>
+                </div>
+
+                <div class="m100-card">
+                    <h3>@_historyText</h3>
+
+                    @if (_user.History.Count == 0)
+                    {
+                        <p>@_noHistoryText</p>
+                    }
+                    else
+                    {
+                        <div class="m100-history">
+                            @foreach (var entry in _user.History)
+                            {
+                                <article class="m100-history__entry">
+                                    <header>
+                                        <strong>@entry.Summary</strong>
+                                        <span>@entry.ChangedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                                    </header>
+                                    <p>@entry.ChangeType</p>
+                                    <p>@entry.Reason</p>
+                                    <p>@_executedByText: @entry.ChangedByUserId</p>
+                                </article>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="m100-detail__side">
+                <div class="m100-card">
+                    <h3>@_summaryText</h3>
+
+                    <p>@_user.Username</p>
+                    <p>@_user.DisplayName</p>
+                    <p>@_user.EmployeeNumber</p>
+                    <p>@_user.BusinessEmail</p>
+                    <p>@_languageText: @_user.PreferredCultureName</p>
+                    <p>@(_user.CostCenter is null ? _noCostCenterText : $"{_user.CostCenter.Name} ({_user.CostCenter.Code})")</p>
+                    <p>@(_user.ShiftModel is null ? _noShiftModelText : $"{_user.ShiftModel.Name} ({_user.ShiftModel.Code})")</p>
+                    <p>@_user.Status</p>
+                    <p>@_user.UserType</p>
+                    <p>@_organizationUnitCountText: @_user.OrganizationUnits.Count</p>
+                </div>
+            </div>
+        </div>
+    }
+</section>

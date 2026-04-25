@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SWFC.Application.M100_System.M103_Authentication.DTOs;
-using SWFC.Application.M100_System.M103_Authentication.Interfaces;
-using SWFC.Infrastructure.M800_Security.Auth.Entities;
+using SWFC.Application.M100_System.M103_Authentication;
+using SWFC.Infrastructure.M100_System.M103_Authentication.Entities;
 using SWFC.Infrastructure.Persistence.Context;
 
 namespace SWFC.Infrastructure.Persistence.Repositories.M103_Authentication;
@@ -82,3 +81,4 @@ public sealed class LocalCredentialWriteRepository : ILocalCredentialWriteReposi
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+
