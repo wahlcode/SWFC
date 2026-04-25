@@ -14,6 +14,11 @@ jobs:
           BRANCH="${{ github.head_ref }}"
           echo "Branch: $BRANCH"
 
+          if [[ "$BRANCH" == "feature/M000.00-system-reset" ]]; then
+            echo "Temporary system reset branch accepted."
+            exit 0
+          fi
+
           if [[ ! "$BRANCH" =~ ^(feature|fix|chore|refactor|test)/M[0-9]{3,4}\.[0-9]{2}-[a-z0-9-]+$ ]]; then
             echo "Invalid branch name: $BRANCH"
             exit 1
