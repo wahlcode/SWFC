@@ -7,7 +7,21 @@ public enum EnergyMediumType
     Electricity = 1,
     Water = 2,
     Gas = 3,
-    Oxygen = 4
+    Oxygen = 4,
+    Other = 999
+}
+
+public sealed class EnergyMediumName
+{
+    public EnergyMediumName(string value)
+    {
+        Guard.AgainstNullOrWhiteSpace(value, nameof(value));
+        Guard.AgainstMaxLength(value, 100, nameof(value));
+
+        Value = value.Trim();
+    }
+
+    public string Value { get; }
 }
 
 public sealed class EnergyMeterName

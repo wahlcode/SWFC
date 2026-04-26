@@ -31,7 +31,9 @@ public sealed class CreatePurchaseOrder
             Guid.NewGuid(),
             request.OrderNumber,
             request.SupplierId,
-            DateTime.UtcNow);
+            DateTime.UtcNow,
+            request.ErpReference,
+            request.OrderDocumentReference);
 
         await _purchaseOrderWriteRepository.AddAsync(purchaseOrder, cancellationToken);
 
@@ -39,6 +41,8 @@ public sealed class CreatePurchaseOrder
             purchaseOrder.Id,
             purchaseOrder.OrderNumber,
             purchaseOrder.SupplierId,
+            purchaseOrder.ErpReference,
+            purchaseOrder.OrderDocumentReference,
             purchaseOrder.Status,
             purchaseOrder.CreatedAtUtc,
             purchaseOrder.OrderedAtUtc);

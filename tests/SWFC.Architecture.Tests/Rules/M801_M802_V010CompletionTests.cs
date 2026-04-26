@@ -45,10 +45,10 @@ public sealed class M801_M802_V010CompletionTests
     public async Task M802_Eingabeabsicherung_Technische_Autorisierungsdurchsetzung_And_Keine_Umgehung_Von_Sicherheitspruefungen_Should_Be_Enforced()
     {
         // Eingabeabsicherung
-        var validationStep = new ValidationStep<DummyRequest, bool>(
+        var validationStep = new ValidationStep<SampleRequest, bool>(
             [new FailingValidator()]);
-        var pipelineContext = new PipelineContext<DummyRequest>(
-            new DummyRequest("request"),
+        var pipelineContext = new PipelineContext<SampleRequest>(
+            new SampleRequest("request"),
             new SecurityContext("user-1", "id-1", "user", "User", true));
 
         var validationResult = await validationStep.ExecuteAsync(pipelineContext);
@@ -96,12 +96,12 @@ public sealed class M801_M802_V010CompletionTests
         Assert.Contains("AuthorizationService", combinedContent, StringComparison.Ordinal);
     }
 
-    private sealed record DummyRequest(string Value);
+    private sealed record SampleRequest(string Value);
 
-    private sealed class FailingValidator : ICommandValidator<DummyRequest>
+    private sealed class FailingValidator : ICommandValidator<SampleRequest>
     {
         public Task<ValidationResult> ValidateAsync(
-            DummyRequest command,
+            SampleRequest command,
             CancellationToken cancellationToken = default)
         {
             var result = ValidationResult.Success();

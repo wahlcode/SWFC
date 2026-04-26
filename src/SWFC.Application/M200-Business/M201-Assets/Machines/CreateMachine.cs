@@ -16,12 +16,14 @@ public sealed record CreateMachineCommand(
     string InventoryNumber,
     string? Location,
     string Status,
+    string? AssetType,
     string? Manufacturer,
     string? Model,
     string? SerialNumber,
     string? Description,
     Guid? ParentMachineId,
     Guid? OrganizationUnitId,
+    Guid? EnergyObjectId,
     string Reason);
 
 public sealed class CreateMachineValidator : ICommandValidator<CreateMachineCommand>
@@ -55,6 +57,11 @@ public sealed class CreateMachineValidator : ICommandValidator<CreateMachineComm
         if (command.OrganizationUnitId.HasValue && command.OrganizationUnitId.Value == Guid.Empty)
         {
             result.Add("OrganizationUnitId", "Organization unit id is invalid.");
+        }
+
+        if (command.EnergyObjectId.HasValue && command.EnergyObjectId.Value == Guid.Empty)
+        {
+            result.Add("EnergyObjectId", "Energy object id is invalid.");
         }
 
         if (string.IsNullOrWhiteSpace(command.Reason))
@@ -113,6 +120,7 @@ public sealed class CreateMachineHandler : IUseCaseHandler<CreateMachineCommand,
         var inventoryNumber = MachineInventoryNumber.Create(command.InventoryNumber);
         var location = MachineLocation.Create(command.Location);
         var status = MachineStatus.Create(command.Status);
+        var assetType = MachineAssetType.Create(command.AssetType);
         var manufacturer = MachineManufacturer.Create(command.Manufacturer);
         var model = MachineModel.Create(command.Model);
         var serialNumber = MachineSerialNumber.Create(command.SerialNumber);
@@ -125,12 +133,14 @@ public sealed class CreateMachineHandler : IUseCaseHandler<CreateMachineCommand,
             inventoryNumber,
             location,
             status,
+            assetType,
             manufacturer,
             model,
             serialNumber,
             description,
             command.ParentMachineId,
             command.OrganizationUnitId,
+            command.EnergyObjectId,
             changeContext);
 
         await _machineWriteRepository.AddAsync(machine, cancellationToken);
@@ -150,12 +160,14 @@ public sealed class CreateMachineHandler : IUseCaseHandler<CreateMachineCommand,
                 InventoryNumber = machine.InventoryNumber.Value,
                 Location = machine.Location.Value,
                 Status = machine.Status.Value,
+                AssetType = machine.AssetType.Value,
                 Manufacturer = machine.Manufacturer.Value,
                 Model = machine.Model.Value,
                 SerialNumber = machine.SerialNumber.Value,
                 Description = machine.Description.Value,
                 machine.ParentMachineId,
                 machine.OrganizationUnitId,
+                machine.EnergyObjectId,
                 command.Reason
             }),
             cancellationToken: cancellationToken);

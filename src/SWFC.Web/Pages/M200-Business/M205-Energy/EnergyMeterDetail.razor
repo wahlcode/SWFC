@@ -19,16 +19,16 @@
     <div class="m205-detail__header">
         <div>
             <div class="m205-detail__eyebrow">M205</div>
-            <h1>@(IsNew ? "Energiezähler anlegen" : "Energiezähler bearbeiten")</h1>
-            <p class="m205-detail__subtitle">Zählerstammdaten strukturiert pflegen.</p>
+            <h1>@(IsNew ? "Energiezï¿½hler anlegen" : "Energiezï¿½hler bearbeiten")</h1>
+            <p class="m205-detail__subtitle">Zï¿½hlerstammdaten strukturiert pflegen.</p>
         </div>
 
         <div class="m205-detail__actions">
-            <a href="/business/energy" class="m205-button-secondary">Zurück</a>
+            <a href="/business/energy" class="m205-button-secondary">Zurï¿½ck</a>
             @if (!IsNew && Id.HasValue)
             {
                 <a href="@($"/business/energy/reading/new?meterId={Id.Value}")" class="m205-button">
-                    Neuer Zählerstand
+                    Neuer Zï¿½hlerstand
                 </a>
             }
         </div>
@@ -68,7 +68,13 @@
                                 <option value="@EnergyMediumType.Water">Water</option>
                                 <option value="@EnergyMediumType.Gas">Gas</option>
                                 <option value="@EnergyMediumType.Oxygen">Oxygen</option>
+                                <option value="@EnergyMediumType.Other">Other</option>
                             </InputSelect>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-medium-name">Medium-Name</label>
+                            <InputText id="m205-medium-name" class="m205-input" @bind-Value="_model.MediumName" />
                         </div>
 
                         <div class="m205-form-field">
@@ -103,8 +109,13 @@
                         <div class="m205-form-field m205-form-field--checkbox">
                             <label class="m205-checkbox">
                                 <InputCheckbox @bind-Value="_model.SupportsOfflineCapture" />
-                                Offline-Erfassung möglich
+                                Offline-Erfassung mï¿½glich
                             </label>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-parent-meter">Parent MeterId</label>
+                            <InputText id="m205-parent-meter" class="m205-input" @bind-Value="_model.ParentMeterId" />
                         </div>
 
                         <div class="m205-form-field">
@@ -137,19 +148,21 @@
 
                 @if (_item is null)
                 {
-                    <p class="m205-muted">Neuer Zähler.</p>
+                    <p class="m205-muted">Neuer Zï¿½hler.</p>
                 }
                 else
                 {
                     <ul class="m205-summary">
                         <li><strong>Name:</strong> @_item.Name</li>
                         <li><strong>Medium:</strong> @_item.MediumType</li>
+                        <li><strong>Medium-Name:</strong> @_item.MediumName</li>
                         <li><strong>Einheit:</strong> @_item.Unit</li>
                         <li><strong>Manuell:</strong> @(_item.IsManualEntryEnabled ? "Ja" : "Nein")</li>
                         <li><strong>Extern:</strong> @(_item.IsExternalImportEnabled ? "Ja" : "Nein")</li>
                         <li><strong>Externes System:</strong> @DisplayOrDash(_item.ExternalSystem)</li>
                         <li><strong>RFID-Tag:</strong> @DisplayOrDash(_item.RfidTag)</li>
                         <li><strong>Offline:</strong> @(_item.SupportsOfflineCapture ? "Ja" : "Nein")</li>
+                        <li><strong>Parent MeterId:</strong> @DisplayOrDash(_item.ParentMeterId?.ToString())</li>
                         <li><strong>MachineId:</strong> @DisplayOrDash(_item.MachineId?.ToString())</li>
                         <li><strong>Aktiv:</strong> @(_item.IsActive ? "Ja" : "Nein")</li>
                     </ul>
@@ -213,12 +226,14 @@
         {
             Name = _item.Name,
             MediumType = _item.MediumType,
+            MediumName = _item.MediumName,
             Unit = _item.Unit,
             IsManualEntryEnabled = _item.IsManualEntryEnabled,
             IsExternalImportEnabled = _item.IsExternalImportEnabled,
             ExternalSystem = _item.ExternalSystem,
             RfidTag = _item.RfidTag,
             SupportsOfflineCapture = _item.SupportsOfflineCapture,
+            ParentMeterId = _item.ParentMeterId?.ToString(),
             MachineId = _item.MachineId?.ToString(),
             IsActive = _item.IsActive
         };
@@ -233,12 +248,24 @@
         try
         {
             Guid? machineId = null;
+            Guid? parentMeterId = null;
+
+            if (!string.IsNullOrWhiteSpace(_model.ParentMeterId))
+            {
+                if (!Guid.TryParse(_model.ParentMeterId, out var parsedParentMeterId))
+                {
+                    _errorMessage = "Parent MeterId ist ungueltig.";
+                    return;
+                }
+
+                parentMeterId = parsedParentMeterId;
+            }
 
             if (!string.IsNullOrWhiteSpace(_model.MachineId))
             {
                 if (!Guid.TryParse(_model.MachineId, out var parsedMachineId))
                 {
-                    _errorMessage = "MachineId ist ungültig.";
+                    _errorMessage = "MachineId ist ungï¿½ltig.";
                     return;
                 }
 
@@ -259,7 +286,7 @@
 
             if (_model.SupportsOfflineCapture && !_model.IsManualEntryEnabled)
             {
-                _errorMessage = "Offline-Erfassung benötigt manuelle Eingabe.";
+                _errorMessage = "Offline-Erfassung benï¿½tigt manuelle Eingabe.";
                 return;
             }
 
@@ -269,12 +296,14 @@
                     new CreateEnergyMeterCommand(
                         _model.Name,
                         _model.MediumType,
+                        _model.MediumName,
                         _model.Unit,
                         _model.IsManualEntryEnabled,
                         _model.IsExternalImportEnabled,
                         _model.ExternalSystem,
                         _model.RfidTag,
                         _model.SupportsOfflineCapture,
+                        parentMeterId,
                         machineId,
                         _model.Reason),
                     CancellationToken.None);
@@ -294,13 +323,15 @@
                     Id!.Value,
                     _model.Name,
                     _model.MediumType,
-                    _model.Unit,
+                        _model.MediumName,
+                        _model.Unit,
                     _model.IsManualEntryEnabled,
                     _model.IsExternalImportEnabled,
                     _model.ExternalSystem,
                     _model.RfidTag,
                     _model.SupportsOfflineCapture,
-                    machineId,
+                        parentMeterId,
+                        machineId,
                     _model.IsActive,
                     _model.Reason),
                 CancellationToken.None);
@@ -323,5 +354,7 @@
     private static string DisplayOrDash(string? value)
         => string.IsNullOrWhiteSpace(value) ? "-" : value;
 }
+
+
 
 

@@ -1,46 +1,36 @@
 {
   "ModuleCode": "M405",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 46,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8715811+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.4800336+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M405 gefunden."
-    },
-    {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M405 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
     {
       "Title": "Event-Verarbeitung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Message-Verteilung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Event-Trigger",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Asynchrone Kommunikation",
@@ -49,8 +39,8 @@
     },
     {
       "Title": "Maschine meldet St\u00C3\u0192\u00C2\u00B6rung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Wartung wird ausgel\u00C3\u0192\u00C2\u00B6st",
@@ -59,8 +49,8 @@
     },
     {
       "Title": "Notification entsteht",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Lose gekoppelte Systeme",
@@ -69,8 +59,8 @@
     },
     {
       "Title": "Nutzung durch M303",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Nutzung durch M202",
@@ -79,13 +69,13 @@
     },
     {
       "Title": "Nutzung durch M212",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Keine Fachlogik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     }
   ]
 }

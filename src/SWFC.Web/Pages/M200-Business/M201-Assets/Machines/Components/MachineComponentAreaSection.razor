@@ -19,8 +19,8 @@
     </div>
 
     <div class="m201-area-section__editor">
-        <input class="m201-input" placeholder="Bereichsname" @bind="_name" />
-        <input class="m201-input" placeholder="Begründung" @bind="_reason" />
+        <input class="m201-input" aria-label="Component area name" @bind="_name" />
+        <input class="m201-input" aria-label="Reason" @bind="_reason" />
 
         <div class="m201-area-section__actions">
             <button type="button" class="m201-button" @onclick="SaveAsync">Speichern</button>
@@ -144,7 +144,7 @@
 
         if (!result.IsSuccess)
         {
-            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Katalogbereichsstatus konnte nicht geändert werden."));
+            await OnMessageChanged.InvokeAsync(new(true, result.Error?.Message ?? "Katalogbereichsstatus konnte nicht geï¿½ndert werden."));
             return;
         }
 
@@ -153,5 +153,6 @@
         await OnReloadRequested.InvokeAsync();
     }
 }
+
 
 

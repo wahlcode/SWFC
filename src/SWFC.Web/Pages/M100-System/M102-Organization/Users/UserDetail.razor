@@ -54,16 +54,16 @@
                     <p>@_masterDataInfoText</p>
 
                     <input class="m100-input" value="@_user.IdentityKey" disabled />
-                    <input class="m100-input" @bind="_editModel.Username" placeholder="@_usernameText" />
-                    <input class="m100-input" @bind="_editModel.DisplayName" placeholder="@_displayNameText" />
-                    <input class="m100-input" @bind="_editModel.FirstName" placeholder="@_firstNameText" />
-                    <input class="m100-input" @bind="_editModel.LastName" placeholder="@_lastNameText" />
-                    <input class="m100-input" @bind="_editModel.EmployeeNumber" placeholder="@_employeeNumberText" />
-                    <input class="m100-input" @bind="_editModel.BusinessEmail" placeholder="@_businessEmailText" />
-                    <input class="m100-input" @bind="_editModel.BusinessPhone" placeholder="@_businessPhoneText" />
-                    <input class="m100-input" @bind="_editModel.Plant" placeholder="@_plantText" />
-                    <input class="m100-input" @bind="_editModel.Location" placeholder="@_locationText" />
-                    <input class="m100-input" @bind="_editModel.Team" placeholder="@_teamText" />
+                    <input class="m100-input" @bind="_editModel.Username" aria-label="@_usernameText" />
+                    <input class="m100-input" @bind="_editModel.DisplayName" aria-label="@_displayNameText" />
+                    <input class="m100-input" @bind="_editModel.FirstName" aria-label="@_firstNameText" />
+                    <input class="m100-input" @bind="_editModel.LastName" aria-label="@_lastNameText" />
+                    <input class="m100-input" @bind="_editModel.EmployeeNumber" aria-label="@_employeeNumberText" />
+                    <input class="m100-input" @bind="_editModel.BusinessEmail" aria-label="@_businessEmailText" />
+                    <input class="m100-input" @bind="_editModel.BusinessPhone" aria-label="@_businessPhoneText" />
+                    <input class="m100-input" @bind="_editModel.Plant" aria-label="@_plantText" />
+                    <input class="m100-input" @bind="_editModel.Location" aria-label="@_locationText" />
+                    <input class="m100-input" @bind="_editModel.Team" aria-label="@_teamText" />
 
                     <InputSelect TValue="Guid?" class="m100-input" @bind-Value="_editModel.CostCenterId">
                         <option value="">@_costCenterSelectText</option>
@@ -81,7 +81,7 @@
                         }
                     </InputSelect>
 
-                    <input class="m100-input" @bind="_editModel.JobFunction" placeholder="@_jobFunctionText" />
+                    <input class="m100-input" @bind="_editModel.JobFunction" aria-label="@_jobFunctionText" />
 
                     <InputSelect TValue="string" class="m100-input" @bind-Value="_editModel.PreferredCultureName">
                         <option value="en-US">English (United States)</option>
@@ -101,7 +101,7 @@
                         }
                     </InputSelect>
 
-                    <textarea class="m100-textarea" @bind="_editModel.Reason" placeholder="@_reasonText"></textarea>
+                    <textarea class="m100-textarea" @bind="_editModel.Reason" aria-label="@_reasonText"></textarea>
 
                     <button class="m100-button" type="submit" disabled="@_isBusy">
                         @_saveText
@@ -121,7 +121,7 @@
                         }
                     </InputSelect>
 
-                    <textarea class="m100-textarea" @bind="_changeStatusModel.Reason" placeholder="@_statusReasonText"></textarea>
+                    <textarea class="m100-textarea" @bind="_changeStatusModel.Reason" aria-label="@_statusReasonText"></textarea>
 
                     <button class="m100-button" type="submit" disabled="@_isBusy">
                         @_changeStatusText
@@ -160,7 +160,7 @@
                         @_setPrimaryText
                     </label>
 
-                    <textarea class="m100-textarea" @bind="_assignOrganizationUnitModel.Reason" placeholder="@_reasonText"></textarea>
+                    <textarea class="m100-textarea" @bind="_assignOrganizationUnitModel.Reason" aria-label="@_reasonText"></textarea>
 
                     <button type="button" @onclick="AssignOrganizationUnitAsync">@_assignText</button>
                 </div>

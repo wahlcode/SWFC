@@ -1,46 +1,41 @@
 {
   "ModuleCode": "M1102",
-  "ScorePercent": 30,
-  "Status": "PartiallyVerified",
+  "ScorePercent": 80,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2809743+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:23.122712+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1102 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "1 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
     {
       "Title": "Update-Auslieferung",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Rollout-Logik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Update-Freigabestatus",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Update-Verteilung im Produktkontext",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Kundenbezogene Updatezuordnung",

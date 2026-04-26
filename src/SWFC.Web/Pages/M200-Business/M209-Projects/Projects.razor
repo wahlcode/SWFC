@@ -1,0 +1,47 @@
+@page "/m200/projects"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M209_Projects
+
+@inject ProjectWorkspaceService ProjectService
+
+<PageTitle>Projekte</PageTitle>
+
+<section class="module-page">
+    <header class="module-page__header">
+        <div>
+            <p>M209</p>
+            <h1>Projekte und Maßnahmen</h1>
+        </div>
+        <span>@Items.Count Projekte</span>
+    </header>
+
+    <div class="module-grid">
+        @foreach (var project in Items)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@project.Status</span>
+                    <h2>@project.Title</h2>
+                </div>
+                <dl>
+                    <div><dt>Zeitraum</dt><dd>@project.PlannedStart.ToString("dd.MM.yyyy") - @(project.PlannedEnd?.ToString("dd.MM.yyyy") ?? "offen")</dd></div>
+                    <div><dt>Maßnahmen</dt><dd>@project.MeasureCount</dd></div>
+                    <div><dt>Aufgaben</dt><dd>@project.TaskCount</dd></div>
+                    <div><dt>M204 Materialbezug</dt><dd>@project.MaterialReferenceCount</dd></div>
+                    <div><dt>Modulbezüge</dt><dd>@project.LinkedReferenceCount</dd></div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<ProjectSummaryDto> Items = Array.Empty<ProjectSummaryDto>();
+
+    protected override void OnInitialized()
+    {
+        Items = ProjectService.GetProjects();
+    }
+}

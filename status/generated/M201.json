@@ -1,9 +1,9 @@
 {
   "ModuleCode": "M201",
-  "ScorePercent": 33,
+  "ScorePercent": 42,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.5376345+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:21.941052+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
   "TestStatus": "Incomplete",
@@ -13,7 +13,7 @@
   "Issues": [
     {
       "Severity": "Info",
-      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -34,8 +34,8 @@
     },
     {
       "Title": "Parent/Child-Hierarchien",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Freie / erweiterbare Felder",
@@ -44,8 +44,8 @@
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfungen zu organisatorischen Einheiten (M102)",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Optionale Verkn\u00C3\u00BCpfungen zu Energieobjekten (M205)",

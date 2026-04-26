@@ -29,6 +29,9 @@ public sealed class CostCenterConfiguration : IEntityTypeConfiguration<CostCente
         entity.Property(x => x.ParentCostCenterId)
             .IsRequired(false);
 
+        entity.Property(x => x.ValidFrom)
+            .IsRequired();
+
         entity.Property(x => x.IsActive)
             .IsRequired();
 

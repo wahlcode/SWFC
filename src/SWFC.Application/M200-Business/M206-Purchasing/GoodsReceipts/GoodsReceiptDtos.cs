@@ -11,6 +11,7 @@ public sealed record GoodsReceiptDto(
     int Quantity,
     string Unit,
     DateTime ReceivedAtUtc,
+    string? DeliveryDocumentReference,
     GoodsReceiptInventoryBookingStatus InventoryBookingStatus,
     Guid? InventoryStockMovementId,
     string? InventoryBookingMessage);
@@ -28,6 +29,7 @@ public sealed record GoodsReceiptListItem(
     int Quantity,
     string Unit,
     DateTime ReceivedAtUtc,
+    string? DeliveryDocumentReference,
     GoodsReceiptInventoryBookingStatus InventoryBookingStatus,
     Guid? InventoryStockMovementId,
     string? InventoryBookingMessage);
@@ -38,4 +40,5 @@ public sealed record CreateGoodsReceiptRequest(
     Guid LocationId,
     string? Bin,
     int Quantity,
-    string Unit);
+    string Unit,
+    string? DeliveryDocumentReference);

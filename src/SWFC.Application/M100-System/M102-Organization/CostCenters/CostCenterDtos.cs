@@ -7,6 +7,7 @@ public sealed record CostCenterDetailsDto(
     Guid? ParentId,
     string? ParentName,
     string? ParentCode,
+    DateOnly ValidFrom,
     bool IsActive);
 
 public sealed record CostCenterListItem(
@@ -16,6 +17,7 @@ public sealed record CostCenterListItem(
     Guid? ParentId,
     string? ParentName,
     string? ParentCode,
+    DateOnly ValidFrom,
     bool IsActive);
 
 public sealed record CostCenterSelectionOptionDto(

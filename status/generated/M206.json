@@ -1,24 +1,19 @@
 {
   "ModuleCode": "M206",
-  "ScorePercent": 17,
+  "ScorePercent": 33,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7524303+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.2036531+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M206 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "9 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -54,23 +49,23 @@
     },
     {
       "Title": "Bedarf aus M202 / M204 / M209",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Wareneingang l\u00C3\u0192\u00C2\u00B6st M204-Buchung aus",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "SWFC ist operativ f\u00C3\u0192\u00C2\u00BChrend",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "ERP bleibt kaufm\u00C3\u0192\u00C2\u00A4nnisch f\u00C3\u0192\u00C2\u00BChrend",

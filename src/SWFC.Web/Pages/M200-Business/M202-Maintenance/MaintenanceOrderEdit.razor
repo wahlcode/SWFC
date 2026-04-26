@@ -23,7 +23,7 @@
         </div>
 
         <div class="m201-machine-detail__actions">
-            <a href="/business/maintenance" class="m201-link">Zurück</a>
+            <a href="/business/maintenance" class="m201-link">Zurï¿½ck</a>
         </div>
     </div>
 
@@ -52,6 +52,16 @@
                     <div class="m201-machine-summary__item">
                         <span class="m201-machine-summary__label">Typ</span>
                         <strong>@_model.Type</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">Status</span>
+                        <strong>@_model.Status</strong>
+                    </div>
+
+                    <div class="m201-machine-summary__item">
+                        <span class="m201-machine-summary__label">PrioritÃ¤t</span>
+                        <strong>@_model.Priority</strong>
                     </div>
 
                     <div class="m201-machine-summary__item">
@@ -105,8 +115,14 @@
             Title = item.Title,
             Description = item.Description,
             Type = item.Type,
+            Status = item.Status,
+            Priority = item.Priority,
             TargetType = item.TargetType,
             TargetIdText = item.TargetId.ToString(),
+            MaintenancePlanIdText = item.MaintenancePlanId?.ToString() ?? string.Empty,
+            PlannedStartAt = item.PlannedStartUtc,
+            PlannedEndAt = item.PlannedEndUtc,
+            DueAt = item.DueAtUtc,
             MaterialItemId = item.Materials.FirstOrDefault()?.ItemId.ToString() ?? string.Empty,
             MaterialQuantity = item.Materials.FirstOrDefault()?.Quantity ?? 1
         };
@@ -121,14 +137,26 @@
         {
             if (!Guid.TryParse(_model.TargetIdText, out var targetId))
             {
-                _errorMessage = "TargetId ist ungültig.";
+                _errorMessage = "TargetId ist ungï¿½ltig.";
                 return;
+            }
+
+            Guid? maintenancePlanId = null;
+            if (!string.IsNullOrWhiteSpace(_model.MaintenancePlanIdText))
+            {
+                if (!Guid.TryParse(_model.MaintenancePlanIdText, out var parsedMaintenancePlanId))
+                {
+                    _errorMessage = "PlanId ist ungÃ¼ltig.";
+                    return;
+                }
+
+                maintenancePlanId = parsedMaintenancePlanId;
             }
 
             if (!string.IsNullOrWhiteSpace(_model.MaterialItemId) &&
                 !Guid.TryParse(_model.MaterialItemId, out _))
             {
-                _errorMessage = "Material ItemId ist ungültig.";
+                _errorMessage = "Material ItemId ist ungï¿½ltig.";
                 return;
             }
 
@@ -149,12 +177,14 @@
                         _model.Title,
                         _model.Description,
                         _model.Type,
+                        _model.Status,
+                        _model.Priority,
                         _model.TargetType,
                         targetId,
-                        null,
-                        null,
-                        null,
-                        null,
+                        maintenancePlanId,
+                        _model.PlannedStartAt,
+                        _model.PlannedEndAt,
+                        _model.DueAt,
                         updateMaterials),
                     CancellationToken.None);
 
@@ -181,12 +211,13 @@
                         _model.Title,
                         _model.Description,
                         _model.Type,
+                        _model.Priority,
                         _model.TargetType,
                         targetId,
-                        null,
-                        null,
-                        null,
-                        null,
+                        maintenancePlanId,
+                        _model.PlannedStartAt,
+                        _model.PlannedEndAt,
+                        _model.DueAt,
                         createMaterials),
                     CancellationToken.None);
 

@@ -13,7 +13,7 @@
   "Sidebar.Status.Disabled": "Desactivado",
   "Sidebar.Logout": "Cerrar sesión",
   "Sidebar.DeveloperMode.Title": "Modo desarrollador",
-  "Sidebar.DeveloperMode.VisibleText": "Todos los módulos y áreas desactivadas son visibles.",
+  "Sidebar.DeveloperMode.VisibleText": "Cada módulo y área desactivada es visible.",
   "Sidebar.DeveloperMode.ProtectedText": "Solo el SuperAdmin protegido puede activar este modo.",
   "Sidebar.DeveloperMode.Enable": "Activar modo desarrollador",
   "Sidebar.DeveloperMode.Disable": "Desactivar modo desarrollador",

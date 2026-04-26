@@ -20,7 +20,7 @@
 
         <div class="m100-ou__actions">
             <input class="m100-input"
-                   placeholder="Search name or code"
+                   aria-label="Search name or code"
                    value="@_searchText"
                    @oninput="OnSearchChanged" />
 
@@ -91,19 +91,19 @@
                 <h3>New shift model</h3>
 
                 <input class="m100-input"
-                       placeholder="Name"
+                       aria-label="Name"
                        @bind="_createModel.Name" />
 
                 <input class="m100-input"
-                       placeholder="Code"
+                       aria-label="Code"
                        @bind="_createModel.Code" />
 
                 <textarea class="m100-textarea"
-                          placeholder="Description"
+                          aria-label="Description"
                           @bind="_createModel.Description"></textarea>
 
                 <textarea class="m100-textarea"
-                          placeholder="Reason"
+                          aria-label="Reason"
                           @bind="_createModel.Reason"></textarea>
 
                  <div class="m100-actions">

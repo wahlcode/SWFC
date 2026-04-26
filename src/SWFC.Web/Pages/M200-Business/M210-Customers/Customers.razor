@@ -1,0 +1,45 @@
+@page "/m200/customers"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M210_Customers
+
+@inject CustomerWorkspaceService CustomerService
+
+<PageTitle>Kunden</PageTitle>
+
+<section class="module-page">
+    <header class="module-page__header">
+        <div>
+            <p>M210</p>
+            <h1>Operative Kundenbasis</h1>
+        </div>
+        <span>@Items.Count Kunden</span>
+    </header>
+
+    <div class="module-grid">
+        @foreach (var customer in Items)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@(customer.IsActive ? "Aktiv" : "Historisiert")</span>
+                    <h2>@customer.Name</h2>
+                </div>
+                <dl>
+                    <div><dt>ERP-Referenz</dt><dd>@customer.ErpReference</dd></div>
+                    <div><dt>Ansprechpartner</dt><dd>@customer.ContactCount</dd></div>
+                    <div><dt>Anlagen/Projekte/Qualität</dt><dd>@customer.AssignmentCount</dd></div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<CustomerSummaryDto> Items = Array.Empty<CustomerSummaryDto>();
+
+    protected override void OnInitialized()
+    {
+        Items = CustomerService.GetCustomers();
+    }
+}

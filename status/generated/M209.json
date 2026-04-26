@@ -1,29 +1,19 @@
 {
   "ModuleCode": "M209",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 40,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7658843+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.2524602+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M209 gefunden."
-    },
-    {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M209 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -39,8 +29,8 @@
     },
     {
       "Title": "Aufgaben / Tasks",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
     },
     {
       "Title": "Statusmodell",
@@ -59,33 +49,33 @@
     },
     {
       "Title": "Hierarchie Projekt \u003E Ma\u00C3\u0192\u00C5\u00B8nahme \u003E Aufgabe",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Materialbezug \u00C3\u0192\u00C2\u00BCber M204",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Zuordnung zu M102",

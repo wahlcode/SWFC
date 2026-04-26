@@ -23,7 +23,7 @@
         </div>
 
         <div class="m204-detail__actions">
-            <a href="/business/inventory-items" class="m204-button-secondary">Zurück</a>
+            <a href="/business/inventory-items" class="m204-button-secondary">Zurï¿½ck</a>
 
             @if (!IsNew)
             {
@@ -59,22 +59,24 @@
 
                     <div class="m204-form-grid">
 
-                        <input class="m204-input" placeholder="Article Number" @bind="_model.ArticleNumber" />
-                        <input class="m204-input" placeholder="Name" @bind="_model.Name" />
-                        <input class="m204-input" placeholder="Unit" @bind="_model.Unit" />
+                        <input class="m204-input" aria-label="Article Number" @bind="_model.ArticleNumber" />
+                        <input class="m204-input" aria-label="Name" @bind="_model.Name" />
+                        <input class="m204-input" aria-label="Unit" @bind="_model.Unit" />
+                        <input type="number" step="0.0001" class="m204-input" aria-label="Standard Unit Price" @bind="_model.StandardUnitPrice" />
+                        <input class="m204-input" aria-label="Currency" @bind="_model.Currency" />
 
                         <label class="m204-checkbox">
                             <input type="checkbox" @bind="_model.IsActive" />
                             Aktiv
                         </label>
 
-                        <textarea class="m204-input" placeholder="Description" @bind="_model.Description"></textarea>
+                        <textarea class="m204-input" aria-label="Description" @bind="_model.Description"></textarea>
 
-                        <input class="m204-input" placeholder="Barcode" @bind="_model.Barcode" />
-                        <input class="m204-input" placeholder="Manufacturer" @bind="_model.Manufacturer" />
-                        <input class="m204-input" placeholder="Manufacturer Part Number" @bind="_model.ManufacturerPartNumber" />
+                        <input class="m204-input" aria-label="Barcode" @bind="_model.Barcode" />
+                        <input class="m204-input" aria-label="Manufacturer" @bind="_model.Manufacturer" />
+                        <input class="m204-input" aria-label="Manufacturer Part Number" @bind="_model.ManufacturerPartNumber" />
 
-                        <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+                        <textarea class="m204-input" aria-label="Reason" @bind="_model.Reason"></textarea>
 
                     </div>
 
@@ -108,6 +110,8 @@
                         <li><strong>On Hand:</strong> @_item.QuantityOnHand</li>
                         <li><strong>Reserved:</strong> @_item.ReservedQuantity</li>
                         <li><strong>Available:</strong> @_item.AvailableQuantity</li>
+                        <li><strong>Unit Price:</strong> @_item.StandardUnitPrice @_item.Currency</li>
+                        <li><strong>Stock Value:</strong> @_item.StockValue @_item.Currency</li>
                     </ul>
                 }
             </div>
@@ -173,6 +177,8 @@
             Barcode = _item.Barcode,
             Manufacturer = _item.Manufacturer,
             ManufacturerPartNumber = _item.ManufacturerPartNumber,
+            StandardUnitPrice = _item.StandardUnitPrice,
+            Currency = _item.Currency,
             IsActive = _item.IsActive
         };
     }
@@ -193,7 +199,9 @@
                     _model.Manufacturer,
                     _model.ManufacturerPartNumber,
                     _model.IsActive,
-                    _model.Reason));
+                    _model.Reason,
+                    _model.StandardUnitPrice,
+                    _model.Currency));
 
             if (result.IsSuccess)
             {
@@ -216,7 +224,9 @@
                     _model.Manufacturer,
                     _model.ManufacturerPartNumber,
                     _model.IsActive,
-                    _model.Reason));
+                    _model.Reason,
+                    _model.StandardUnitPrice,
+                    _model.Currency));
 
             if (result.IsSuccess)
                 _successMessage = "Gespeichert";
@@ -253,6 +263,8 @@
         public string? Barcode { get; set; }
         public string? Manufacturer { get; set; }
         public string? ManufacturerPartNumber { get; set; }
+        public decimal StandardUnitPrice { get; set; }
+        public string Currency { get; set; } = "EUR";
         public bool IsActive { get; set; } = true;
         [Required] public string Reason { get; set; } = "";
     }

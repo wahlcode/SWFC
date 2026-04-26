@@ -13,6 +13,15 @@ public sealed record UpdateEnergyReadingCommand(
     DateTime Date,
     decimal Value,
     EnergyReadingSource Source,
+    string? CapturedByUserId,
+    string? CaptureContext,
+    string? RfidTag,
+    string? RfidExceptionReason,
+    Guid? OfflineCaptureId,
+    DateTime? CapturedOfflineAtUtc,
+    DateTime? SyncedAtUtc,
+    EnergyReadingPlausibilityStatus PlausibilityStatus,
+    string? PlausibilityNote,
     string Reason);
 
 public sealed class UpdateEnergyReadingValidator : ICommandValidator<UpdateEnergyReadingCommand>
@@ -28,6 +37,22 @@ public sealed class UpdateEnergyReadingValidator : ICommandValidator<UpdateEnerg
 
         if (command.Value < 0)
             result.Add("M205.Reading.Value.Invalid", "Value must not be negative.");
+
+        if (command.Source == EnergyReadingSource.Manual
+            && string.IsNullOrWhiteSpace(command.CapturedByUserId))
+            result.Add("M205.Reading.User.Required", "Manual readings require a capturing user.");
+
+        if (command.Source == EnergyReadingSource.Manual
+            && string.IsNullOrWhiteSpace(command.RfidTag)
+            && string.IsNullOrWhiteSpace(command.RfidExceptionReason))
+            result.Add("M205.Reading.Rfid.Required", "Manual readings require RFID or an exception reason.");
+
+        if (command.CapturedOfflineAtUtc.HasValue && !command.OfflineCaptureId.HasValue)
+            result.Add("M205.Reading.Offline.Id.Required", "Offline captures require a stable offline capture id.");
+
+        if (command.PlausibilityStatus == EnergyReadingPlausibilityStatus.Flagged
+            && string.IsNullOrWhiteSpace(command.PlausibilityNote))
+            result.Add("M205.Reading.Plausibility.Note.Required", "Flagged readings require a plausibility note.");
 
         if (string.IsNullOrWhiteSpace(command.Reason))
             result.Add("M205.Reading.Reason.Required", "Reason is required.");
@@ -73,6 +98,15 @@ public sealed class UpdateEnergyReadingHandler : IUseCaseHandler<UpdateEnergyRea
             new EnergyReadingDate(request.Date),
             new EnergyReadingValue(request.Value),
             request.Source,
+            request.CapturedByUserId,
+            EnergyReadingCaptureContext.CreateOptional(request.CaptureContext),
+            EnergyReadingRfidTag.CreateOptional(request.RfidTag),
+            EnergyReadingRfidExceptionReason.CreateOptional(request.RfidExceptionReason),
+            request.OfflineCaptureId,
+            request.CapturedOfflineAtUtc,
+            request.SyncedAtUtc,
+            request.PlausibilityStatus,
+            EnergyReadingPlausibilityNote.CreateOptional(request.PlausibilityNote),
             changeContext);
 
         await _writeRepository.SaveChangesAsync(cancellationToken);

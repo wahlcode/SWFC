@@ -1,16 +1,15 @@
 {
   "ModuleCode": "M604",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 6,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.9342806+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.628745+00:00",
   "CodeStatus": "Missing",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
     "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
@@ -21,10 +20,6 @@
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M604 gefunden."
     },
     {
       "Severity": "Info",
@@ -69,8 +64,8 @@
     },
     {
       "Title": "\u00C3\u0192\u00E2\u20AC\u017Enderungen begr\u00C3\u0192\u00C2\u00BCnden",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "InProgress",
+      "Evidence": "Tests"
     },
     {
       "Title": "Keine impliziten Entscheidungen",

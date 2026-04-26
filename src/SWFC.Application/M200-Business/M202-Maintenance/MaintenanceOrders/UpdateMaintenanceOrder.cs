@@ -3,6 +3,7 @@ using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Domain.M100_System.M101_Foundation.Exceptions;
 using SWFC.Domain.M100_System.M101_Foundation.Abstractions;
 using SWFC.Domain.M100_System.M101_Foundation.Results;
+using SWFC.Domain.M100_System.M101_Foundation.ValueObjects;
 using SWFC.Domain.M200_Business.M202_Maintenance.MaintenanceOrders;
 
 namespace SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders;
@@ -16,6 +17,8 @@ public sealed record UpdateMaintenanceOrderCommand(
     string Title,
     string Description,
     MaintenanceOrderType Type,
+    MaintenanceOrderStatus Status,
+    MaintenanceOrderPriority Priority,
     MaintenanceTargetType TargetType,
     Guid TargetId,
     Guid? MaintenancePlanId,
@@ -44,6 +47,14 @@ public sealed class UpdateMaintenanceOrderValidator : ICommandValidator<UpdateMa
         if (command.TargetId == Guid.Empty)
             result.Add("M202.Order.Target.Required", "Target id is required.");
 
+        if (command.MaintenancePlanId == Guid.Empty)
+            result.Add("M202.Order.Plan.Invalid", "Maintenance plan id must not be empty.");
+
+        if (command.PlannedStartUtc.HasValue &&
+            command.PlannedEndUtc.HasValue &&
+            command.PlannedEndUtc.Value < command.PlannedStartUtc.Value)
+            result.Add("M202.Order.PlanningWindow.Invalid", "Planned end must not be before planned start.");
+
         foreach (var material in command.Materials)
         {
             if (material.ItemId == Guid.Empty)
@@ -69,10 +80,14 @@ public sealed class UpdateMaintenanceOrderPolicy : IAuthorizationPolicy<UpdateMa
 public sealed class UpdateMaintenanceOrderHandler : IUseCaseHandler<UpdateMaintenanceOrderCommand, bool>
 {
     private readonly IMaintenanceOrderReadRepository _readRepository;
+    private readonly IMaintenanceOrderWriteRepository _writeRepository;
 
-    public UpdateMaintenanceOrderHandler(IMaintenanceOrderReadRepository readRepository)
+    public UpdateMaintenanceOrderHandler(
+        IMaintenanceOrderReadRepository readRepository,
+        IMaintenanceOrderWriteRepository writeRepository)
     {
         _readRepository = readRepository;
+        _writeRepository = writeRepository;
     }
 
     public async Task<Result<bool>> HandleAsync(
@@ -83,6 +98,25 @@ public sealed class UpdateMaintenanceOrderHandler : IUseCaseHandler<UpdateMainte
 
         if (order is null)
             throw new NotFoundException($"Maintenance order '{request.Id}' was not found.");
+
+        var changeContext = ChangeContext.Create("system", "Update maintenance order");
+
+        order.Update(
+            new MaintenanceOrderTitle(request.Title),
+            new MaintenanceOrderDescription(request.Description),
+            request.Type,
+            request.Priority,
+            request.Status,
+            request.TargetType,
+            request.TargetId,
+            request.MaintenancePlanId,
+            request.PlannedStartUtc,
+            request.PlannedEndUtc,
+            request.DueAtUtc,
+            request.Materials.Select(x => (x.ItemId, x.Quantity)).ToArray(),
+            changeContext);
+
+        await _writeRepository.SaveChangesAsync(cancellationToken);
 
         return Result<bool>.Success(true);
     }

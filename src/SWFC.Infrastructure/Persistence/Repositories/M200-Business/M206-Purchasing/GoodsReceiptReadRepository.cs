@@ -47,6 +47,7 @@ public sealed class GoodsReceiptReadRepository : IGoodsReceiptReadRepository
                 x.receipt.Quantity,
                 x.receipt.Unit,
                 x.receipt.ReceivedAtUtc,
+                x.receipt.DeliveryDocumentReference,
                 x.receipt.InventoryBookingStatus,
                 x.receipt.InventoryStockMovementId,
                 x.receipt.InventoryBookingMessage))

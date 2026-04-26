@@ -18,12 +18,14 @@ public sealed record UpdateMachineCommand(
     string InventoryNumber,
     string? Location,
     string Status,
+    string? AssetType,
     string? Manufacturer,
     string? Model,
     string? SerialNumber,
     string? Description,
     Guid? ParentMachineId,
     Guid? OrganizationUnitId,
+    Guid? EnergyObjectId,
     string Reason);
 
 public sealed class UpdateMachineValidator : ICommandValidator<UpdateMachineCommand>
@@ -67,6 +69,11 @@ public sealed class UpdateMachineValidator : ICommandValidator<UpdateMachineComm
         if (command.OrganizationUnitId.HasValue && command.OrganizationUnitId.Value == Guid.Empty)
         {
             result.Add("OrganizationUnitId", "Organization unit id is invalid.");
+        }
+
+        if (command.EnergyObjectId.HasValue && command.EnergyObjectId.Value == Guid.Empty)
+        {
+            result.Add("EnergyObjectId", "Energy object id is invalid.");
         }
 
         if (string.IsNullOrWhiteSpace(command.Reason))
@@ -125,18 +132,21 @@ public sealed class UpdateMachineHandler : IUseCaseHandler<UpdateMachineCommand,
             InventoryNumber = machine.InventoryNumber.Value,
             Location = machine.Location.Value,
             Status = machine.Status.Value,
+            AssetType = machine.AssetType.Value,
             Manufacturer = machine.Manufacturer.Value,
             Model = machine.Model.Value,
             SerialNumber = machine.SerialNumber.Value,
             Description = machine.Description.Value,
             machine.ParentMachineId,
-            machine.OrganizationUnitId
+            machine.OrganizationUnitId,
+            machine.EnergyObjectId
         });
 
         var machineName = MachineName.Create(command.Name);
         var inventoryNumber = MachineInventoryNumber.Create(command.InventoryNumber);
         var location = MachineLocation.Create(command.Location);
         var status = MachineStatus.Create(command.Status);
+        var assetType = MachineAssetType.Create(command.AssetType);
         var manufacturer = MachineManufacturer.Create(command.Manufacturer);
         var model = MachineModel.Create(command.Model);
         var serialNumber = MachineSerialNumber.Create(command.SerialNumber);
@@ -149,10 +159,12 @@ public sealed class UpdateMachineHandler : IUseCaseHandler<UpdateMachineCommand,
             inventoryNumber,
             location,
             status,
+            assetType,
             manufacturer,
             model,
             serialNumber,
             description,
+            command.EnergyObjectId,
             changeContext);
 
         if (command.ParentMachineId.HasValue)
@@ -190,12 +202,14 @@ public sealed class UpdateMachineHandler : IUseCaseHandler<UpdateMachineCommand,
             InventoryNumber = machine.InventoryNumber.Value,
             Location = machine.Location.Value,
             Status = machine.Status.Value,
+            AssetType = machine.AssetType.Value,
             Manufacturer = machine.Manufacturer.Value,
             Model = machine.Model.Value,
             SerialNumber = machine.SerialNumber.Value,
             Description = machine.Description.Value,
             machine.ParentMachineId,
             machine.OrganizationUnitId,
+            machine.EnergyObjectId,
             command.Reason
         });
 

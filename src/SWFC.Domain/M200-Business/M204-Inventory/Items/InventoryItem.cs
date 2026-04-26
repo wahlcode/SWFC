@@ -18,6 +18,8 @@ public sealed class InventoryItem
         Name = null!;
         Description = null!;
         Unit = null!;
+        StandardUnitPrice = null!;
+        Currency = null!;
         AuditInfo = null!;
     }
 
@@ -30,6 +32,8 @@ public sealed class InventoryItem
         InventoryItemBarcode? barcode,
         InventoryItemManufacturer? manufacturer,
         InventoryItemManufacturerPartNumber? manufacturerPartNumber,
+        InventoryItemStandardUnitPrice standardUnitPrice,
+        InventoryItemCurrency currency,
         bool isActive,
         AuditInfo auditInfo)
     {
@@ -41,6 +45,8 @@ public sealed class InventoryItem
         Barcode = barcode;
         Manufacturer = manufacturer;
         ManufacturerPartNumber = manufacturerPartNumber;
+        StandardUnitPrice = standardUnitPrice;
+        Currency = currency;
         IsActive = isActive;
         AuditInfo = auditInfo;
     }
@@ -53,6 +59,8 @@ public sealed class InventoryItem
     public InventoryItemBarcode? Barcode { get; private set; }
     public InventoryItemManufacturer? Manufacturer { get; private set; }
     public InventoryItemManufacturerPartNumber? ManufacturerPartNumber { get; private set; }
+    public InventoryItemStandardUnitPrice StandardUnitPrice { get; private set; }
+    public InventoryItemCurrency Currency { get; private set; }
     public bool IsActive { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
@@ -67,6 +75,8 @@ public sealed class InventoryItem
         InventoryItemBarcode? barcode,
         InventoryItemManufacturer? manufacturer,
         InventoryItemManufacturerPartNumber? manufacturerPartNumber,
+        InventoryItemStandardUnitPrice standardUnitPrice,
+        InventoryItemCurrency currency,
         ChangeContext changeContext)
     {
         var auditInfo = new AuditInfo(
@@ -82,6 +92,8 @@ public sealed class InventoryItem
             barcode,
             manufacturer,
             manufacturerPartNumber,
+            standardUnitPrice,
+            currency,
             isActive: true,
             auditInfo);
     }
@@ -94,6 +106,8 @@ public sealed class InventoryItem
         InventoryItemBarcode? barcode,
         InventoryItemManufacturer? manufacturer,
         InventoryItemManufacturerPartNumber? manufacturerPartNumber,
+        InventoryItemStandardUnitPrice standardUnitPrice,
+        InventoryItemCurrency currency,
         bool isActive,
         ChangeContext changeContext)
     {
@@ -104,6 +118,8 @@ public sealed class InventoryItem
         Barcode = barcode;
         Manufacturer = manufacturer;
         ManufacturerPartNumber = manufacturerPartNumber;
+        StandardUnitPrice = standardUnitPrice;
+        Currency = currency;
         IsActive = isActive;
 
         Touch(changeContext);

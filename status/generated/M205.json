@@ -1,9 +1,9 @@
 {
   "ModuleCode": "M205",
-  "ScorePercent": 31,
+  "ScorePercent": 42,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7217319+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.1635583+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
   "TestStatus": "Incomplete",
@@ -13,7 +13,7 @@
   "Issues": [
     {
       "Severity": "Info",
-      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -59,8 +59,8 @@
     },
     {
       "Title": "Hauptz\u00C3\u0192\u00C2\u00A4hler / Unterz\u00C3\u0192\u00C2\u00A4hler / Parent-Child",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Optionale Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
@@ -94,13 +94,13 @@
     },
     {
       "Title": "Auff\u00C3\u0192\u00C2\u00A4llige Werte markieren statt verwerfen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Echtzeitverarbeitung \u00C3\u0192\u00C2\u00BCber M404 / M505",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung fachlich relevanter Messwerte",

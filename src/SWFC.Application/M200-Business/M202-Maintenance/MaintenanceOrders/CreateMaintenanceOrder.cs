@@ -16,6 +16,7 @@ public sealed record CreateMaintenanceOrderCommand(
     string Title,
     string Description,
     MaintenanceOrderType Type,
+    MaintenanceOrderPriority Priority,
     MaintenanceTargetType TargetType,
     Guid TargetId,
     Guid? MaintenancePlanId,
@@ -43,6 +44,14 @@ public sealed class CreateMaintenanceOrderValidator : ICommandValidator<CreateMa
 
         if (command.TargetId == Guid.Empty)
             result.Add("M202.Order.Target.Required", "Target id is required.");
+
+        if (command.MaintenancePlanId == Guid.Empty)
+            result.Add("M202.Order.Plan.Invalid", "Maintenance plan id must not be empty.");
+
+        if (command.PlannedStartUtc.HasValue &&
+            command.PlannedEndUtc.HasValue &&
+            command.PlannedEndUtc.Value < command.PlannedStartUtc.Value)
+            result.Add("M202.Order.PlanningWindow.Invalid", "Planned end must not be before planned start.");
 
         foreach (var material in command.Materials)
         {
@@ -98,8 +107,13 @@ public sealed class CreateMaintenanceOrderHandler : IUseCaseHandler<CreateMainte
             new MaintenanceOrderTitle(request.Title),
             new MaintenanceOrderDescription(request.Description),
             request.Type,
+            request.Priority,
             request.TargetType,
             request.TargetId,
+            request.MaintenancePlanId,
+            request.PlannedStartUtc,
+            request.PlannedEndUtc,
+            request.DueAtUtc,
             changeContext);
 
         foreach (var material in request.Materials)

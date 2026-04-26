@@ -16,6 +16,24 @@ public sealed class EnergyReadingInputModel
 
     public EnergyReadingSource Source { get; set; } = EnergyReadingSource.Manual;
 
+    public string? CapturedByUserId { get; set; } = "system";
+
+    public string? CaptureContext { get; set; }
+
+    public string? RfidTag { get; set; }
+
+    public string? RfidExceptionReason { get; set; }
+
+    public string? OfflineCaptureId { get; set; }
+
+    public DateTime? CapturedOfflineAtUtc { get; set; }
+
+    public DateTime? SyncedAtUtc { get; set; }
+
+    public EnergyReadingPlausibilityStatus PlausibilityStatus { get; set; } = EnergyReadingPlausibilityStatus.Normal;
+
+    public string? PlausibilityNote { get; set; }
+
     [Required]
     public string Reason { get; set; } = string.Empty;
 }

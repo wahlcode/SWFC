@@ -1,9 +1,9 @@
 {
   "ModuleCode": "M302",
-  "ScorePercent": 29,
+  "ScorePercent": 32,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8007021+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.3276269+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
   "TestStatus": "Incomplete",
@@ -79,8 +79,8 @@
     },
     {
       "Title": "Integration in M301",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Keine Berechnungslogik",

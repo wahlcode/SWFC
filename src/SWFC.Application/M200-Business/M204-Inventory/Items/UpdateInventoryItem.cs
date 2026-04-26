@@ -23,7 +23,9 @@ public sealed record UpdateInventoryItemCommand(
     string? Manufacturer,
     string? ManufacturerPartNumber,
     bool IsActive,
-    string Reason);
+    string Reason,
+    decimal StandardUnitPrice = 0,
+    string Currency = "EUR");
 
 public sealed class UpdateInventoryItemValidator : ICommandValidator<UpdateInventoryItemCommand>
 {
@@ -50,6 +52,11 @@ public sealed class UpdateInventoryItemValidator : ICommandValidator<UpdateInven
         if (string.IsNullOrWhiteSpace(command.Reason))
         {
             result.Add(InventoryErrorCodes.ReasonRequired, "Reason is required.");
+        }
+
+        if (command.StandardUnitPrice < 0)
+        {
+            result.Add(ValidationErrorCodes.Invalid, "Standard unit price must not be negative.");
         }
 
         return Task.FromResult(result);
@@ -105,6 +112,8 @@ public sealed class UpdateInventoryItemHandler : IUseCaseHandler<UpdateInventory
             Barcode = item.Barcode?.Value,
             Manufacturer = item.Manufacturer?.Value,
             ManufacturerPartNumber = item.ManufacturerPartNumber?.Value,
+            StandardUnitPrice = item.StandardUnitPrice.Value,
+            Currency = item.Currency.Value,
             item.IsActive,
             item.AuditInfo.CreatedAtUtc,
             item.AuditInfo.CreatedBy,
@@ -120,6 +129,8 @@ public sealed class UpdateInventoryItemHandler : IUseCaseHandler<UpdateInventory
             InventoryItemBarcode.CreateOptional(command.Barcode),
             InventoryItemManufacturer.CreateOptional(command.Manufacturer),
             InventoryItemManufacturerPartNumber.CreateOptional(command.ManufacturerPartNumber),
+            InventoryItemStandardUnitPrice.Create(command.StandardUnitPrice),
+            InventoryItemCurrency.Create(command.Currency),
             command.IsActive,
             ctx);
 
@@ -133,6 +144,8 @@ public sealed class UpdateInventoryItemHandler : IUseCaseHandler<UpdateInventory
             Barcode = item.Barcode?.Value,
             Manufacturer = item.Manufacturer?.Value,
             ManufacturerPartNumber = item.ManufacturerPartNumber?.Value,
+            StandardUnitPrice = item.StandardUnitPrice.Value,
+            Currency = item.Currency.Value,
             item.IsActive,
             item.AuditInfo.CreatedAtUtc,
             item.AuditInfo.CreatedBy,

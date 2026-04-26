@@ -1,34 +1,24 @@
 {
   "ModuleCode": "M401",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 48,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8557346+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.4065139+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M401 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M401 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "23 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -44,8 +34,8 @@
     },
     {
       "Title": "Mapping externer Datenstrukturen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
     },
     {
       "Title": "Validierung technischer Importformate",
@@ -64,53 +54,53 @@
     },
     {
       "Title": "Excel",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Import f\u00C3\u0192\u00C2\u00BCr Assets",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Import f\u00C3\u0192\u00C2\u00BCr Lagerdaten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Import f\u00C3\u0192\u00C2\u00BCr Energie-Messwerte",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Import f\u00C3\u0192\u00C2\u00BCr Stammdaten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Import f\u00C3\u0192\u00C2\u00BCr externe Listen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Export f\u00C3\u0192\u00C2\u00BCr Berichte",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Export f\u00C3\u0192\u00C2\u00BCr Stammdaten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Export f\u00C3\u0192\u00C2\u00BCr Bewegungsdaten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Export f\u00C3\u0192\u00C2\u00BCr Audit-Nachweise",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Spaltenzuordnung",
@@ -144,8 +134,8 @@
     },
     {
       "Title": "Keine Fachlogik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     }
   ]
 }

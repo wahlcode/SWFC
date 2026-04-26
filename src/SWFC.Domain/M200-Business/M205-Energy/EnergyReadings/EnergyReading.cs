@@ -18,6 +18,15 @@ public sealed class EnergyReading
         EnergyReadingDate date,
         EnergyReadingValue value,
         EnergyReadingSource source,
+        string? capturedByUserId,
+        EnergyReadingCaptureContext? captureContext,
+        EnergyReadingRfidTag? rfidTag,
+        EnergyReadingRfidExceptionReason? rfidExceptionReason,
+        Guid? offlineCaptureId,
+        DateTime? capturedOfflineAtUtc,
+        DateTime? syncedAtUtc,
+        EnergyReadingPlausibilityStatus plausibilityStatus,
+        EnergyReadingPlausibilityNote? plausibilityNote,
         AuditInfo auditInfo)
     {
         Id = id;
@@ -25,6 +34,15 @@ public sealed class EnergyReading
         Date = date;
         Value = value;
         Source = source;
+        CapturedByUserId = capturedByUserId;
+        CaptureContext = captureContext;
+        RfidTag = rfidTag;
+        RfidExceptionReason = rfidExceptionReason;
+        OfflineCaptureId = offlineCaptureId;
+        CapturedOfflineAtUtc = capturedOfflineAtUtc;
+        SyncedAtUtc = syncedAtUtc;
+        PlausibilityStatus = plausibilityStatus;
+        PlausibilityNote = plausibilityNote;
         AuditInfo = auditInfo;
     }
 
@@ -33,6 +51,15 @@ public sealed class EnergyReading
     public EnergyReadingDate Date { get; private set; }
     public EnergyReadingValue Value { get; private set; }
     public EnergyReadingSource Source { get; private set; }
+    public string? CapturedByUserId { get; private set; }
+    public EnergyReadingCaptureContext? CaptureContext { get; private set; }
+    public EnergyReadingRfidTag? RfidTag { get; private set; }
+    public EnergyReadingRfidExceptionReason? RfidExceptionReason { get; private set; }
+    public Guid? OfflineCaptureId { get; private set; }
+    public DateTime? CapturedOfflineAtUtc { get; private set; }
+    public DateTime? SyncedAtUtc { get; private set; }
+    public EnergyReadingPlausibilityStatus PlausibilityStatus { get; private set; }
+    public EnergyReadingPlausibilityNote? PlausibilityNote { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
     public static EnergyReading Create(
@@ -40,6 +67,15 @@ public sealed class EnergyReading
         EnergyReadingDate date,
         EnergyReadingValue value,
         EnergyReadingSource source,
+        string? capturedByUserId,
+        EnergyReadingCaptureContext? captureContext,
+        EnergyReadingRfidTag? rfidTag,
+        EnergyReadingRfidExceptionReason? rfidExceptionReason,
+        Guid? offlineCaptureId,
+        DateTime? capturedOfflineAtUtc,
+        DateTime? syncedAtUtc,
+        EnergyReadingPlausibilityStatus plausibilityStatus,
+        EnergyReadingPlausibilityNote? plausibilityNote,
         ChangeContext changeContext)
     {
         if (meterId == Guid.Empty)
@@ -57,6 +93,15 @@ public sealed class EnergyReading
             date,
             value,
             source,
+            NormalizeOptional(capturedByUserId),
+            captureContext,
+            rfidTag,
+            rfidExceptionReason,
+            offlineCaptureId,
+            capturedOfflineAtUtc,
+            syncedAtUtc,
+            plausibilityStatus,
+            plausibilityNote,
             auditInfo);
     }
 
@@ -64,11 +109,29 @@ public sealed class EnergyReading
         EnergyReadingDate date,
         EnergyReadingValue value,
         EnergyReadingSource source,
+        string? capturedByUserId,
+        EnergyReadingCaptureContext? captureContext,
+        EnergyReadingRfidTag? rfidTag,
+        EnergyReadingRfidExceptionReason? rfidExceptionReason,
+        Guid? offlineCaptureId,
+        DateTime? capturedOfflineAtUtc,
+        DateTime? syncedAtUtc,
+        EnergyReadingPlausibilityStatus plausibilityStatus,
+        EnergyReadingPlausibilityNote? plausibilityNote,
         ChangeContext changeContext)
     {
         Date = date;
         Value = value;
         Source = source;
+        CapturedByUserId = NormalizeOptional(capturedByUserId);
+        CaptureContext = captureContext;
+        RfidTag = rfidTag;
+        RfidExceptionReason = rfidExceptionReason;
+        OfflineCaptureId = offlineCaptureId;
+        CapturedOfflineAtUtc = capturedOfflineAtUtc;
+        SyncedAtUtc = syncedAtUtc;
+        PlausibilityStatus = plausibilityStatus;
+        PlausibilityNote = plausibilityNote;
 
         Touch(changeContext);
     }
@@ -81,4 +144,11 @@ public sealed class EnergyReading
             changeContext.ChangedAtUtc,
             changeContext.UserId);
     }
+
+    public bool IsPlausibilityFlagged => PlausibilityStatus == EnergyReadingPlausibilityStatus.Flagged;
+
+    public bool IsOfflineCapture => OfflineCaptureId.HasValue || CapturedOfflineAtUtc.HasValue;
+
+    private static string? NormalizeOptional(string? value)
+        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

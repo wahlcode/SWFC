@@ -36,6 +36,21 @@ public sealed class MaintenanceOrderMaterial
         int quantity,
         ChangeContext changeContext)
     {
+        if (maintenanceOrderId == Guid.Empty)
+        {
+            throw new ArgumentException("Maintenance order id must not be empty.", nameof(maintenanceOrderId));
+        }
+
+        if (itemId == Guid.Empty)
+        {
+            throw new ArgumentException("Item id must not be empty.", nameof(itemId));
+        }
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
+        }
+
         var auditInfo = new AuditInfo(
             changeContext.ChangedAtUtc,
             changeContext.UserId);
@@ -50,6 +65,11 @@ public sealed class MaintenanceOrderMaterial
 
     public void UpdateQuantity(int quantity, ChangeContext changeContext)
     {
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
+        }
+
         Quantity = quantity;
 
         AuditInfo = new AuditInfo(

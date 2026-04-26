@@ -1,25 +1,20 @@
 {
   "ModuleCode": "M1101",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 10,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2783905+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:23.1164068+00:00",
   "CodeStatus": "Missing",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
     "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
       "Severity": "Warning",
       "Message": "Keine Implementierung f\u00FCr M1101 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1101 gefunden."
     },
     {
       "Severity": "Info",
@@ -39,8 +34,8 @@
     },
     {
       "Title": "Rollout-Bereitstellung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Auslieferungskontexte",

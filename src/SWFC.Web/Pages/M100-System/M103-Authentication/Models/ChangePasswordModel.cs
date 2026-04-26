@@ -13,8 +13,8 @@ public sealed class ChangePasswordModel
     [DataType(DataType.Password)]
     public string NewPassword { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Bitte neues Passwort bestätigen.")]
-    [Compare(nameof(NewPassword), ErrorMessage = "Die neue Passwortbestätigung stimmt nicht überein.")]
+    [Required(ErrorMessage = "Bitte neues Passwort bestï¿½tigen.")]
+    [Compare(nameof(NewPassword), ErrorMessage = "Die neue Passwortbestï¿½tigung stimmt nicht ï¿½berein.")]
     [DataType(DataType.Password)]
     public string ConfirmPassword { get; set; } = string.Empty;
 }

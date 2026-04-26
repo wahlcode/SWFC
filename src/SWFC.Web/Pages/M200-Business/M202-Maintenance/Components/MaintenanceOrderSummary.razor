@@ -9,9 +9,14 @@
         <div><dt>Beschreibung</dt><dd>@Item.Description</dd></div>
         <div><dt>Zieltyp</dt><dd>@Item.TargetType</dd></div>
         <div><dt>Ziel</dt><dd>@Item.TargetId</dd></div>
+        <div><dt>Plan</dt><dd>@(Item.MaintenancePlanId?.ToString() ?? "-")</dd></div>
         <div><dt>Status</dt><dd>@Item.Status</dd></div>
+        <div><dt>PrioritÃ¤t</dt><dd>@Item.Priority</dd></div>
         <div><dt>Typ</dt><dd>@Item.Type</dd></div>
-        <div><dt>Fällig</dt><dd>@(Item.DueAtUtc?.ToString("dd.MM.yyyy") ?? "-")</dd></div>
+        <div><dt>Geplant</dt><dd>@FormatWindow(Item.PlannedStartUtc, Item.PlannedEndUtc)</dd></div>
+        <div><dt>Fï¿½llig</dt><dd>@(Item.DueAtUtc?.ToString("dd.MM.yyyy") ?? "-")</dd></div>
+        <div><dt>Gestartet</dt><dd>@(Item.StartedAtUtc?.ToString("dd.MM.yyyy HH:mm") ?? "-")</dd></div>
+        <div><dt>Abgeschlossen</dt><dd>@(Item.CompletedAtUtc?.ToString("dd.MM.yyyy HH:mm") ?? "-")</dd></div>
         <div><dt>Angelegt</dt><dd>@Item.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</dd></div>
     </dl>
 
@@ -48,6 +53,16 @@
 @code {
     [Parameter]
     public MaintenanceOrderDetailsDto Item { get; set; } = null!;
+
+    private static string FormatWindow(DateTime? start, DateTime? end)
+    {
+        if (start is null && end is null)
+        {
+            return "-";
+        }
+
+        return $"{start?.ToString("dd.MM.yyyy") ?? "-"} - {end?.ToString("dd.MM.yyyy") ?? "-"}";
+    }
 }
 
 

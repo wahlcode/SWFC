@@ -3,6 +3,7 @@ using SWFC.Application.M100_System.M102_Organization.Users.ExternalPersons;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SWFC.Application.M100_System.M102_Organization.Assignments;
 using SWFC.Application.M100_System.M102_Organization.CostCenters;
 using SWFC.Application.M100_System.M102_Organization.OrganizationUnits;
@@ -14,6 +15,7 @@ using SWFC.Application.M200_Business.M201_Assets.MachineComponents;
 using SWFC.Application.M200_Business.M201_Assets.Machines;
 using SWFC.Application.M200_Business.M202_Maintenance.MaintenanceOrders;
 using SWFC.Application.M200_Business.M202_Maintenance.MaintenancePlans;
+using SWFC.Application.M200_Business.M203_Inspections;
 using SWFC.Application.M200_Business.M204_Inventory.Items;
 using SWFC.Application.M200_Business.M204_Inventory.Locations;
 using SWFC.Application.M200_Business.M204_Inventory.Reservations;
@@ -33,6 +35,7 @@ using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Configuration;
 using SWFC.Application.M800_Security.M803_Visibility;
+using SWFC.Application.M800_Security.M803_DataSecurity;
 using SWFC.Application.M800_Security.M803_Visibility.AccessRules;
 using SWFC.Application.M800_Security.M805_AuditCompliance.Entries;
 using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
@@ -42,13 +45,24 @@ using SWFC.Application.M800_Security.M806_AccessControl.RolePermissions;
 using SWFC.Application.M800_Security.M806_AccessControl.Roles;
 using SWFC.Application.M800_Security.M806_AccessControl.Shared;
 using SWFC.Application.M800_Security.M806_AccessControl.Users;
+using SWFC.Application.M800_Security.M807_SecretsKeyManagement;
+using SWFC.Application.M800_Security.M809_CompliancePolicies;
 using SWFC.Domain.M100_System.M101_Foundation.Abstractions;
+using SWFC.Infrastructure.M400_Integration.M401_ImportExport;
+using SWFC.Infrastructure.M400_Integration.M402_API;
+using SWFC.Infrastructure.M400_Integration.M403_ERPIntegration;
+using SWFC.Infrastructure.M400_Integration.M404_IoTMaschinen;
+using SWFC.Infrastructure.M400_Integration.M405_MessagingEvents;
 using SWFC.Infrastructure.M400_Integration.M406_IdentityIntegration.Configuration;
 using SWFC.Infrastructure.M400_Integration.M406_IdentityIntegration.Services;
+using SWFC.Infrastructure.M400_Integration.M407_DMSFileIntegration;
 using SWFC.Infrastructure.M100_System.M103_Authentication.DependencyInjection;
 using SWFC.Infrastructure.M100_System.M103_Authentication.Services;
 using SWFC.Infrastructure.M100_System.M107_SetupDeployment;
 using SWFC.Infrastructure.M800_Security.Audit;
+using SWFC.Infrastructure.M800_Security.DataProtection;
+using SWFC.Infrastructure.M800_Security.Policies;
+using SWFC.Infrastructure.M800_Security.Secrets;
 using SWFC.Infrastructure.Persistence.Context;
 using SWFC.Infrastructure.Persistence.Repositories.M100_System;
 using SWFC.Infrastructure.Persistence.Repositories.M200_Business;
@@ -62,7 +76,12 @@ using SWFC.Application.M200_Business.M206_Purchasing.PurchaseOrders;
 using SWFC.Application.M200_Business.M206_Purchasing.PurchaseRequirements;
 using SWFC.Application.M200_Business.M206_Purchasing.RequestForQuotations;
 using SWFC.Application.M200_Business.M206_Purchasing.Suppliers;
+using SWFC.Application.M200_Business.M207_Quality;
+using SWFC.Application.M200_Business.M208_Safety;
 using SWFC.Infrastructure.Persistence.Repositories.M200_Business.M206_Purchasing;
+using SWFC.Infrastructure.Persistence.Repositories.M200_Business.M203_Inspections;
+using SWFC.Infrastructure.Persistence.Repositories.M200_Business.M207_Quality;
+using SWFC.Infrastructure.Persistence.Repositories.M200_Business.M208_Safety;
 
 namespace SWFC.Infrastructure.DependencyInjection;
 
@@ -78,6 +97,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.TryAddSingleton(configuration);
+
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
@@ -130,6 +151,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMaintenanceOrderWriteRepository, MaintenanceOrderWriteRepository>();
         services.AddScoped<IMaintenancePlanReadRepository, MaintenancePlanReadRepository>();
         services.AddScoped<IMaintenancePlanWriteRepository, MaintenancePlanWriteRepository>();
+        services.AddScoped<IInspectionPlanRepository, InspectionPlanRepository>();
+        services.AddScoped<IInspectionRepository, InspectionRepository>();
 
         services.AddScoped<IInventoryItemReadRepository, InventoryItemReadRepository>();
         services.AddScoped<IInventoryItemWriteRepository, InventoryItemWriteRepository>();
@@ -157,6 +180,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGoodsReceiptWriteRepository, GoodsReceiptWriteRepository>();
         services.AddScoped<IRequestForQuotationReadRepository, RequestForQuotationReadRepository>();
         services.AddScoped<IRequestForQuotationWriteRepository, RequestForQuotationWriteRepository>();
+        services.AddScoped<IQualityCaseRepository, QualityCaseRepository>();
+        services.AddScoped<IQualityActionRepository, QualityActionRepository>();
+        services.AddScoped<ISafetyAssessmentRepository, SafetyAssessmentRepository>();
+        services.AddScoped<ISafetyPermitRepository, SafetyPermitRepository>();
         services.AddScoped<IBugReadRepository, BugReadRepository>();
         services.AddScoped<IBugWriteRepository, BugWriteRepository>();
         services.AddScoped<IChangeRequestReadRepository, ChangeRequestReadRepository>();
@@ -179,11 +206,25 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IM102SecurityProjectionService, M102SecurityProjectionService>();
         services.AddScoped<ISecurityAdministrationGuard, SecurityAdministrationGuard>();
         services.AddScoped<IM107SetupInitializer, M107SetupInitializer>();
+        services.AddScoped<StructuredDataExchangeAdapter>();
+        services.AddScoped<IntegrationApiCatalog>();
+        services.AddScoped<IntegrationApiGateway>();
+        services.AddSingleton<IErpTransportAdapter, InProcessErpTransportAdapter>();
+        services.AddScoped<ErpIntegrationAdapter>();
+        services.AddSingleton<IMachineTelemetrySink, InProcessMachineTelemetrySink>();
+        services.AddScoped<MachineTelemetryAdapter>();
+        services.AddScoped<IntegrationEventDispatcher>();
+        services.AddScoped<OidcProviderRegistry>();
         services.AddScoped<OidcExternalIdentityResolver>();
         services.AddScoped<OidcAuthenticationFlowService>();
+        services.AddSingleton<IDocumentReferenceSink, InProcessDocumentReferenceSink>();
+        services.AddScoped<DmsFileReferenceAdapter>();
 
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
         services.AddScoped<IAuditService, AuditService>();
+        services.AddScoped<ISensitiveDataProtector, AesGcmSensitiveDataProtector>();
+        services.AddSingleton<ISecretVaultRepository, FileSecretVaultRepository>();
+        services.AddSingleton<ISecurityPolicyRepository, FileSecurityPolicyRepository>();
 
         services.AddScoped<ICommandValidator<CreateUserCommand>, CreateUserValidator>();
         services.AddScoped<ICommandValidator<UpdateUserCommand>, UpdateUserValidator>();
@@ -533,6 +574,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<CreatePurchaseRequirement>();
         services.AddScoped<GetPurchaseRequirements>();
+        services.AddScoped<GetPurchaseProposals>();
         services.AddScoped<GetSuppliers>();
         services.AddScoped<CreateSupplier>();
         services.AddScoped<GetPurchaseOrders>();
@@ -541,6 +583,18 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CreateGoodsReceipt>();
         services.AddScoped<GetRequestForQuotations>();
         services.AddScoped<CreateRequestForQuotation>();
+        services.AddScoped<CreateInspectionPlan>();
+        services.AddScoped<CreateInspection>();
+        services.AddScoped<GetInspectionPlans>();
+        services.AddScoped<GetInspections>();
+        services.AddScoped<CreateQualityCase>();
+        services.AddScoped<CreateQualityAction>();
+        services.AddScoped<GetQualityCases>();
+        services.AddScoped<GetQualityActions>();
+        services.AddScoped<CreateSafetyAssessment>();
+        services.AddScoped<CreateSafetyPermit>();
+        services.AddScoped<GetSafetyAssessments>();
+        services.AddScoped<GetSafetyPermits>();
 
         return services;
     }

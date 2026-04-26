@@ -36,6 +36,7 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
                     .SelectMany(s => s.Reservations)
                     .Where(r => r.Status == StockReservationStatus.Active)
                     .Sum(r => r.Quantity);
+                var stockValue = quantityOnHand * x.StandardUnitPrice.Value;
 
                 return new InventoryItemListItem(
                     x.Id,
@@ -43,11 +44,14 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
                     x.Name.Value,
                     x.Description.Value,
                     x.Unit.Value,
+                    x.StandardUnitPrice.Value,
+                    x.Currency.Value,
                     x.IsActive,
                     x.Stocks.Count,
                     quantityOnHand,
                     reservedQuantity,
                     quantityOnHand - reservedQuantity,
+                    stockValue,
                     x.AuditInfo.CreatedAtUtc,
                     x.AuditInfo.CreatedBy,
                     x.AuditInfo.LastModifiedAtUtc,
@@ -92,7 +96,8 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
                     s.Bin,
                     s.QuantityOnHand,
                     reserved,
-                    s.QuantityOnHand - reserved);
+                    s.QuantityOnHand - reserved,
+                    s.QuantityOnHand * item.StandardUnitPrice.Value);
             })
             .ToList();
 
@@ -108,10 +113,13 @@ public sealed class InventoryItemReadRepository : IInventoryItemReadRepository
             item.Barcode?.Value,
             item.Manufacturer?.Value,
             item.ManufacturerPartNumber?.Value,
+            item.StandardUnitPrice.Value,
+            item.Currency.Value,
             item.IsActive,
             totalOnHand,
             totalReserved,
             totalOnHand - totalReserved,
+            totalOnHand * item.StandardUnitPrice.Value,
             stocks,
             item.AuditInfo.CreatedAtUtc,
             item.AuditInfo.CreatedBy,

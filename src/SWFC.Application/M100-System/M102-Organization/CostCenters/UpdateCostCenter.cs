@@ -15,8 +15,9 @@ public sealed record UpdateCostCenterCommand(
     string Name,
     string Code,
     Guid? ParentId,
+    DateOnly ValidFrom,
     bool IsActive,
-    string Reason);
+    string? Reason);
 
 public sealed class UpdateCostCenterValidator : ICommandValidator<UpdateCostCenterCommand>
 {
@@ -51,9 +52,9 @@ public sealed class UpdateCostCenterValidator : ICommandValidator<UpdateCostCent
             result.Add("ParentId", "A cost center cannot be its own parent.");
         }
 
-        if (string.IsNullOrWhiteSpace(command.Reason))
+        if (command.ValidFrom == default)
         {
-            result.Add("Reason", "Reason is required.");
+            result.Add("ValidFrom", "Valid from is required.");
         }
 
         return Task.FromResult(result);
@@ -136,7 +137,12 @@ public sealed class UpdateCostCenterHandler : IUseCaseHandler<UpdateCostCenterCo
         }
 
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
-        var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
+
+        var reason = string.IsNullOrWhiteSpace(command.Reason)
+            ? "Cost center updated"
+            : command.Reason.Trim();
+
+        var changeContext = ChangeContext.Create(securityContext.UserId, reason);
 
         var oldValues = JsonSerializer.Serialize(new
         {
@@ -144,6 +150,7 @@ public sealed class UpdateCostCenterHandler : IUseCaseHandler<UpdateCostCenterCo
             Name = costCenter.Name.Value,
             Code = costCenter.Code.Value,
             ParentId = costCenter.ParentCostCenterId,
+            costCenter.ValidFrom,
             costCenter.IsActive
         });
 
@@ -151,6 +158,7 @@ public sealed class UpdateCostCenterHandler : IUseCaseHandler<UpdateCostCenterCo
             CostCenterName.Create(command.Name),
             CostCenterCode.Create(command.Code),
             command.ParentId,
+            command.ValidFrom,
             changeContext);
 
         if (command.IsActive)
@@ -168,8 +176,9 @@ public sealed class UpdateCostCenterHandler : IUseCaseHandler<UpdateCostCenterCo
             Name = costCenter.Name.Value,
             Code = costCenter.Code.Value,
             ParentId = costCenter.ParentCostCenterId,
+            costCenter.ValidFrom,
             costCenter.IsActive,
-            command.Reason
+            Reason = reason
         });
 
         await _auditService.WriteAsync(

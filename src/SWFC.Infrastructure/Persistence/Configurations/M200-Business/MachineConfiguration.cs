@@ -43,6 +43,13 @@ public sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
             .IsRequired()
             .HasMaxLength(50);
 
+        entity.Property(x => x.AssetType)
+            .HasConversion(
+                x => x.Value,
+                v => MachineAssetType.Create(v))
+            .IsRequired()
+            .HasMaxLength(100);
+
         entity.Property(x => x.Manufacturer)
             .HasConversion(
                 x => x.Value,
@@ -75,6 +82,9 @@ public sealed class MachineConfiguration : IEntityTypeConfiguration<Machine>
             .IsRequired(false);
 
         entity.Property(x => x.OrganizationUnitId)
+            .IsRequired(false);
+
+        entity.Property(x => x.EnergyObjectId)
             .IsRequired(false);
 
         entity.Property(x => x.IsActive)

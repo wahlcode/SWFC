@@ -15,8 +15,16 @@ public enum MaintenanceOrderType
 
 public enum MaintenanceOrderStatus
 {
-    Open = 1,
+    Planned = 1,
     InProgress = 2,
     Completed = 3,
     Cancelled = 4
+}
+
+public enum MaintenanceOrderPriority
+{
+    Low = 1,
+    Normal = 2,
+    High = 3,
+    Critical = 4
 }

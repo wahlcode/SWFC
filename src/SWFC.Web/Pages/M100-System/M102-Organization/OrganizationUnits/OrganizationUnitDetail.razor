@@ -5,21 +5,23 @@
 
 @using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
 
 @inject IExecutionPipeline<GetOrganizationUnitByIdQuery, OrganizationUnitDetailsDto> GetOrganizationUnitPipeline
 @inject IExecutionPipeline<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>> GetOrganizationUnitsPipeline
 @inject IExecutionPipeline<CreateOrganizationUnitCommand, Guid> CreateOrganizationUnitPipeline
 @inject IExecutionPipeline<UpdateOrganizationUnitCommand, bool> UpdateOrganizationUnitPipeline
 @inject NavigationManager NavigationManager
+@inject LocalizationTextProvider TextProvider
 
 <section class="m100-ou-detail">
 
     <header class="m100-ou-detail__header">
         <div class="m100-ou-detail__title">
-            <a href="/system/organization-units" class="m100-ou-detail__back">Back</a>
-            <p class="m100-ou-detail__eyebrow">M102 · Organization</p>
-            <h1>@(IsNew ? "New organization unit" : "Edit organization unit")</h1>
-            <p>Master data and parent references are maintained only through existing M102 fields.</p>
+            <a href="/system/organization-units" class="m100-ou-detail__back">@_backText</a>
+            <p class="m100-ou-detail__eyebrow">@_eyebrowText</p>
+            <h1>@(IsNew ? _newTitleText : _editTitleText)</h1>
+            <p>@_subtitleText</p>
         </div>
     </header>
 
@@ -35,7 +37,7 @@
 
     @if (_isLoading)
     {
-        <div class="m100-loading">Loading data...</div>
+        <div class="m100-loading">@_loadingText</div>
     }
     else
     {
@@ -43,24 +45,25 @@
 
             <div class="m100-card m100-ou-detail__form">
                 <label class="m100-ou-detail__field">
-                    <span>Name</span>
+                    <span>@_nameText</span>
                     <input class="m100-input"
-                           placeholder="Name"
+                           aria-label="@_nameText"
                            @bind="_model.Name" />
                 </label>
 
                 <label class="m100-ou-detail__field">
-                    <span>Code</span>
+                    <span>@_codeText</span>
                     <input class="m100-input"
-                           placeholder="Code"
+                           aria-label="@_codeText"
                            @bind="_model.Code" />
                 </label>
 
                 <label class="m100-ou-detail__field">
-                    <span>Parent unit</span>
+                    <span>@_parentUnitText</span>
                     <select class="m100-input"
+                            aria-label="@_parentUnitText"
                             @bind="_model.ParentId">
-                        <option value="">-- no parent --</option>
+                        <option value="">@_noParentText</option>
                         @foreach (var unit in _parentOptions)
                         {
                             <option value="@unit.Id">@unit.Name (@unit.Code)</option>
@@ -72,14 +75,14 @@
                 {
                     <label class="m100-ou-detail__checkbox">
                         <input type="checkbox" @bind="_model.IsActive" />
-                        <span>Active</span>
+                        <span>@_activeText</span>
                     </label>
                 }
 
                 <label class="m100-ou-detail__field">
-                    <span>Reason</span>
+                    <span>@_reasonText</span>
                     <textarea class="m100-textarea"
-                              placeholder="Reason"
+                              aria-label="@_reasonText"
                               @bind="_model.Reason"></textarea>
                 </label>
 
@@ -87,11 +90,11 @@
                     <button class="m100-button"
                             @onclick="SaveAsync"
                             disabled="@_isBusy">
-                        Save
+                        @_saveText
                     </button>
 
                     <a href="/system/organization-units" class="m100-button m100-button--secondary">
-                        Back to list
+                        @_backToListText
                     </a>
                 </div>
             </div>
@@ -99,38 +102,38 @@
             <div class="m100-card m100-ou-detail__side">
                 @if (IsNew)
                 {
-                    <div class="m100-muted">New organization unit. After saving, the structure can be checked in detail.</div>
+                    <div class="m100-muted">@_newInfoText</div>
                 }
                 else if (_organizationUnit is not null)
                 {
                     <section class="m100-ou-detail__section">
-                        <h3>Current state</h3>
+                        <h3>@_currentStateText</h3>
                         <dl class="m100-ou-detail__summary">
                             <div>
-                                <dt>Name</dt>
+                                <dt>@_nameText</dt>
                                 <dd>@_organizationUnit.Name</dd>
                             </div>
                             <div>
-                                <dt>Code</dt>
+                                <dt>@_codeText</dt>
                                 <dd>@_organizationUnit.Code</dd>
                             </div>
                             <div>
-                                <dt>Parent</dt>
+                                <dt>@_parentText</dt>
                                 <dd>@BuildParentLabel(_organizationUnit)</dd>
                             </div>
                             <div>
-                                <dt>Status</dt>
-                                <dd>@(_organizationUnit.IsActive ? "Active" : "Inactive")</dd>
+                                <dt>@_statusText</dt>
+                                <dd>@(_organizationUnit.IsActive ? _activeText : _inactiveText)</dd>
                             </div>
                         </dl>
                     </section>
 
                     <section class="m100-ou-detail__section">
-                        <h3>Direct child units</h3>
+                        <h3>@_directChildUnitsText</h3>
 
                         @if (ChildUnits.Count == 0)
                         {
-                            <p class="m100-muted">No direct child units available.</p>
+                            <p class="m100-muted">@_noDirectChildUnitsText</p>
                         }
                         else
                         {
@@ -166,6 +169,32 @@
     private List<OrganizationUnitListItem> _parentOptions = [];
     private OrganizationUnitInputModel _model = new();
 
+    private string _backText = "Back";
+    private string _eyebrowText = "M102 · Organization";
+    private string _newTitleText = "New organization unit";
+    private string _editTitleText = "Edit organization unit";
+    private string _subtitleText = "Master data and parent references are maintained only through existing M102 fields.";
+    private string _loadingText = "Loading data...";
+    private string _nameText = "Name";
+    private string _codeText = "Code";
+    private string _parentText = "Parent";
+    private string _parentUnitText = "Parent unit";
+    private string _noParentText = "-- no parent --";
+    private string _activeText = "Active";
+    private string _inactiveText = "Inactive";
+    private string _reasonText = "Reason";
+    private string _saveText = "Save";
+    private string _backToListText = "Back to list";
+    private string _newInfoText = "New organization unit. After saving, the structure can be checked in detail.";
+    private string _currentStateText = "Current state";
+    private string _statusText = "Status";
+    private string _directChildUnitsText = "Direct child units";
+    private string _noDirectChildUnitsText = "No direct child units available.";
+    private string _loadFailedText = "Organization units could not be loaded.";
+    private string _itemLoadFailedText = "Could not be loaded.";
+    private string _createdText = "Organization unit created.";
+    private string _updatedText = "Updated.";
+
     private bool IsNew => !Id.HasValue;
 
     private IReadOnlyList<OrganizationUnitListItem> ChildUnits =>
@@ -179,7 +208,39 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadTextsAsync();
         await LoadAsync();
+    }
+
+    private async Task LoadTextsAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _backText = await TextProvider.GetTextAsync("Common.Back", culture);
+        _eyebrowText = await TextProvider.GetTextAsync("OrganizationUnitDetail.Eyebrow", culture);
+        _newTitleText = await TextProvider.GetTextAsync("OrganizationUnitDetail.NewTitle", culture);
+        _editTitleText = await TextProvider.GetTextAsync("OrganizationUnitDetail.EditTitle", culture);
+        _subtitleText = await TextProvider.GetTextAsync("OrganizationUnitDetail.Subtitle", culture);
+        _loadingText = await TextProvider.GetTextAsync("OrganizationUnitDetail.Loading", culture);
+        _nameText = await TextProvider.GetTextAsync("Common.Name", culture);
+        _codeText = await TextProvider.GetTextAsync("Common.Code", culture);
+        _parentText = await TextProvider.GetTextAsync("Common.Parent", culture);
+        _parentUnitText = await TextProvider.GetTextAsync("OrganizationUnitDetail.ParentUnit", culture);
+        _noParentText = await TextProvider.GetTextAsync("Common.NoParent", culture);
+        _activeText = await TextProvider.GetTextAsync("Common.Active", culture);
+        _inactiveText = await TextProvider.GetTextAsync("Common.Inactive", culture);
+        _reasonText = await TextProvider.GetTextAsync("Common.Reason", culture);
+        _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
+        _backToListText = await TextProvider.GetTextAsync("OrganizationUnitDetail.BackToList", culture);
+        _newInfoText = await TextProvider.GetTextAsync("OrganizationUnitDetail.NewInfo", culture);
+        _currentStateText = await TextProvider.GetTextAsync("OrganizationUnitDetail.CurrentState", culture);
+        _statusText = await TextProvider.GetTextAsync("UserDetail.Status", culture);
+        _directChildUnitsText = await TextProvider.GetTextAsync("OrganizationUnitDetail.DirectChildUnits", culture);
+        _noDirectChildUnitsText = await TextProvider.GetTextAsync("OrganizationUnitDetail.NoDirectChildUnits", culture);
+        _loadFailedText = await TextProvider.GetTextAsync("OrganizationUnitDetail.LoadFailed", culture);
+        _itemLoadFailedText = await TextProvider.GetTextAsync("OrganizationUnitDetail.ItemLoadFailed", culture);
+        _createdText = await TextProvider.GetTextAsync("OrganizationUnitDetail.Created", culture);
+        _updatedText = await TextProvider.GetTextAsync("OrganizationUnitDetail.Updated", culture);
     }
 
     private async Task LoadAsync()
@@ -205,7 +266,7 @@
             }
             else if (!unitsResult.IsSuccess)
             {
-                _error = unitsResult.Error?.Message ?? "Organization units could not be loaded.";
+                _error = unitsResult.Error?.Message ?? _loadFailedText;
             }
 
             if (IsNew)
@@ -232,7 +293,7 @@
             }
             else
             {
-                _error = result.Error?.Message ?? "Could not be loaded.";
+                _error = result.Error?.Message ?? _itemLoadFailedText;
             }
         }
         finally
@@ -264,7 +325,7 @@
                     return;
                 }
 
-                _success = "Organization unit created.";
+                _success = _createdText;
                 NavigationManager.NavigateTo($"/system/organization-units/{createResult.Value}");
                 return;
             }
@@ -284,7 +345,7 @@
                 return;
             }
 
-            _success = "Updated.";
+            _success = _updatedText;
             await LoadAsync();
         }
         finally

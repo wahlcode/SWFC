@@ -39,7 +39,7 @@
             </select>
 
             <label class="m201-visibility-section__label">Kennung</label>
-            <input class="m201-input" placeholder="z. B. Benutzer-ID, Rollen-ID oder Organisationseinheits-ID" @bind="_editorModel.SubjectId" />
+            <input class="m201-input" aria-label="Subject identifier" @bind="_editorModel.SubjectId" />
 
             <label class="m201-visibility-section__label">Regelmodus</label>
             <select class="m201-input" @bind="_editorModel.Mode">
@@ -50,7 +50,7 @@
             </select>
 
             <label class="m201-visibility-section__label">Begründung</label>
-            <input class="m201-input" placeholder="Warum wird diese Regel gesetzt?" @bind="_editorModel.Reason" />
+            <input class="m201-input" aria-label="Reason for this rule" @bind="_editorModel.Reason" />
 
             <button type="button" class="m201-button" @onclick="CreateRuleAsync">
                 Regel anlegen
@@ -106,7 +106,7 @@
             {
                 <div class="m201-visibility-section__pending">
                     <div class="m201-visibility-section__label">Begründung für Änderung</div>
-                    <input class="m201-input" placeholder="Begründung" @bind="_pendingReason" />
+                    <input class="m201-input" aria-label="Reason" @bind="_pendingReason" />
 
                     <div class="m201-visibility-section__item-actions">
                         @if (_pendingMode.HasValue)
@@ -310,6 +310,7 @@
             Mode = dto.Mode
         };
 }
+
 
 
 

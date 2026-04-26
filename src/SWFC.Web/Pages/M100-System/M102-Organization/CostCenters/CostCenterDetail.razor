@@ -5,20 +5,22 @@
 
 @using SWFC.Application.M100_System.M102_Organization.CostCenters
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
 
 @inject IExecutionPipeline<GetCostCenterByIdQuery, CostCenterDetailsDto> GetCostCenterPipeline
 @inject IExecutionPipeline<GetCostCentersQuery, IReadOnlyList<CostCenterListItem>> GetCostCentersPipeline
 @inject IExecutionPipeline<CreateCostCenterCommand, Guid> CreateCostCenterPipeline
 @inject IExecutionPipeline<UpdateCostCenterCommand, bool> UpdateCostCenterPipeline
 @inject NavigationManager NavigationManager
+@inject LocalizationTextProvider TextProvider
 
 <section class="m100-ou-detail">
 
     <div class="m100-ou-detail__header">
-        <h1>@(IsNew ? "New cost center" : "Edit cost center")</h1>
+        <h1>@(IsNew ? _newTitleText : _editTitleText)</h1>
 
         <a href="/system/cost-centers" class="m100-link">
-            Back
+            @_backText
         </a>
     </div>
 
@@ -34,7 +36,7 @@
 
     @if (_isLoading)
     {
-        <div class="m100-loading">Loading data...</div>
+        <div class="m100-loading">@_loadingText</div>
     }
     else
     {
@@ -43,16 +45,22 @@
             <div class="m100-card">
 
                 <input class="m100-input"
-                       placeholder="Name"
+                       aria-label="@_nameText"
                        @bind="_model.Name" />
 
                 <input class="m100-input"
-                       placeholder="Code"
+                       aria-label="@_codeText"
                        @bind="_model.Code" />
 
+                <input class="m100-input"
+                       aria-label="@_validFromText"
+                       type="date"
+                       @bind="_model.ValidFrom" />
+
                 <select class="m100-input"
+                        aria-label="@_parentText"
                         @bind="_model.ParentId">
-                    <option value="">-- no parent --</option>
+                    <option value="">@_noParentText</option>
                     @foreach (var item in _parentOptions)
                     {
                         <option value="@item.Id">@item.Name (@item.Code)</option>
@@ -61,17 +69,13 @@
 
                 <label class="m100-checkbox">
                     <input type="checkbox" @bind="_model.IsActive" />
-                    Active
+                    @_activeText
                 </label>
-
-                <textarea class="m100-textarea"
-                          placeholder="Reason"
-                          @bind="_model.Reason"></textarea>
 
                 <button class="m100-button"
                         @onclick="SaveAsync"
                         disabled="@_isBusy">
-                    Save
+                    @_saveText
                 </button>
 
             </div>
@@ -80,15 +84,16 @@
 
                 @if (IsNew)
                 {
-                    <div class="m100-muted">New cost center</div>
+                    <div class="m100-muted">@_newTitleText</div>
                 }
                 else if (_costCenter is not null)
                 {
                     <ul class="m100-list">
-                        <li><strong>Name:</strong> @_costCenter.Name</li>
-                        <li><strong>Code:</strong> @_costCenter.Code</li>
-                        <li><strong>Parent:</strong> @BuildParentLabel(_costCenter)</li>
-                        <li><strong>Active:</strong> @(_costCenter.IsActive ? "Yes" : "No")</li>
+                        <li><strong>@_nameText:</strong> @_costCenter.Name</li>
+                        <li><strong>@_codeText:</strong> @_costCenter.Code</li>
+                        <li><strong>@_parentText:</strong> @BuildParentLabel(_costCenter)</li>
+                        <li><strong>@_validFromText:</strong> @_costCenter.ValidFrom</li>
+                        <li><strong>@_activeText:</strong> @(_costCenter.IsActive ? _yesText : _noText)</li>
                     </ul>
                 }
 
@@ -112,11 +117,53 @@
     private List<CostCenterListItem> _parentOptions = [];
     private CostCenterInputModel _model = new();
 
+    private string _newTitleText = "New cost center";
+    private string _editTitleText = "Edit cost center";
+    private string _backText = "Back";
+    private string _loadingText = "Loading data...";
+    private string _nameText = "Name";
+    private string _codeText = "Code";
+    private string _parentText = "Parent";
+    private string _noParentText = "-- no parent --";
+    private string _activeText = "Active";
+    private string _saveText = "Save";
+    private string _yesText = "Yes";
+    private string _noText = "No";
+    private string _validFromText = "Valid from";
+    private string _loadFailedText = "Cost centers could not be loaded.";
+    private string _itemLoadFailedText = "Could not be loaded.";
+    private string _createdText = "Created";
+    private string _updatedText = "Updated";
+
     private bool IsNew => !Id.HasValue;
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadTextsAsync();
         await LoadAsync();
+    }
+
+    private async Task LoadTextsAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _newTitleText = await TextProvider.GetTextAsync("CostCenterDetail.NewTitle", culture);
+        _editTitleText = await TextProvider.GetTextAsync("CostCenterDetail.EditTitle", culture);
+        _backText = await TextProvider.GetTextAsync("Common.Back", culture);
+        _loadingText = await TextProvider.GetTextAsync("CostCenterDetail.Loading", culture);
+        _nameText = await TextProvider.GetTextAsync("Common.Name", culture);
+        _codeText = await TextProvider.GetTextAsync("Common.Code", culture);
+        _parentText = await TextProvider.GetTextAsync("Common.Parent", culture);
+        _noParentText = await TextProvider.GetTextAsync("Common.NoParent", culture);
+        _activeText = await TextProvider.GetTextAsync("Common.Active", culture);
+        _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
+        _yesText = await TextProvider.GetTextAsync("Common.Yes", culture);
+        _noText = await TextProvider.GetTextAsync("Common.No", culture);
+        _validFromText = await TextProvider.GetTextAsync("CostCenterDetail.ValidFrom", culture);
+        _loadFailedText = await TextProvider.GetTextAsync("CostCenterDetail.LoadFailed", culture);
+        _itemLoadFailedText = await TextProvider.GetTextAsync("CostCenterDetail.ItemLoadFailed", culture);
+        _createdText = await TextProvider.GetTextAsync("CostCenterDetail.Created", culture);
+        _updatedText = await TextProvider.GetTextAsync("CostCenterDetail.Updated", culture);
     }
 
     private async Task LoadAsync()
@@ -130,15 +177,17 @@
         if (itemsResult.IsSuccess && itemsResult.Value is not null)
         {
             _allItems = itemsResult.Value;
+
             _parentOptions = _allItems
+                .Where(x => x.ParentId is null)
                 .Where(x => !Id.HasValue || x.Id != Id.Value)
-                .OrderBy(x => x.Name)
-                .ThenBy(x => x.Code)
+                .OrderBy(x => x.Code)
+                .ThenBy(x => x.Name)
                 .ToList();
         }
         else if (!itemsResult.IsSuccess)
         {
-            _error = itemsResult.Error?.Message ?? "Cost centers could not be loaded.";
+            _error = itemsResult.Error?.Message ?? _loadFailedText;
         }
 
         if (IsNew)
@@ -159,13 +208,13 @@
                 Name = result.Value.Name,
                 Code = result.Value.Code,
                 ParentId = result.Value.ParentId,
-                IsActive = result.Value.IsActive,
-                Reason = string.Empty
+                ValidFrom = result.Value.ValidFrom,
+                IsActive = result.Value.IsActive
             };
         }
         else
         {
-            _error = result.Error?.Message ?? "Could not be loaded.";
+            _error = result.Error?.Message ?? _itemLoadFailedText;
         }
 
         _isLoading = false;
@@ -186,7 +235,8 @@
                         _model.Name,
                         _model.Code,
                         _model.ParentId,
-                        _model.Reason));
+                        _model.ValidFrom,
+                        null));
 
                 if (!createResult.IsSuccess)
                 {
@@ -194,7 +244,7 @@
                     return;
                 }
 
-                _success = "Created";
+                _success = _createdText;
                 NavigationManager.NavigateTo($"/system/cost-centers/{createResult.Value}");
                 return;
             }
@@ -205,8 +255,9 @@
                     _model.Name,
                     _model.Code,
                     _model.ParentId,
+                    _model.ValidFrom,
                     _model.IsActive,
-                    _model.Reason));
+                    null));
 
             if (!updateResult.IsSuccess)
             {
@@ -214,7 +265,7 @@
                 return;
             }
 
-            _success = "Updated";
+            _success = _updatedText;
             await LoadAsync();
         }
         finally
@@ -238,7 +289,7 @@
         public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public Guid? ParentId { get; set; }
+        public DateOnly ValidFrom { get; set; } = DateOnly.FromDateTime(DateTime.Today);
         public bool IsActive { get; set; } = true;
-        public string Reason { get; set; } = string.Empty;
     }
 }

@@ -20,12 +20,12 @@
     <div class="m205-detail__header">
         <div>
             <div class="m205-detail__eyebrow">M205</div>
-            <h1>@(IsNew ? "Zählerstand erfassen" : "Zählerstand bearbeiten")</h1>
+            <h1>@(IsNew ? "Zï¿½hlerstand erfassen" : "Zï¿½hlerstand bearbeiten")</h1>
             <p class="m205-detail__subtitle">Manuelle Erfassung und Historienpflege.</p>
         </div>
 
         <div class="m205-detail__actions">
-            <a href="/business/energy" class="m205-button-secondary">Zurück</a>
+            <a href="/business/energy" class="m205-button-secondary">Zurï¿½ck</a>
         </div>
     </div>
 
@@ -71,7 +71,47 @@
                             <InputSelect id="m205-source" class="m205-input" @bind-Value="_model.Source">
                                 <option value="@EnergyReadingSource.Manual">Manual</option>
                                 <option value="@EnergyReadingSource.Import">Import</option>
+                                <option value="@EnergyReadingSource.Automatic">Automatic</option>
+                                <option value="@EnergyReadingSource.Realtime">Realtime</option>
                             </InputSelect>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-captured-by">Erfasst durch</label>
+                            <InputText id="m205-captured-by" class="m205-input" @bind-Value="_model.CapturedByUserId" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-rfid">RFID</label>
+                            <InputText id="m205-rfid" class="m205-input" @bind-Value="_model.RfidTag" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-rfid-exception">RFID-Ausnahme</label>
+                            <InputText id="m205-rfid-exception" class="m205-input" @bind-Value="_model.RfidExceptionReason" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-offline-id">Offline CaptureId</label>
+                            <InputText id="m205-offline-id" class="m205-input" @bind-Value="_model.OfflineCaptureId" />
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-plausibility">PlausibilitÃ¤t</label>
+                            <InputSelect id="m205-plausibility" class="m205-input" @bind-Value="_model.PlausibilityStatus">
+                                <option value="@EnergyReadingPlausibilityStatus.Normal">Normal</option>
+                                <option value="@EnergyReadingPlausibilityStatus.Flagged">AuffÃ¤llig</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="m205-form-field">
+                            <label for="m205-plausibility-note">PlausibilitÃ¤tsnotiz</label>
+                            <InputText id="m205-plausibility-note" class="m205-input" @bind-Value="_model.PlausibilityNote" />
+                        </div>
+
+                        <div class="m205-form-field m205-form-field--full">
+                            <label for="m205-capture-context">Erfassungskontext</label>
+                            <InputTextArea id="m205-capture-context" class="m205-input m205-textarea" @bind-Value="_model.CaptureContext" />
                         </div>
 
                         <div class="m205-form-field m205-form-field--full">
@@ -94,6 +134,9 @@
                     <li><strong>Datum:</strong> @_model.Date.ToString("dd.MM.yyyy")</li>
                     <li><strong>Wert:</strong> @_model.Value</li>
                     <li><strong>Quelle:</strong> @_model.Source</li>
+                    <li><strong>RFID:</strong> @DisplayOrDash(_model.RfidTag)</li>
+                    <li><strong>RFID-Ausnahme:</strong> @DisplayOrDash(_model.RfidExceptionReason)</li>
+                    <li><strong>PlausibilitÃ¤t:</strong> @_model.PlausibilityStatus</li>
                 </ul>
             </div>
         </div>
@@ -143,7 +186,16 @@
                 MeterId = item.MeterId.ToString(),
                 Date = item.Date,
                 Value = item.Value,
-                Source = item.Source
+                Source = item.Source,
+                CapturedByUserId = item.CapturedByUserId,
+                CaptureContext = item.CaptureContext,
+                RfidTag = item.RfidTag,
+                RfidExceptionReason = item.RfidExceptionReason,
+                OfflineCaptureId = item.OfflineCaptureId?.ToString(),
+                CapturedOfflineAtUtc = item.CapturedOfflineAtUtc,
+                SyncedAtUtc = item.SyncedAtUtc,
+                PlausibilityStatus = item.PlausibilityStatus,
+                PlausibilityNote = item.PlausibilityNote
             };
         }
         else
@@ -164,8 +216,20 @@
         {
             if (!Guid.TryParse(_model.MeterId, out var meterId))
             {
-                _errorMessage = "MeterId ist ungültig.";
+                _errorMessage = "MeterId ist ungï¿½ltig.";
                 return;
+            }
+
+            Guid? offlineCaptureId = null;
+            if (!string.IsNullOrWhiteSpace(_model.OfflineCaptureId))
+            {
+                if (!Guid.TryParse(_model.OfflineCaptureId, out var parsedOfflineCaptureId))
+                {
+                    _errorMessage = "Offline CaptureId ist ungueltig.";
+                    return;
+                }
+
+                offlineCaptureId = parsedOfflineCaptureId;
             }
 
             if (IsNew)
@@ -176,6 +240,15 @@
                         _model.Date,
                         _model.Value,
                         _model.Source,
+                        _model.CapturedByUserId,
+                        _model.CaptureContext,
+                        _model.RfidTag,
+                        _model.RfidExceptionReason,
+                        offlineCaptureId,
+                        _model.CapturedOfflineAtUtc,
+                        _model.SyncedAtUtc,
+                        _model.PlausibilityStatus,
+                        _model.PlausibilityNote,
                         _model.Reason),
                     CancellationToken.None);
 
@@ -195,6 +268,15 @@
                     _model.Date,
                     _model.Value,
                     _model.Source,
+                    _model.CapturedByUserId,
+                    _model.CaptureContext,
+                    _model.RfidTag,
+                    _model.RfidExceptionReason,
+                    offlineCaptureId,
+                    _model.CapturedOfflineAtUtc,
+                    _model.SyncedAtUtc,
+                    _model.PlausibilityStatus,
+                    _model.PlausibilityNote,
                     _model.Reason),
                 CancellationToken.None);
 
@@ -216,5 +298,6 @@
     private static string DisplayOrDash(string? value)
         => string.IsNullOrWhiteSpace(value) ? "-" : value;
 }
+
 
 

@@ -1,15 +1,14 @@
 {
   "ModuleCode": "M704",
-  "ScorePercent": 31,
+  "ScorePercent": 50,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.9758197+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.6967394+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
@@ -19,18 +18,14 @@
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M704 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
     {
       "Title": "Incident-Erfassung",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Eskalation",
@@ -59,13 +54,13 @@
     },
     {
       "Title": "Verkn\u00C3\u00BCpfung zu M303",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u00BCpfung zu M500",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

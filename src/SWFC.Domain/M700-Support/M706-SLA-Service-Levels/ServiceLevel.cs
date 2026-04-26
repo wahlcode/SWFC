@@ -13,6 +13,10 @@ public sealed class ServiceLevel
         ProcessingTime = TimeSpan.Zero;
         UseForSupport = false;
         UseForIncidentManagement = false;
+        Status = ServiceLevelStatus.Draft;
+        ModuleReference = null;
+        ObjectReference = null;
+        HistoryLog = string.Empty;
         AuditInfo = null!;
     }
 
@@ -23,6 +27,10 @@ public sealed class ServiceLevel
         TimeSpan processingTime,
         bool useForSupport,
         bool useForIncidentManagement,
+        ServiceLevelStatus status,
+        string? moduleReference,
+        string? objectReference,
+        string historyLog,
         AuditInfo auditInfo)
     {
         Id = id;
@@ -31,6 +39,10 @@ public sealed class ServiceLevel
         ProcessingTime = processingTime;
         UseForSupport = useForSupport;
         UseForIncidentManagement = useForIncidentManagement;
+        Status = status;
+        ModuleReference = moduleReference;
+        ObjectReference = objectReference;
+        HistoryLog = historyLog;
         AuditInfo = auditInfo;
     }
 
@@ -40,6 +52,10 @@ public sealed class ServiceLevel
     public TimeSpan ProcessingTime { get; private set; }
     public bool UseForSupport { get; private set; }
     public bool UseForIncidentManagement { get; private set; }
+    public ServiceLevelStatus Status { get; private set; }
+    public string? ModuleReference { get; private set; }
+    public string? ObjectReference { get; private set; }
+    public string HistoryLog { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
     public static ServiceLevel Create(
@@ -48,10 +64,14 @@ public sealed class ServiceLevel
         TimeSpan processingTime,
         bool useForSupport,
         bool useForIncidentManagement,
-        ChangeContext changeContext)
+        ChangeContext changeContext,
+        ServiceLevelStatus status = ServiceLevelStatus.Draft,
+        string? moduleReference = null,
+        string? objectReference = null)
     {
         ValidateTimes(responseTime, processingTime);
         ValidateUsage(useForSupport, useForIncidentManagement);
+        ValidateStatus(status);
 
         var auditInfo = new AuditInfo(
             createdAtUtc: changeContext.ChangedAtUtc,
@@ -64,6 +84,10 @@ public sealed class ServiceLevel
             processingTime,
             useForSupport,
             useForIncidentManagement,
+            status,
+            NormalizeOptional(moduleReference),
+            NormalizeOptional(objectReference),
+            CreateHistory("Created", status.ToString(), changeContext),
             auditInfo);
     }
 
@@ -73,18 +97,31 @@ public sealed class ServiceLevel
         TimeSpan processingTime,
         bool useForSupport,
         bool useForIncidentManagement,
-        ChangeContext changeContext)
+        ChangeContext changeContext,
+        ServiceLevelStatus status = ServiceLevelStatus.Draft,
+        string? moduleReference = null,
+        string? objectReference = null)
     {
         ValidateTimes(responseTime, processingTime);
         ValidateUsage(useForSupport, useForIncidentManagement);
+        ValidateStatus(status);
 
         Priority = NormalizeRequired(priority, nameof(Priority));
         ResponseTime = responseTime;
         ProcessingTime = processingTime;
         UseForSupport = useForSupport;
         UseForIncidentManagement = useForIncidentManagement;
+        Status = status;
+        ModuleReference = NormalizeOptional(moduleReference) ?? ModuleReference;
+        ObjectReference = NormalizeOptional(objectReference) ?? ObjectReference;
+        HistoryLog = AppendHistory(HistoryLog, "Updated", status.ToString(), changeContext);
 
         Touch(changeContext);
+    }
+
+    private static string? NormalizeOptional(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
     private static string NormalizeRequired(string? value, string fieldName)
@@ -96,6 +133,22 @@ public sealed class ServiceLevel
 
         return value.Trim();
     }
+
+    private static void ValidateStatus(ServiceLevelStatus status)
+    {
+        if (!Enum.IsDefined(status))
+        {
+            throw new ValidationException("Service level status is invalid.");
+        }
+    }
+
+    private static string CreateHistory(string action, string value, ChangeContext changeContext) =>
+        $"{changeContext.ChangedAtUtc:O}|{changeContext.UserId}|{action}|{value}|{changeContext.Reason}";
+
+    private static string AppendHistory(string historyLog, string action, string value, ChangeContext changeContext) =>
+        string.IsNullOrWhiteSpace(historyLog)
+            ? CreateHistory(action, value, changeContext)
+            : $"{historyLog}{Environment.NewLine}{CreateHistory(action, value, changeContext)}";
 
     private static void ValidateTimes(TimeSpan responseTime, TimeSpan processingTime)
     {
@@ -121,4 +174,11 @@ public sealed class ServiceLevel
             lastModifiedAtUtc: changeContext.ChangedAtUtc,
             lastModifiedBy: changeContext.UserId);
     }
+}
+
+public enum ServiceLevelStatus
+{
+    Draft = 0,
+    Active = 1,
+    Retired = 2
 }

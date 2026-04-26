@@ -1,0 +1,46 @@
+@page "/m200/workforce"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M213_Workforce
+
+@inject WorkforceWorkspaceService WorkforceService
+
+<PageTitle>Workforce</PageTitle>
+
+<section class="module-page">
+    <header class="module-page__header">
+        <div>
+            <p>M213</p>
+            <h1>Workforce und Tätigkeiten</h1>
+        </div>
+        <span>@Assignments.Count Einsätze</span>
+    </header>
+
+    <div class="module-grid">
+        @foreach (var assignment in Assignments)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@assignment.Status</span>
+                    <h2>@assignment.Activity</h2>
+                </div>
+                <dl>
+                    <div><dt>Ziel</dt><dd>@assignment.TargetModule - @assignment.TargetLabel</dd></div>
+                    <div><dt>Benutzer</dt><dd>@assignment.UserId</dd></div>
+                    <div><dt>Schichtbezug</dt><dd>@(assignment.ShiftModelId?.ToString() ?? "ohne")</dd></div>
+                    <div><dt>Rückmeldung</dt><dd>@assignment.ReportedHours.ToString("0.0") h</dd></div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<WorkforceAssignmentSummaryDto> Assignments = Array.Empty<WorkforceAssignmentSummaryDto>();
+
+    protected override void OnInitialized()
+    {
+        Assignments = WorkforceService.GetAssignments();
+    }
+}

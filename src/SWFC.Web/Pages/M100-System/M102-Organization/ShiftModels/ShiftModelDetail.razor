@@ -5,19 +5,21 @@
 
 @using SWFC.Application.M100_System.M102_Organization.ShiftModels
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
 
 @inject IExecutionPipeline<GetShiftModelByIdQuery, ShiftModelDetailsDto> GetShiftModelPipeline
 @inject IExecutionPipeline<CreateShiftModelCommand, Guid> CreateShiftModelPipeline
 @inject IExecutionPipeline<UpdateShiftModelCommand, bool> UpdateShiftModelPipeline
 @inject NavigationManager NavigationManager
+@inject LocalizationTextProvider TextProvider
 
 <section class="m100-ou-detail">
 
     <div class="m100-ou-detail__header">
-        <h1>@(IsNew ? "New shift model" : "Edit shift model")</h1>
+        <h1>@(IsNew ? _newTitleText : _editTitleText)</h1>
 
         <a href="/system/shift-models" class="m100-link">
-            Back
+            @_backText
         </a>
     </div>
 
@@ -33,7 +35,7 @@
 
     @if (_isLoading)
     {
-        <div class="m100-loading">Loading data...</div>
+        <div class="m100-loading">@_loadingText</div>
     }
     else
     {
@@ -42,30 +44,30 @@
             <div class="m100-card">
 
                 <input class="m100-input"
-                       placeholder="Name"
+                       aria-label="@_nameText"
                        @bind="_model.Name" />
 
                 <input class="m100-input"
-                       placeholder="Code"
+                       aria-label="@_codeText"
                        @bind="_model.Code" />
 
                 <textarea class="m100-textarea"
-                          placeholder="Description"
+                          aria-label="@_descriptionText"
                           @bind="_model.Description"></textarea>
 
                 <label class="m100-checkbox">
                     <input type="checkbox" @bind="_model.IsActive" />
-                    Active
+                    @_activeText
                 </label>
 
                 <textarea class="m100-textarea"
-                          placeholder="Reason"
+                          aria-label="@_reasonText"
                           @bind="_model.Reason"></textarea>
 
                 <button class="m100-button"
                         @onclick="SaveAsync"
                         disabled="@_isBusy">
-                    Save
+                    @_saveText
                 </button>
 
             </div>
@@ -74,15 +76,15 @@
 
                 @if (IsNew)
                 {
-                    <div class="m100-muted">New shift model</div>
+                    <div class="m100-muted">@_newTitleText</div>
                 }
                 else if (_shiftModel is not null)
                 {
                     <ul class="m100-list">
-                        <li><strong>Name:</strong> @_shiftModel.Name</li>
-                        <li><strong>Code:</strong> @_shiftModel.Code</li>
-                        <li><strong>Description:</strong> @(string.IsNullOrWhiteSpace(_shiftModel.Description) ? "-" : _shiftModel.Description)</li>
-                        <li><strong>Active:</strong> @(_shiftModel.IsActive ? "Yes" : "No")</li>
+                        <li><strong>@_nameText:</strong> @_shiftModel.Name</li>
+                        <li><strong>@_codeText:</strong> @_shiftModel.Code</li>
+                        <li><strong>@_descriptionText:</strong> @(string.IsNullOrWhiteSpace(_shiftModel.Description) ? "-" : _shiftModel.Description)</li>
+                        <li><strong>@_activeText:</strong> @(_shiftModel.IsActive ? _yesText : _noText)</li>
                     </ul>
                 }
 
@@ -104,11 +106,49 @@
     private ShiftModelDetailsDto? _shiftModel;
     private ShiftModelInputModel _model = new();
 
+    private string _newTitleText = "New shift model";
+    private string _editTitleText = "Edit shift model";
+    private string _backText = "Back";
+    private string _loadingText = "Loading data...";
+    private string _nameText = "Name";
+    private string _codeText = "Code";
+    private string _descriptionText = "Description";
+    private string _activeText = "Active";
+    private string _reasonText = "Reason";
+    private string _saveText = "Save";
+    private string _yesText = "Yes";
+    private string _noText = "No";
+    private string _itemLoadFailedText = "Could not be loaded.";
+    private string _createdText = "Created";
+    private string _updatedText = "Updated";
+
     private bool IsNew => !Id.HasValue;
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadTextsAsync();
         await LoadAsync();
+    }
+
+    private async Task LoadTextsAsync()
+    {
+        var culture = LocalizationTextProvider.DefaultCultureName;
+
+        _newTitleText = await TextProvider.GetTextAsync("ShiftModelDetail.NewTitle", culture);
+        _editTitleText = await TextProvider.GetTextAsync("ShiftModelDetail.EditTitle", culture);
+        _backText = await TextProvider.GetTextAsync("Common.Back", culture);
+        _loadingText = await TextProvider.GetTextAsync("ShiftModelDetail.Loading", culture);
+        _nameText = await TextProvider.GetTextAsync("Common.Name", culture);
+        _codeText = await TextProvider.GetTextAsync("Common.Code", culture);
+        _descriptionText = await TextProvider.GetTextAsync("Common.Description", culture);
+        _activeText = await TextProvider.GetTextAsync("Common.Active", culture);
+        _reasonText = await TextProvider.GetTextAsync("Common.Reason", culture);
+        _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
+        _yesText = await TextProvider.GetTextAsync("Common.Yes", culture);
+        _noText = await TextProvider.GetTextAsync("Common.No", culture);
+        _itemLoadFailedText = await TextProvider.GetTextAsync("ShiftModelDetail.ItemLoadFailed", culture);
+        _createdText = await TextProvider.GetTextAsync("ShiftModelDetail.Created", culture);
+        _updatedText = await TextProvider.GetTextAsync("ShiftModelDetail.Updated", culture);
     }
 
     private async Task LoadAsync()
@@ -141,7 +181,7 @@
         }
         else
         {
-            _error = result.Error?.Message ?? "Could not be loaded.";
+            _error = result.Error?.Message ?? _itemLoadFailedText;
         }
 
         _isLoading = false;
@@ -170,7 +210,7 @@
                     return;
                 }
 
-                _success = "Created";
+                _success = _createdText;
                 NavigationManager.NavigateTo($"/system/shift-models/{createResult.Value}");
                 return;
             }
@@ -190,7 +230,7 @@
                 return;
             }
 
-            _success = "Updated";
+            _success = _updatedText;
             await LoadAsync();
         }
         finally

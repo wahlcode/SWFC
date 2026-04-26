@@ -1,16 +1,15 @@
 {
   "ModuleCode": "M606",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 13,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.941727+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.6451574+00:00",
   "CodeStatus": "Missing",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
     "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
@@ -21,10 +20,6 @@
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M606 gefunden."
     },
     {
       "Severity": "Info",
@@ -69,18 +64,18 @@
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M602",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M607",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M601",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Anforderungen sammeln, nicht direkt umsetzen",

@@ -23,107 +23,9 @@ public sealed record CreateStockMovementCommand(
     int QuantityDelta,
     InventoryTargetType? TargetType,
     string? TargetReference,
-    string Reason);
-
-public sealed class CreateStockMovementValidator : ICommandValidator<CreateStockMovementCommand>
-{
-    public Task<ValidationResult> ValidateAsync(
-        CreateStockMovementCommand command,
-        CancellationToken cancellationToken = default)
-    {
-        var errors = new List<ValidationError>();
-
-        if (command.InventoryItemId == Guid.Empty)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Inventory item is required."));
-        }
-
-        if (command.LocationId == Guid.Empty)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Location is required."));
-        }
-
-        if (!string.IsNullOrWhiteSpace(command.Bin) && command.Bin.Trim().Length > 100)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Bin must not exceed 100 characters."));
-        }
-
-        if (!Enum.IsDefined(command.MovementType))
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Movement type is invalid."));
-        }
-
-        if (command.QuantityDelta == 0)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Quantity delta must not be zero."));
-        }
-
-        if (command.MovementType == StockMovementType.GoodsReceipt && command.QuantityDelta <= 0)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "GoodsReceipt requires a positive quantity delta."));
-        }
-
-        if (command.MovementType == StockMovementType.GoodsIssue && command.QuantityDelta >= 0)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "GoodsIssue requires a negative quantity delta."));
-        }
-
-        if (string.IsNullOrWhiteSpace(command.Reason))
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Reason is required."));
-        }
-
-        if (!string.IsNullOrWhiteSpace(command.TargetReference) && command.TargetReference.Trim().Length > 200)
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Target reference must not exceed 200 characters."));
-        }
-
-        if (command.TargetType is null && !string.IsNullOrWhiteSpace(command.TargetReference))
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Target reference requires target type."));
-        }
-
-        if (command.TargetType is not null && string.IsNullOrWhiteSpace(command.TargetReference))
-        {
-            errors.Add(new ValidationError(
-                ValidationErrorCodes.Invalid,
-                "Target type requires target reference."));
-        }
-
-        return Task.FromResult(
-            errors.Count == 0
-                ? ValidationResult.Success()
-                : ValidationResult.Failure(errors.ToArray()));
-    }
-}
-
-public sealed class CreateStockMovementPolicy : IAuthorizationPolicy<CreateStockMovementCommand>
-{
-    public AuthorizationRequirement GetRequirement(CreateStockMovementCommand request)
-    {
-        return new AuthorizationRequirement(requiredPermissions: new[] { "stockmovement.create" });
-    }
-}
+    string Reason,
+    Guid? TransferLocationId = null,
+    string? TransferBin = null);
 
 public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMovementCommand, Guid>
 {
@@ -148,18 +50,29 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
         var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
 
-        var stock = await _stockMovementWriteRepository.GetStockByInventoryItemAndLocationAsync(
+        var sourceBin = NormalizeBin(command.Bin);
+        var stock = await _stockMovementWriteRepository.GetStockByInventoryItemAndLocationForUpdateAsync(
             command.InventoryItemId,
             command.LocationId,
-            command.Bin,
+            sourceBin,
             cancellationToken);
 
         if (stock is null)
         {
+            if (command.MovementType is StockMovementType.GoodsIssue
+                or StockMovementType.Transfer
+                or StockMovementType.Consumption)
+            {
+                return Result<Guid>.Failure(new Error(
+                    GeneralErrorCodes.NotFound,
+                    "Source stock was not found.",
+                    ErrorCategory.NotFound));
+            }
+
             stock = StockEntity.Create(
                 command.InventoryItemId,
                 command.LocationId,
-                command.Bin,
+                sourceBin,
                 0,
                 changeContext);
 
@@ -190,6 +103,44 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
         stock.ApplyMovement(movement, changeContext);
         await _stockMovementWriteRepository.AddAsync(movement, cancellationToken);
 
+        StockMovement? transferTargetMovement = null;
+        StockEntity? transferTargetStock = null;
+
+        if (command.MovementType == StockMovementType.Transfer)
+        {
+            var targetLocationId = command.TransferLocationId!.Value;
+            var targetBin = NormalizeBin(command.TransferBin);
+
+            transferTargetStock = await _stockMovementWriteRepository.GetStockByInventoryItemAndLocationForUpdateAsync(
+                command.InventoryItemId,
+                targetLocationId,
+                targetBin,
+                cancellationToken);
+
+            if (transferTargetStock is null)
+            {
+                transferTargetStock = StockEntity.Create(
+                    command.InventoryItemId,
+                    targetLocationId,
+                    targetBin,
+                    0,
+                    changeContext);
+
+                await _stockMovementWriteRepository.AddStockAsync(transferTargetStock, cancellationToken);
+            }
+
+            transferTargetMovement = StockMovement.Create(
+                transferTargetStock.Id,
+                StockMovementType.Transfer,
+                Math.Abs(command.QuantityDelta),
+                changeContext,
+                command.TargetType,
+                command.TargetReference);
+
+            transferTargetStock.ApplyMovement(transferTargetMovement, changeContext);
+            await _stockMovementWriteRepository.AddAsync(transferTargetMovement, cancellationToken);
+        }
+
         var newValues = JsonSerializer.Serialize(new
         {
             StockId = stock.Id,
@@ -203,6 +154,10 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
             movement.QuantityDelta,
             movement.TargetType,
             movement.TargetReference,
+            TransferTargetStockId = transferTargetStock?.Id,
+            TransferTargetMovementId = transferTargetMovement?.Id,
+            TransferTargetLocationId = command.TransferLocationId,
+            TransferTargetBin = NormalizeBin(command.TransferBin),
             command.Reason
         });
 
@@ -220,6 +175,11 @@ public sealed class CreateStockMovementHandler : IUseCaseHandler<CreateStockMove
         await _stockMovementWriteRepository.SaveChangesAsync(cancellationToken);
 
         return Result<Guid>.Success(movement.Id);
+    }
+
+    private static string? NormalizeBin(string? bin)
+    {
+        return string.IsNullOrWhiteSpace(bin) ? null : bin.Trim();
     }
 }
 

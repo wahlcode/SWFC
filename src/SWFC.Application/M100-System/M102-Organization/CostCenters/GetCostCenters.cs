@@ -48,10 +48,11 @@ public sealed class GetCostCentersHandler : IUseCaseHandler<GetCostCentersQuery,
                     x.ParentCostCenterId,
                     parentName,
                     parentCode,
+                    x.ValidFrom,
                     x.IsActive);
             })
-            .OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(x => x.Code, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
         return Result<IReadOnlyList<CostCenterListItem>>.Success(items);

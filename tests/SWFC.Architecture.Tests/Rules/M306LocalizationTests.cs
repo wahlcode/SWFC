@@ -65,7 +65,7 @@ public sealed class M306LocalizationTests
 
         Assert.True(
             missingKeys.Length == 0,
-            $"M306 localization resources are incomplete: {string.Join(", ", missingKeys)}");
+            $"M306 localization resources are missing required keys: {string.Join(", ", missingKeys)}");
     }
 
     [Fact]

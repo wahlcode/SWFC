@@ -22,7 +22,7 @@
 
     <div class="m204-detail__header">
         <h1>@(IsNew ? "Stock Movement anlegen" : "Stock Movement Detail")</h1>
-        <a href="/business/stock-movements" class="m204-button-secondary">Zurück</a>
+        <a href="/business/stock-movements" class="m204-button-secondary">Zurï¿½ck</a>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(_errorMessage))
@@ -63,7 +63,7 @@
                         }
                     </select>
 
-                    <input class="m204-input" placeholder="Bin" @bind="_model.Bin" />
+                    <input class="m204-input" aria-label="Bin" @bind="_model.Bin" />
 
                     <select class="m204-input" @bind="_model.MovementType">
                         @foreach (var value in Enum.GetValues<StockMovementType>())
@@ -74,8 +74,20 @@
 
                     <input type="number"
                            class="m204-input"
-                           placeholder="Quantity Delta"
+                           aria-label="Quantity Delta"
                            @bind="_model.QuantityDelta" />
+                    @if (_model.MovementType == StockMovementType.Transfer)
+                    {
+                        <select class="m204-input" @bind="_model.TransferLocationId">
+                            <option value="">-- Transfer Location --</option>
+                            @foreach (var loc in _locations)
+                            {
+                                <option value="@loc.Id">@loc.Name (@loc.Code)</option>
+                            }
+                        </select>
+
+                        <input class="m204-input" aria-label="Transfer Bin" @bind="_model.TransferBin" />
+                    }
 
                     <select class="m204-input" @bind="_model.TargetType">
                         <option value="">-- Target Type --</option>
@@ -85,9 +97,9 @@
                         }
                     </select>
 
-                    <input class="m204-input" placeholder="Target Reference" @bind="_model.TargetReference" />
+                    <input class="m204-input" aria-label="Target Reference" @bind="_model.TargetReference" />
 
-                    <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+                    <textarea class="m204-input" aria-label="Reason" @bind="_model.Reason"></textarea>
 
                 </div>
 
@@ -188,7 +200,9 @@
                     _model.QuantityDelta,
                     _model.TargetType,
                     _model.TargetReference,
-                    _model.Reason));
+                    _model.Reason,
+                    _model.TransferLocationId,
+                    _model.TransferBin));
 
             if (!result.IsSuccess)
             {
@@ -211,6 +225,9 @@
         public string? Bin { get; set; }
         public StockMovementType MovementType { get; set; } = StockMovementType.GoodsReceipt;
         public int QuantityDelta { get; set; }
+
+        public Guid? TransferLocationId { get; set; }
+        public string? TransferBin { get; set; }
 
         public InventoryTargetType? TargetType { get; set; }
         public string? TargetReference { get; set; }
