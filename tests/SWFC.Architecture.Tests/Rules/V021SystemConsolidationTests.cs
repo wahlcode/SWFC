@@ -44,7 +44,7 @@ namespace SWFC.Architecture.Tests.Rules;
 
 public sealed class V021SystemConsolidationTests
 {
-    var connectionString =
+    private const string ConnectionString =
     "Host=localhost;Port=5432;Database=swfc;Username=postgres";
         
     [Fact]
