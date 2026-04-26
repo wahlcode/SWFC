@@ -44,8 +44,7 @@ namespace SWFC.Architecture.Tests.Rules;
 
 public sealed class V021SystemConsolidationTests
 {
-    private const string ConsolidationConnectionString =
-    "Host=localhost;Port=5432;Database=swfc;Username=postgres";
+    
         
     [Fact]
     public void V021_Roadmap_Should_Be_Marked_Done_After_System_Consolidation()
@@ -148,14 +147,13 @@ public sealed class V021SystemConsolidationTests
     }
 
     private static IConfiguration BuildConfiguration() =>
-        new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["ConnectionStrings:DefaultConnection"] = ConsolidationConnectionString,
-                ["Security:DataProtection:Key"] = "v021-consolidation-test-key",
-                ["Security:DataProtection:KeyVersion"] = "v021"
-            })
-            .Build();
+    new ConfigurationBuilder()
+        .AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Security:DataProtection:Key"] = "v021-consolidation-test-key",
+            ["Security:DataProtection:KeyVersion"] = "v021"
+        })
+        .Build();
 
     private static async Task VerifyM403ErpHandoffAsync(IServiceProvider services)
     {
