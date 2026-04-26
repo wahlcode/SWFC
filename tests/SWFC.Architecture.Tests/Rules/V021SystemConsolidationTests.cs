@@ -44,7 +44,8 @@ namespace SWFC.Architecture.Tests.Rules;
 
 public sealed class V021SystemConsolidationTests
 {
-    private const string ConsolidationConnectionString =
+    var connectionString =
+    "Host=localhost;Port=5432;Database=swfc;Username=postgres";
         
     [Fact]
     public void V021_Roadmap_Should_Be_Marked_Done_After_System_Consolidation()
