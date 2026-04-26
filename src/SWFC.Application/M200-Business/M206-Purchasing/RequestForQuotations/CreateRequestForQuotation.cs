@@ -32,7 +32,8 @@ public sealed class CreateRequestForQuotation
             request.PurchaseRequirementId,
             request.SupplierId,
             DateTime.UtcNow,
-            request.ResponseDueAtUtc);
+            request.ResponseDueAtUtc,
+            request.OfferDocumentReference);
 
         await _requestForQuotationWriteRepository.AddAsync(requestForQuotation, cancellationToken);
 
@@ -42,6 +43,7 @@ public sealed class CreateRequestForQuotation
             requestForQuotation.SupplierId,
             requestForQuotation.RequestedAtUtc,
             requestForQuotation.ResponseDueAtUtc,
+            requestForQuotation.OfferDocumentReference,
             requestForQuotation.IsClosed);
     }
 }

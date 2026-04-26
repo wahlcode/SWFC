@@ -45,7 +45,8 @@ public sealed class CreateGoodsReceipt
             request.Bin,
             request.Quantity,
             request.Unit,
-            DateTime.UtcNow);
+            DateTime.UtcNow,
+            request.DeliveryDocumentReference);
 
         await _goodsReceiptWriteRepository.AddAsync(goodsReceipt, cancellationToken);
         await _goodsReceiptWriteRepository.SaveChangesAsync(cancellationToken);
@@ -92,6 +93,7 @@ public sealed class CreateGoodsReceipt
             goodsReceipt.Quantity,
             goodsReceipt.Unit,
             goodsReceipt.ReceivedAtUtc,
+            goodsReceipt.DeliveryDocumentReference,
             goodsReceipt.InventoryBookingStatus,
             goodsReceipt.InventoryStockMovementId,
             goodsReceipt.InventoryBookingMessage);

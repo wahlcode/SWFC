@@ -37,7 +37,7 @@
                  <button class="m201-button m201-button--danger"
                          @onclick="DeactivateAsync"
                          disabled="@_isBusy">
-                     Löschen
+                     Deaktivieren
                  </button>
              }
         </div>
@@ -187,12 +187,14 @@
             InventoryNumber = _machine.InventoryNumber,
             Location = _machine.Location,
             Status = _machine.Status,
+            AssetType = _machine.AssetType,
             Manufacturer = _machine.Manufacturer,
             MachineModel = _machine.Model,
             SerialNumber = _machine.SerialNumber,
             Description = _machine.Description,
             ParentMachineId = _machine.ParentMachineId,
-            OrganizationUnitId = _machine.OrganizationUnitId
+            OrganizationUnitId = _machine.OrganizationUnitId,
+            EnergyObjectId = _machine.EnergyObjectId
         };
     }
 
@@ -212,12 +214,14 @@
                         _model.InventoryNumber,
                         _model.Location,
                         _model.Status,
+                        _model.AssetType,
                         _model.Manufacturer,
                         _model.MachineModel,
                         _model.SerialNumber,
                         _model.Description,
                         _model.ParentMachineId,
                         _model.OrganizationUnitId,
+                        _model.EnergyObjectId,
                         _model.Reason));
 
                 if (!createResult.IsSuccess)
@@ -237,12 +241,14 @@
                     _model.InventoryNumber,
                     _model.Location,
                     _model.Status,
+                    _model.AssetType,
                     _model.Manufacturer,
                     _model.MachineModel,
                     _model.SerialNumber,
                     _model.Description,
                     _model.ParentMachineId,
                     _model.OrganizationUnitId,
+                    _model.EnergyObjectId,
                     _model.Reason));
 
             if (!updateResult.IsSuccess)

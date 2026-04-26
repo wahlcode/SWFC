@@ -29,6 +29,8 @@ public sealed class PurchaseOrderReadRepository : IPurchaseOrderReadRepository
                 x.order.OrderNumber,
                 x.supplier.Id,
                 x.supplier.Name,
+                x.order.ErpReference,
+                x.order.OrderDocumentReference,
                 x.order.Status,
                 x.order.CreatedAtUtc,
                 x.order.OrderedAtUtc))

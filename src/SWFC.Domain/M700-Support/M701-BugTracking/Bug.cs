@@ -11,6 +11,9 @@ public sealed class Bug
         Description = string.Empty;
         Reproducibility = string.Empty;
         Status = BugStatus.Open;
+        ModuleReference = null;
+        ObjectReference = null;
+        HistoryLog = string.Empty;
         AuditInfo = null!;
     }
 
@@ -19,12 +22,18 @@ public sealed class Bug
         string description,
         string reproducibility,
         BugStatus status,
+        string? moduleReference,
+        string? objectReference,
+        string historyLog,
         AuditInfo auditInfo)
     {
         Id = id;
         Description = description;
         Reproducibility = reproducibility;
         Status = status;
+        ModuleReference = moduleReference;
+        ObjectReference = objectReference;
+        HistoryLog = historyLog;
         AuditInfo = auditInfo;
     }
 
@@ -32,13 +41,18 @@ public sealed class Bug
     public string Description { get; private set; }
     public string Reproducibility { get; private set; }
     public BugStatus Status { get; private set; }
+    public string? ModuleReference { get; private set; }
+    public string? ObjectReference { get; private set; }
+    public string HistoryLog { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
     public static Bug Create(
         string description,
         string reproducibility,
         BugStatus status,
-        ChangeContext changeContext)
+        ChangeContext changeContext,
+        string? moduleReference = null,
+        string? objectReference = null)
     {
         ValidateStatus(status);
 
@@ -51,6 +65,9 @@ public sealed class Bug
             NormalizeRequired(description, nameof(Description)),
             NormalizeRequired(reproducibility, nameof(Reproducibility)),
             status,
+            NormalizeOptional(moduleReference),
+            NormalizeOptional(objectReference),
+            CreateHistory("Created", status.ToString(), changeContext),
             auditInfo);
     }
 
@@ -58,16 +75,34 @@ public sealed class Bug
         string description,
         string reproducibility,
         BugStatus status,
-        ChangeContext changeContext)
+        ChangeContext changeContext,
+        string? moduleReference = null,
+        string? objectReference = null)
     {
         ValidateStatus(status);
 
         Description = NormalizeRequired(description, nameof(Description));
         Reproducibility = NormalizeRequired(reproducibility, nameof(Reproducibility));
         Status = status;
+        ModuleReference = NormalizeOptional(moduleReference) ?? ModuleReference;
+        ObjectReference = NormalizeOptional(objectReference) ?? ObjectReference;
+        HistoryLog = AppendHistory(HistoryLog, "Updated", status.ToString(), changeContext);
 
         Touch(changeContext);
     }
+
+    private static string? NormalizeOptional(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
+
+    private static string CreateHistory(string action, string value, ChangeContext changeContext) =>
+        $"{changeContext.ChangedAtUtc:O}|{changeContext.UserId}|{action}|{value}|{changeContext.Reason}";
+
+    private static string AppendHistory(string historyLog, string action, string value, ChangeContext changeContext) =>
+        string.IsNullOrWhiteSpace(historyLog)
+            ? CreateHistory(action, value, changeContext)
+            : $"{historyLog}{Environment.NewLine}{CreateHistory(action, value, changeContext)}";
 
     private static string NormalizeRequired(string? value, string fieldName)
     {

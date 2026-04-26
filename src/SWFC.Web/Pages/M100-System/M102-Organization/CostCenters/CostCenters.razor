@@ -10,7 +10,6 @@
 @inject IExecutionPipeline<GetCostCentersQuery, IReadOnlyList<CostCenterListItem>> GetCostCentersPipeline
 @inject IExecutionPipeline<CreateCostCenterCommand, Guid> CreateCostCenterPipeline
 @inject LocalizationTextProvider TextProvider
-@inject NavigationManager NavigationManager
 
 <section class="m100-ou">
     <div class="m100-ou__header">
@@ -21,7 +20,7 @@
 
         <div class="m100-ou__actions">
             <input class="m100-input"
-                   placeholder="@_searchPlaceholderText"
+                   aria-label="@_searchLabelText"
                    value="@_searchText"
                    @oninput="OnSearchChanged" />
 
@@ -65,17 +64,54 @@
                     </thead>
 
                     <tbody>
-                        @foreach (var item in _filteredItems)
+                        @foreach (var item in GetRootItems())
                         {
-                            <tr>
-                                <td>@item.Name</td>
+                            var hasChildren = HasChildren(item.Id);
+                            var isExpanded = _expandedParents.Contains(item.Id);
+
+                            <tr class="m100-parent-row">
+                                <td>
+                                    @if (hasChildren)
+                                    {
+                                        <button type="button"
+                                                class="m100-tree-button"
+                                                @onclick="() => ToggleParent(item.Id)">
+                                            @(isExpanded ? "▾" : "▸")
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="m100-tree-spacer"></span>
+                                    }
+
+                                    @item.Name
+                                </td>
                                 <td>@item.Code</td>
-                                <td>@BuildParentLabel(item)</td>
+                                <td>-</td>
                                 <td>@(item.IsActive ? _yesText : _noText)</td>
                                 <td class="m100-table__actions">
                                     <a href="@($"/system/cost-centers/{item.Id}")">@_detailsText</a>
                                 </td>
                             </tr>
+
+                            @if (hasChildren && isExpanded)
+                            {
+                                @foreach (var child in GetChildren(item.Id))
+                                {
+                                    <tr class="m100-child-row">
+                                        <td>
+                                            <span class="m100-tree-child">↳</span>
+                                            @child.Name
+                                        </td>
+                                        <td>@child.Code</td>
+                                        <td>@BuildParentLabel(child)</td>
+                                        <td>@(child.IsActive ? _yesText : _noText)</td>
+                                        <td class="m100-table__actions">
+                                            <a href="@($"/system/cost-centers/{child.Id}")">@_detailsText</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         }
                     </tbody>
                 </table>
@@ -88,25 +124,30 @@
                 <h3>@_createText</h3>
 
                 <input class="m100-input"
-                       placeholder="@_nameText"
+                       aria-label="@_nameText"
                        @bind="_createModel.Name" />
 
                 <input class="m100-input"
-                       placeholder="@_codeText"
+                       aria-label="@_codeText"
                        @bind="_createModel.Code" />
 
+                <input class="m100-input"
+                       aria-label="@_validFromText"
+                       type="date"
+                       @bind="_createModel.ValidFrom" />
+
                 <select class="m100-input"
+                        aria-label="@_parentText"
                         @bind="_createModel.ParentId">
                     <option value="">@_noParentText</option>
-                    @foreach (var item in _items.OrderBy(x => x.Name))
+                    @foreach (var item in _items
+                        .Where(x => x.ParentId is null)
+                        .OrderBy(x => x.Code)
+                        .ThenBy(x => x.Name))
                     {
                         <option value="@item.Id">@item.Name (@item.Code)</option>
                     }
                 </select>
-
-                <textarea class="m100-textarea"
-                          placeholder="@_reasonText"
-                          @bind="_createModel.Reason"></textarea>
 
                 <div class="m100-actions">
                     <button class="m100-button"
@@ -116,7 +157,8 @@
                     </button>
 
                     <button class="m100-button m100-button--secondary"
-                            @onclick="CloseCreatePanel">
+                            @onclick="CloseCreatePanel"
+                            disabled="@_isSubmitting">
                         @_cancelText
                     </button>
                 </div>
@@ -137,11 +179,13 @@
     private IReadOnlyList<CostCenterListItem> _items = [];
     private List<CostCenterListItem> _filteredItems = [];
 
+    private readonly HashSet<Guid> _expandedParents = [];
+
     private CreateCostCenterInputModel _createModel = new();
 
     private string _titleText = "Cost Centers";
     private string _subtitleText = "Overview of all cost centers";
-    private string _searchPlaceholderText = "Search name or code";
+    private string _searchLabelText = "Search name or code";
     private string _createText = "Create cost center";
     private string _loadingText = "Loading cost centers...";
     private string _emptyText = "No cost centers found";
@@ -153,10 +197,10 @@
     private string _noText = "No";
     private string _detailsText = "Details";
     private string _noParentText = "-- no parent --";
-    private string _reasonText = "Reason";
     private string _saveText = "Save";
     private string _cancelText = "Cancel";
     private string _createdText = "Cost center created";
+    private string _validFromText = "Valid from";
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,7 +214,7 @@
 
         _titleText = await TextProvider.GetTextAsync("CostCenters.Title", culture);
         _subtitleText = await TextProvider.GetTextAsync("CostCenters.Subtitle", culture);
-        _searchPlaceholderText = await TextProvider.GetTextAsync("CostCenters.SearchPlaceholder", culture);
+        _searchLabelText = await TextProvider.GetTextAsync("CostCenters.SearchLabel", culture);
         _createText = await TextProvider.GetTextAsync("CostCenters.Create", culture);
         _loadingText = await TextProvider.GetTextAsync("CostCenters.Loading", culture);
         _emptyText = await TextProvider.GetTextAsync("CostCenters.Empty", culture);
@@ -182,10 +226,10 @@
         _noText = await TextProvider.GetTextAsync("Common.No", culture);
         _detailsText = await TextProvider.GetTextAsync("Common.Details", culture);
         _noParentText = await TextProvider.GetTextAsync("Common.NoParent", culture);
-        _reasonText = await TextProvider.GetTextAsync("Common.Reason", culture);
         _saveText = await TextProvider.GetTextAsync("Common.Save", culture);
         _cancelText = await TextProvider.GetTextAsync("Common.Cancel", culture);
         _createdText = await TextProvider.GetTextAsync("CostCenters.Created", culture);
+        _validFromText = await TextProvider.GetTextAsync("CostCenterDetail.ValidFrom", culture);
     }
 
     private async Task LoadAsync()
@@ -222,12 +266,14 @@
 
             query = query.Where(x =>
                 x.Name.Contains(s, StringComparison.OrdinalIgnoreCase) ||
-                x.Code.Contains(s, StringComparison.OrdinalIgnoreCase));
+                x.Code.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                (x.ParentName?.Contains(s, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (x.ParentCode?.Contains(s, StringComparison.OrdinalIgnoreCase) ?? false));
         }
 
         _filteredItems = query
-            .OrderBy(x => x.Name)
-            .ThenBy(x => x.Code)
+            .OrderBy(x => x.Code)
+            .ThenBy(x => x.Name)
             .ToList();
     }
 
@@ -266,7 +312,8 @@
                     _createModel.Name,
                     _createModel.Code,
                     _createModel.ParentId,
-                    _createModel.Reason));
+                    _createModel.ValidFrom,
+                    null));
 
             if (!result.IsSuccess)
             {
@@ -277,13 +324,47 @@
             _success = _createdText;
             _showCreatePanel = false;
 
-            await LoadAsync();
+            if (_createModel.ParentId.HasValue)
+            {
+                _expandedParents.Add(_createModel.ParentId.Value);
+            }
 
-            NavigationManager.NavigateTo($"/system/cost-centers/{result.Value}");
+            await LoadAsync();
         }
         finally
         {
             _isSubmitting = false;
+        }
+    }
+
+    private IReadOnlyList<CostCenterListItem> GetRootItems()
+    {
+        return _filteredItems
+            .Where(x => x.ParentId is null)
+            .OrderBy(x => x.Code)
+            .ThenBy(x => x.Name)
+            .ToList();
+    }
+
+    private IReadOnlyList<CostCenterListItem> GetChildren(Guid parentId)
+    {
+        return _filteredItems
+            .Where(x => x.ParentId == parentId)
+            .OrderBy(x => x.Code)
+            .ThenBy(x => x.Name)
+            .ToList();
+    }
+
+    private bool HasChildren(Guid id)
+    {
+        return _filteredItems.Any(x => x.ParentId == id);
+    }
+
+    private void ToggleParent(Guid id)
+    {
+        if (!_expandedParents.Add(id))
+        {
+            _expandedParents.Remove(id);
         }
     }
 
@@ -302,6 +383,6 @@
         public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public Guid? ParentId { get; set; }
-        public string Reason { get; set; } = string.Empty;
+        public DateOnly ValidFrom { get; set; } = DateOnly.FromDateTime(DateTime.Today);
     }
 }

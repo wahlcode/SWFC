@@ -1,24 +1,19 @@
 {
   "ModuleCode": "M1103",
-  "ScorePercent": 20,
+  "ScorePercent": 60,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2846044+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:23.1293988+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1103 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "2 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -29,18 +24,18 @@
     },
     {
       "Title": "Release-Zuordnung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Installierte Version beim Kunden",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Freigegebene Version",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Produktbezogene Versionsnachvollziehbarkeit",

@@ -20,6 +20,14 @@ public sealed class PurchaseOrderConfiguration : IEntityTypeConfiguration<Purcha
         builder.Property(x => x.SupplierId)
             .IsRequired();
 
+        builder.Property(x => x.ErpReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        builder.Property(x => x.OrderDocumentReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
         builder.Property(x => x.Status)
             .HasConversion<int>()
             .IsRequired();

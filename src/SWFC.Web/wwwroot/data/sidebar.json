@@ -1,585 +1,627 @@
-{
-  "groups": [
-    {
-      "key": "system",
-      "displayName": "System",
-      "modules": [
-        {
-          "code": "M301",
-          "displayName": "Dashboard",
-          "icon": "▤",
-          "isActive": true,
-          "route": "/dashboard",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M102",
-          "displayName": "Organisation",
-          "icon": "◫",
-          "isActive": true,
-          "route": "/system/organization"
-        },
-        {
-          "code": "M103",
-          "displayName": "Authentifizierung",
-          "icon": "🔑",
-          "isActive": true,
-          "route": "/auth/change-password",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M104",
-          "displayName": "Dokumente",
-          "icon": "📂",
-          "isActive": true,
-          "route": "/system/documents",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M105",
-          "displayName": "Konfiguration",
-          "icon": "⚙",
-          "isActive": true,
-          "route": "/system/configuration",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M106",
-          "displayName": "Theme",
-          "icon": "◌",
-          "isActive": true,
-          "route": "/m100/theme",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M107",
-          "displayName": "Setup / Deployment",
-          "icon": "⌁",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M805",
-          "displayName": "Audit",
-          "icon": "🛡",
-          "isActive": true,
-          "route": "/security/audit",
-          "accessModuleCodes": ["M800"]
-        },
-        {
-          "code": "M806",
-          "displayName": "Userzugriff",
-          "icon": "🗝",
-          "isActive": true,
-          "route": "/security/users",
-          "accessModuleCodes": ["M800"]
-        },
-        {
-          "code": "M806",
-          "displayName": "Rollen",
-          "icon": "👤",
-          "isActive": true,
-          "route": "/security/roles",
-          "accessModuleCodes": ["M800"]
-        }
-      ]
-    },
-    {
-      "key": "business",
-      "displayName": "Geschäft",
-      "modules": [
-        {
-          "code": "M201",
-          "displayName": "Assets",
-          "icon": "▥",
-          "isActive": true,
-          "route": "/business/assets"
-        },
-        {
-          "code": "M202",
-          "displayName": "Wartung",
-          "icon": "🛠",
-          "isActive": true,
-          "route": "/business/maintenance"
-        },
-        {
-          "code": "M203",
-          "displayName": "Prüfungen",
-          "icon": "✓",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M204",
-          "displayName": "Lager",
-          "icon": "▦",
-          "isActive": true,
-          "route": "/business/inventory"
-        },
-        {
-          "code": "M205",
-          "displayName": "Energie",
-          "icon": "⚡",
-          "isActive": true,
-          "route": "/business/energy"
-        },
-        {
-          "code": "M206",
-          "displayName": "Einkauf",
-          "icon": "🛒",
-          "isActive": true,
-          "route": "/m200/purchasing",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M207",
-          "displayName": "Qualität",
-          "icon": "◉",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M208",
-          "displayName": "Sicherheit",
-          "icon": "🔒",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M209",
-          "displayName": "Projekte",
-          "icon": "⇲",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M210",
-          "displayName": "Kunden",
-          "icon": "👥",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M211",
-          "displayName": "Analytik",
-          "icon": "◔",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "presentation",
-      "displayName": "Präsentation",
-      "modules": [
-        {
-          "code": "M301",
-          "displayName": "AppShell",
-          "icon": "◌",
-          "isActive": true,
-          "route": "/dashboard",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M302",
-          "displayName": "Berichte",
-          "icon": "▥",
-          "isActive": true,
-          "route": "/presentation/reports",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M303",
-          "displayName": "Benachrichtigungen",
-          "icon": "🔔",
-          "isActive": true,
-          "route": "/presentation/notifications",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M304",
-          "displayName": "Suche",
-          "icon": "⌕",
-          "isActive": true,
-          "route": "/presentation/search",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M305",
-          "displayName": "Formulare",
-          "icon": "✎",
-          "isActive": true,
-          "route": "/presentation/forms",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M306",
-          "displayName": "Lokalisierung",
-          "icon": "🌐",
-          "isActive": true,
-          "route": "/presentation/localization"
-        },
-        {
-          "code": "M307",
-          "displayName": "Personalisierung",
-          "icon": "☰",
-          "isActive": true,
-          "route": "/presentation/personalization",
-          "accessMode": "authenticated"
-        }
-      ]
-    },
-    {
-      "key": "integration",
-      "displayName": "Integration",
-      "modules": [
-        {
-          "code": "M401",
-          "displayName": "Import / Export",
-          "icon": "⇩",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M402",
-          "displayName": "API",
-          "icon": "⇄",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M403",
-          "displayName": "ERP",
-          "icon": "▤",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M404",
-          "displayName": "IoT / Maschinen",
-          "icon": "◌",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M405",
-          "displayName": "Messaging / Events",
-          "icon": "✉",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M406",
-          "displayName": "Identity",
-          "icon": "◫",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M407",
-          "displayName": "DMS / Dateien",
-          "icon": "📂",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "runtime",
-      "displayName": "Laufzeit",
-      "modules": [
-        {
-          "code": "M501",
-          "displayName": "Scheduler",
-          "icon": "◷",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M502",
-          "displayName": "Automatisierung",
-          "icon": "⚙",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M503",
-          "displayName": "Job-Ausführung",
-          "icon": "▶",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M504",
-          "displayName": "Leitwarte",
-          "icon": "⌘",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M505",
-          "displayName": "Echtzeit",
-          "icon": "↻",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "planning",
-      "displayName": "Planung",
-      "modules": [
-        {
-          "code": "M600",
-          "displayName": "Modulübersicht",
-          "icon": "◈",
-          "isActive": true,
-          "route": "/planning/modules",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M601",
-          "displayName": "Roadmap",
-          "icon": "→",
-          "isActive": true,
-          "route": "/roadmap",
-          "accessMode": "authenticated"
-        },
-        {
-          "code": "M602",
-          "displayName": "Konzepte",
-          "icon": "✎",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M603",
-          "displayName": "Prototypen",
-          "icon": "◈",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M604",
-          "displayName": "Entscheidungen",
-          "icon": "◆",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M605",
-          "displayName": "Standards",
-          "icon": "☷",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M606",
-          "displayName": "Anforderungen",
-          "icon": "☰",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M607",
-          "displayName": "Bewertung",
-          "icon": "◔",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "support",
-      "displayName": "Support",
-      "modules": [
-        {
-          "code": "M700",
-          "displayName": "Support Übersicht",
-          "icon": "◈",
-          "isActive": true,
-          "route": "/support",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M701",
-          "displayName": "BugTracking",
-          "icon": "⚑",
-          "isActive": true,
-          "route": "/support/bug-tracking",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M702",
-          "displayName": "ChangeRequests",
-          "icon": "✎",
-          "isActive": true,
-          "route": "/support/change-requests",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M703",
-          "displayName": "SupportCases",
-          "icon": "☰",
-          "isActive": true,
-          "route": "/support/cases",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M704",
-          "displayName": "Incidents",
-          "icon": "⚠",
-          "isActive": true,
-          "route": "/support/incidents",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M705",
-          "displayName": "Knowledge Base",
-          "icon": "⌘",
-          "isActive": true,
-          "route": "/support/knowledge-base",
-          "accessModuleCodes": ["M700"]
-        },
-        {
-          "code": "M706",
-          "displayName": "SLA",
-          "icon": "◷",
-          "isActive": true,
-          "route": "/support/service-levels",
-          "accessModuleCodes": ["M700"]
-        }
-      ]
-    },
-    {
-      "key": "intelligence",
-      "displayName": "Intelligenz",
-      "modules": [
-        {
-          "code": "M901",
-          "displayName": "Analytics Engine",
-          "icon": "✦",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M902",
-          "displayName": "Vorhersage",
-          "icon": "◔",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M903",
-          "displayName": "Optimierung",
-          "icon": "⇲",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M904",
-          "displayName": "Anomalie-Erkennung",
-          "icon": "⚠",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M905",
-          "displayName": "Governance",
-          "icon": "◇",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "platform",
-      "displayName": "Plattform",
-      "modules": [
-        {
-          "code": "M1001",
-          "displayName": "Plugin-System",
-          "icon": "◫",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1002",
-          "displayName": "SDK",
-          "icon": "⌘",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1003",
-          "displayName": "Erweiterungen",
-          "icon": "⇄",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1004",
-          "displayName": "Marktplatz",
-          "icon": "▤",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1005",
-          "displayName": "Versionierung",
-          "icon": "↻",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    },
-    {
-      "key": "productization",
-      "displayName": "Produkt",
-      "modules": [
-        {
-          "code": "M1101",
-          "displayName": "Distribution",
-          "icon": "⇪",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1102",
-          "displayName": "Updates",
-          "icon": "↺",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1103",
-          "displayName": "Produktversion",
-          "icon": "◫",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1104",
-          "displayName": "Lizenzierung",
-          "icon": "⌂",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1105",
-          "displayName": "Backup / Restore",
-          "icon": "⟲",
-          "isActive": false,
-          "route": "#"
-        },
-        {
-          "code": "M1106",
-          "displayName": "Produktbetrieb",
-          "icon": "◷",
-          "isActive": false,
-          "route": "#"
-        }
-      ]
-    }
-  ]
+﻿{
+    "groups":  [
+                   {
+                       "key":  "system",
+                       "displayName":  "System",
+                       "modules":  [
+                                       {
+                                           "code":  "M301",
+                                           "displayName":  "Dashboard",
+                                           "icon":  "â–¤",
+                                           "isActive":  true,
+                                           "route":  "/dashboard",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M102",
+                                           "displayName":  "Organisation",
+                                           "icon":  "â—«",
+                                           "isActive":  true,
+                                           "route":  "/system/organization"
+                                       },
+                                       {
+                                           "code":  "M103",
+                                           "displayName":  "Authentifizierung",
+                                           "icon":  "ðŸ”‘",
+                                           "isActive":  true,
+                                           "route":  "/auth/change-password",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M104",
+                                           "displayName":  "Dokumente",
+                                           "icon":  "ðŸ“‚",
+                                           "isActive":  true,
+                                           "route":  "/system/documents",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M105",
+                                           "displayName":  "Konfiguration",
+                                           "icon":  "âš™",
+                                           "isActive":  true,
+                                           "route":  "/system/configuration",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M106",
+                                           "displayName":  "Theme",
+                                           "icon":  "â—Œ",
+                                           "isActive":  true,
+                                           "route":  "/m100/theme",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M107",
+                                           "displayName":  "Setup / Deployment",
+                                           "icon":  "âŒ",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M805",
+                                           "displayName":  "Audit",
+                                           "icon":  "ðŸ›¡",
+                                           "isActive":  true,
+                                           "route":  "/security/audit",
+                                           "accessModuleCodes":  [
+                                                                     "M800"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M806",
+                                           "displayName":  "Userzugriff",
+                                           "icon":  "ðŸ—",
+                                           "isActive":  true,
+                                           "route":  "/security/users",
+                                           "accessModuleCodes":  [
+                                                                     "M800"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M806",
+                                           "displayName":  "Rollen",
+                                           "icon":  "ðŸ‘¤",
+                                           "isActive":  true,
+                                           "route":  "/security/roles",
+                                           "accessModuleCodes":  [
+                                                                     "M800"
+                                                                 ]
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "business",
+                       "displayName":  "GeschÃ¤ft",
+                       "modules":  [
+                                       {
+                                           "code":  "M201",
+                                           "displayName":  "Assets",
+                                           "icon":  "â–¥",
+                                           "isActive":  true,
+                                           "route":  "/business/assets"
+                                       },
+                                       {
+                                           "code":  "M202",
+                                           "displayName":  "Wartung",
+                                           "icon":  "ðŸ› ",
+                                           "isActive":  true,
+                                           "route":  "/business/maintenance"
+                                       },
+                                       {
+                                           "code":  "M203",
+                                           "displayName":  "PrÃ¼fungen",
+                                           "icon":  "âœ“",
+                                           "isActive":  true,
+                                           "route":  "/business/inspections",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M204",
+                                           "displayName":  "Lager",
+                                           "icon":  "â–¦",
+                                           "isActive":  true,
+                                           "route":  "/business/inventory"
+                                       },
+                                       {
+                                           "code":  "M205",
+                                           "displayName":  "Energie",
+                                           "icon":  "âš¡",
+                                           "isActive":  true,
+                                           "route":  "/business/energy"
+                                       },
+                                       {
+                                           "code":  "M206",
+                                           "displayName":  "Einkauf",
+                                           "icon":  "ðŸ›’",
+                                           "isActive":  true,
+                                           "route":  "/m200/purchasing",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M207",
+                                           "displayName":  "QualitÃ¤t",
+                                           "icon":  "â—‰",
+                                           "isActive":  true,
+                                           "route":  "/business/quality",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M208",
+                                           "displayName":  "Sicherheit",
+                                           "icon":  "ðŸ”’",
+                                           "isActive":  true,
+                                           "route":  "/business/safety",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M209",
+                                           "displayName":  "Projekte",
+                                           "icon":  "â‡²",
+                                           "isActive":  true,
+                                           "route":  "/m200/projects",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M210",
+                                           "displayName":  "Kunden",
+                                           "icon":  "ðŸ‘¥",
+                                           "isActive":  true,
+                                           "route":  "/m200/customers",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M211",
+                                           "displayName":  "Analytik",
+                                           "icon":  "â—”",
+                                           "isActive":  true,
+                                           "route":  "/m200/analytics",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M212",
+                                           "displayName":  "Produktion",
+                                           "icon":  "â–§",
+                                           "isActive":  true,
+                                           "route":  "/m200/production",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M213",
+                                           "displayName":  "Workforce",
+                                           "icon":  "â˜·",
+                                           "isActive":  true,
+                                           "route":  "/m200/workforce",
+                                           "accessMode":  "authenticated"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "presentation",
+                       "displayName":  "PrÃ¤sentation",
+                       "modules":  [
+                                       {
+                                           "code":  "M301",
+                                           "displayName":  "AppShell",
+                                           "icon":  "â—Œ",
+                                           "isActive":  true,
+                                           "route":  "/dashboard",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M302",
+                                           "displayName":  "Berichte",
+                                           "icon":  "â–¥",
+                                           "isActive":  true,
+                                           "route":  "/presentation/reports",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M303",
+                                           "displayName":  "Benachrichtigungen",
+                                           "icon":  "ðŸ””",
+                                           "isActive":  true,
+                                           "route":  "/presentation/notifications",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M304",
+                                           "displayName":  "Suche",
+                                           "icon":  "âŒ•",
+                                           "isActive":  true,
+                                           "route":  "/presentation/search",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M305",
+                                           "displayName":  "Formulare",
+                                           "icon":  "âœŽ",
+                                           "isActive":  true,
+                                           "route":  "/presentation/forms",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M306",
+                                           "displayName":  "Lokalisierung",
+                                           "icon":  "ðŸŒ",
+                                           "isActive":  true,
+                                           "route":  "/presentation/localization"
+                                       },
+                                       {
+                                           "code":  "M307",
+                                           "displayName":  "Personalisierung",
+                                           "icon":  "â˜°",
+                                           "isActive":  true,
+                                           "route":  "/presentation/personalization",
+                                           "accessMode":  "authenticated"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "integration",
+                       "displayName":  "Integration",
+                       "modules":  [
+                                       {
+                                           "code":  "M401",
+                                           "displayName":  "Import / Export",
+                                           "icon":  "â‡©",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M402",
+                                           "displayName":  "API",
+                                           "icon":  "â‡„",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M403",
+                                           "displayName":  "ERP",
+                                           "icon":  "â–¤",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M404",
+                                           "displayName":  "IoT / Maschinen",
+                                           "icon":  "â—Œ",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M405",
+                                           "displayName":  "Messaging / Events",
+                                           "icon":  "âœ‰",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M406",
+                                           "displayName":  "Identity",
+                                           "icon":  "â—«",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M407",
+                                           "displayName":  "DMS / Dateien",
+                                           "icon":  "ðŸ“‚",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "runtime",
+                       "displayName":  "Laufzeit",
+                       "modules":  [
+                                       {
+                                           "code":  "M501",
+                                           "displayName":  "Scheduler",
+                                           "icon":  "â—·",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M502",
+                                           "displayName":  "Automatisierung",
+                                           "icon":  "âš™",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M503",
+                                           "displayName":  "Job-AusfÃ¼hrung",
+                                           "icon":  "â–¶",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M504",
+                                           "displayName":  "Leitwarte",
+                                           "icon":  "âŒ˜",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M505",
+                                           "displayName":  "Echtzeit",
+                                           "icon":  "â†»",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "planning",
+                       "displayName":  "Planung",
+                       "modules":  [
+                                       {
+                                           "code":  "M600",
+                                           "displayName":  "ModulÃ¼bersicht",
+                                           "icon":  "â—ˆ",
+                                           "isActive":  true,
+                                           "route":  "/planning/modules",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M601",
+                                           "displayName":  "Roadmap",
+                                           "icon":  "â†’",
+                                           "isActive":  true,
+                                           "route":  "/roadmap",
+                                           "accessMode":  "authenticated"
+                                       },
+                                       {
+                                           "code":  "M602",
+                                           "displayName":  "Konzepte",
+                                           "icon":  "âœŽ",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M603",
+                                           "displayName":  "Prototypen",
+                                           "icon":  "â—ˆ",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M604",
+                                           "displayName":  "Entscheidungen",
+                                           "icon":  "â—†",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M605",
+                                           "displayName":  "Standards",
+                                           "icon":  "â˜·",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M606",
+                                           "displayName":  "Anforderungen",
+                                           "icon":  "â˜°",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M607",
+                                           "displayName":  "Bewertung",
+                                           "icon":  "â—”",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "support",
+                       "displayName":  "Support",
+                       "modules":  [
+                                       {
+                                           "code":  "M700",
+                                           "displayName":  "Support Ãœbersicht",
+                                           "icon":  "â—ˆ",
+                                           "isActive":  true,
+                                           "route":  "/support",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M701",
+                                           "displayName":  "BugTracking",
+                                           "icon":  "âš‘",
+                                           "isActive":  true,
+                                           "route":  "/support/bug-tracking",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M702",
+                                           "displayName":  "ChangeRequests",
+                                           "icon":  "âœŽ",
+                                           "isActive":  true,
+                                           "route":  "/support/change-requests",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M703",
+                                           "displayName":  "SupportCases",
+                                           "icon":  "â˜°",
+                                           "isActive":  true,
+                                           "route":  "/support/cases",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M704",
+                                           "displayName":  "Incidents",
+                                           "icon":  "âš ",
+                                           "isActive":  true,
+                                           "route":  "/support/incidents",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M705",
+                                           "displayName":  "Knowledge Base",
+                                           "icon":  "âŒ˜",
+                                           "isActive":  true,
+                                           "route":  "/support/knowledge-base",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       },
+                                       {
+                                           "code":  "M706",
+                                           "displayName":  "SLA",
+                                           "icon":  "â—·",
+                                           "isActive":  true,
+                                           "route":  "/support/service-levels",
+                                           "accessModuleCodes":  [
+                                                                     "M700"
+                                                                 ]
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "intelligence",
+                       "displayName":  "Intelligenz",
+                       "modules":  [
+                                       {
+                                           "code":  "M901",
+                                           "displayName":  "Analytics Engine",
+                                           "icon":  "âœ¦",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M902",
+                                           "displayName":  "Vorhersage",
+                                           "icon":  "â—”",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M903",
+                                           "displayName":  "Optimierung",
+                                           "icon":  "â‡²",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M904",
+                                           "displayName":  "Anomalie-Erkennung",
+                                           "icon":  "âš ",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M905",
+                                           "displayName":  "Governance",
+                                           "icon":  "â—‡",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "platform",
+                       "displayName":  "Plattform",
+                       "modules":  [
+                                       {
+                                           "code":  "M1001",
+                                           "displayName":  "Plugin-System",
+                                           "icon":  "â—«",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1002",
+                                           "displayName":  "SDK",
+                                           "icon":  "âŒ˜",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1003",
+                                           "displayName":  "Erweiterungen",
+                                           "icon":  "â‡„",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1004",
+                                           "displayName":  "Marktplatz",
+                                           "icon":  "â–¤",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1005",
+                                           "displayName":  "Versionierung",
+                                           "icon":  "â†»",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   },
+                   {
+                       "key":  "productization",
+                       "displayName":  "Produkt",
+                       "modules":  [
+                                       {
+                                           "code":  "M1101",
+                                           "displayName":  "Distribution",
+                                           "icon":  "â‡ª",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1102",
+                                           "displayName":  "Updates",
+                                           "icon":  "â†º",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1103",
+                                           "displayName":  "Produktversion",
+                                           "icon":  "â—«",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1104",
+                                           "displayName":  "Lizenzierung",
+                                           "icon":  "âŒ‚",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1105",
+                                           "displayName":  "Backup / Restore",
+                                           "icon":  "âŸ²",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       },
+                                       {
+                                           "code":  "M1106",
+                                           "displayName":  "Produktbetrieb",
+                                           "icon":  "â—·",
+                                           "isActive":  true,
+                                           "route":  "#"
+                                       }
+                                   ]
+                   }
+               ]
 }

@@ -1,29 +1,19 @@
 {
   "ModuleCode": "M207",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 19,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7562779+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.2246769+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M207 gefunden."
-    },
-    {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M207 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "12 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -39,8 +29,8 @@
     },
     {
       "Title": "Ursachenanalysen (Root Cause)",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Korrekturma\u00C3\u0192\u00C5\u00B8nahmen",
@@ -64,18 +54,18 @@
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M203",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M202",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M201",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",

@@ -57,6 +57,12 @@ public interface IStockMovementWriteRepository
         string? bin,
         CancellationToken cancellationToken = default);
 
+    Task<StockEntity?> GetStockByInventoryItemAndLocationForUpdateAsync(
+        Guid inventoryItemId,
+        Guid locationId,
+        string? bin,
+        CancellationToken cancellationToken = default);
+
     Task AddAsync(
         StockMovementEntity stockMovement,
         CancellationToken cancellationToken = default);

@@ -14,7 +14,7 @@ public sealed class SecurityContext
         IReadOnlyCollection<string>? permissions = null,
         IReadOnlyCollection<string>? permissionModules = null,
         IReadOnlyCollection<string>? organizationUnitIds = null,
-        string preferredCultureName = "de-DE")
+        string preferredCultureName = "en-US")
     {
         UserId = userId;
         IdentityKey = identityKey;
@@ -48,11 +48,28 @@ public sealed class SecurityContext
 
     public bool HasPermission(string permission) =>
         IsDeveloperMode ||
-        Permissions.Any(x => string.Equals(x, permission, StringComparison.OrdinalIgnoreCase));
+        Permissions.Any(x =>
+            string.Equals(x, permission, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(x, "*", StringComparison.OrdinalIgnoreCase) ||
+            MatchesWildcardPermission(x, permission));
 
     public bool HasModuleAccess(string moduleCode) =>
         IsDeveloperMode ||
-        PermissionModules.Any(x => string.Equals(x, moduleCode, StringComparison.OrdinalIgnoreCase));
+        PermissionModules.Any(x =>
+            string.Equals(x, moduleCode, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(x, "*", StringComparison.OrdinalIgnoreCase));
+
+    private static bool MatchesWildcardPermission(string assignedPermission, string requestedPermission)
+    {
+        if (!assignedPermission.EndsWith(".*", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var prefix = assignedPermission[..^1];
+
+        return requestedPermission.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+    }
 
     private static string NormalizeCultureName(string? cultureName)
     {

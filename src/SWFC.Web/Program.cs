@@ -12,6 +12,11 @@ using SWFC.Application.M100_System.M103_Authentication;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity;
 using SWFC.Application.M800_Security.M802_ApplicationSecurity.Abstractions;
 using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
+using SWFC.Application.M200_Business.M209_Projects;
+using SWFC.Application.M200_Business.M210_Customers;
+using SWFC.Application.M200_Business.M211_Analytics;
+using SWFC.Application.M200_Business.M212_Production;
+using SWFC.Application.M200_Business.M213_Workforce;
 using SWFC.Infrastructure.DependencyInjection;
 using SWFC.Infrastructure.M400_Integration.M406_IdentityIntegration.Configuration;
 using SWFC.Infrastructure.M100_System.M103_Authentication;
@@ -22,6 +27,7 @@ using SWFC.Web.Pages.M100_System.M106_Theme.Services;
 using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services;
 using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Models;
 using SWFC.Web.Pages.M300_Presentation.M307_User_Personalization.Services;
+using SWFC.Web.Pages.M400_Integration.M402_API;
 using SWFC.Infrastructure.Services.Security;
 using SWFC.Web.Components.Layout;
 using SWFC.Web.Components.ModuleOverview;
@@ -73,6 +79,11 @@ builder.Services.AddSingleton<ConfigurationWorkspaceService>();
 builder.Services.AddSingleton<ReportingWorkspaceService>();
 builder.Services.AddSingleton<NotificationWorkspaceService>();
 builder.Services.AddSingleton<SearchWorkspaceService>();
+builder.Services.AddSingleton<ProjectWorkspaceService>();
+builder.Services.AddSingleton<CustomerWorkspaceService>();
+builder.Services.AddSingleton<AnalyticsWorkspaceService>();
+builder.Services.AddSingleton<ProductionWorkspaceService>();
+builder.Services.AddSingleton<WorkforceWorkspaceService>();
 
 var authenticationOptions = builder.Configuration
     .GetSection(SwfcAuthenticationOptions.SectionName)
@@ -267,6 +278,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<global::SWFC.Web.App>()
     .AddInteractiveServerRenderMode();
+
+app.MapM402IntegrationApi();
 
 app.MapGet("/auth/oidc/login", async (
     HttpContext httpContext,

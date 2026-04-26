@@ -15,6 +15,7 @@ public sealed class Machine
         InventoryNumber = null!;
         Location = null!;
         Status = null!;
+        AssetType = null!;
         Manufacturer = null!;
         Model = null!;
         SerialNumber = null!;
@@ -28,12 +29,14 @@ public sealed class Machine
         MachineInventoryNumber inventoryNumber,
         MachineLocation location,
         MachineStatus status,
+        MachineAssetType assetType,
         MachineManufacturer manufacturer,
         MachineModel model,
         MachineSerialNumber serialNumber,
         MachineDescription description,
         Guid? parentMachineId,
         Guid? organizationUnitId,
+        Guid? energyObjectId,
         bool isActive,
         AuditInfo auditInfo)
     {
@@ -42,12 +45,14 @@ public sealed class Machine
         InventoryNumber = inventoryNumber;
         Location = location;
         Status = status;
+        AssetType = assetType;
         Manufacturer = manufacturer;
         Model = model;
         SerialNumber = serialNumber;
         Description = description;
         ParentMachineId = parentMachineId;
         OrganizationUnitId = organizationUnitId;
+        EnergyObjectId = energyObjectId;
         IsActive = isActive;
         AuditInfo = auditInfo;
     }
@@ -57,6 +62,7 @@ public sealed class Machine
     public MachineInventoryNumber InventoryNumber { get; private set; }
     public MachineLocation Location { get; private set; }
     public MachineStatus Status { get; private set; }
+    public MachineAssetType AssetType { get; private set; }
     public MachineManufacturer Manufacturer { get; private set; }
     public MachineModel Model { get; private set; }
     public MachineSerialNumber SerialNumber { get; private set; }
@@ -66,6 +72,7 @@ public sealed class Machine
     public Machine? ParentMachine { get; private set; }
 
     public Guid? OrganizationUnitId { get; private set; }
+    public Guid? EnergyObjectId { get; private set; }
     public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<Machine> Children => _children.AsReadOnly();
@@ -77,12 +84,14 @@ public sealed class Machine
         MachineInventoryNumber inventoryNumber,
         MachineLocation location,
         MachineStatus status,
+        MachineAssetType assetType,
         MachineManufacturer manufacturer,
         MachineModel model,
         MachineSerialNumber serialNumber,
         MachineDescription description,
         Guid? parentMachineId,
         Guid? organizationUnitId,
+        Guid? energyObjectId,
         ChangeContext changeContext)
     {
         var auditInfo = new AuditInfo(
@@ -95,12 +104,14 @@ public sealed class Machine
             inventoryNumber,
             location,
             status,
+            assetType,
             manufacturer,
             model,
             serialNumber,
             description,
             parentMachineId,
             organizationUnitId,
+            energyObjectId,
             isActive: true,
             auditInfo);
     }
@@ -110,20 +121,24 @@ public sealed class Machine
         MachineInventoryNumber inventoryNumber,
         MachineLocation location,
         MachineStatus status,
+        MachineAssetType assetType,
         MachineManufacturer manufacturer,
         MachineModel model,
         MachineSerialNumber serialNumber,
         MachineDescription description,
+        Guid? energyObjectId,
         ChangeContext changeContext)
     {
         Name = name;
         InventoryNumber = inventoryNumber;
         Location = location;
         Status = status;
+        AssetType = assetType;
         Manufacturer = manufacturer;
         Model = model;
         SerialNumber = serialNumber;
         Description = description;
+        EnergyObjectId = energyObjectId;
 
         Touch(changeContext);
     }

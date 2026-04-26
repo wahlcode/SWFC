@@ -7,6 +7,7 @@ using SWFC.Domain.M200_Business.M201_Assets.MachineComponents;
 using SWFC.Domain.M200_Business.M201_Assets.Machines;
 using SWFC.Domain.M200_Business.M202_Maintenance.MaintenanceOrders;
 using SWFC.Domain.M200_Business.M202_Maintenance.MaintenancePlans;
+using SWFC.Domain.M200_Business.M203_Inspections;
 using SWFC.Domain.M200_Business.M204_Inventory.Items;
 using SWFC.Domain.M200_Business.M204_Inventory.Locations;
 using SWFC.Domain.M200_Business.M204_Inventory.Reservations;
@@ -24,7 +25,10 @@ using SWFC.Infrastructure.M100_System.M107_SetupDeployment.Entities;
 using SWFC.Infrastructure.Persistence.Configurations.M100_System;
 using SWFC.Infrastructure.Persistence.Configurations.M103_Authentication;
 using SWFC.Infrastructure.Persistence.Configurations.M200_Business;
+using SWFC.Infrastructure.Persistence.Configurations.M200_Business.M203_Inspections;
 using SWFC.Infrastructure.Persistence.Configurations.M200_Business.M205_Energy;
+using SWFC.Infrastructure.Persistence.Configurations.M200_Business.M207_Quality;
+using SWFC.Infrastructure.Persistence.Configurations.M200_Business.M208_Safety;
 using SWFC.Infrastructure.Persistence.Configurations.M700_Support;
 using SWFC.Infrastructure.Persistence.Configurations.M800_Security;
 using SWFC.Domain.M100_System.M102_Organization.CostCenters;
@@ -40,6 +44,8 @@ using SWFC.Domain.M200_Business.M206_Purchasing.PurchaseOrders;
 using SWFC.Domain.M200_Business.M206_Purchasing.PurchaseRequirements;
 using SWFC.Domain.M200_Business.M206_Purchasing.RequestForQuotations;
 using SWFC.Domain.M200_Business.M206_Purchasing.Suppliers;
+using SWFC.Domain.M200_Business.M207_Quality;
+using SWFC.Domain.M200_Business.M208_Safety;
 using SWFC.Infrastructure.Persistence.Configurations.M200_Business.M206_Purchasing;
 
 namespace SWFC.Infrastructure.Persistence.Context;
@@ -68,6 +74,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<MachineComponent> MachineComponents => Set<MachineComponent>();
     public DbSet<MaintenanceOrder> MaintenanceOrders => Set<MaintenanceOrder>();
     public DbSet<MaintenancePlan> MaintenancePlans => Set<MaintenancePlan>();
+    public DbSet<InspectionPlan> InspectionPlans => Set<InspectionPlan>();
+    public DbSet<Inspection> Inspections => Set<Inspection>();
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<Stock> Stocks => Set<Stock>();
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
@@ -90,6 +98,10 @@ public sealed class AppDbContext : DbContext
     public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
     public DbSet<GoodsReceipt> GoodsReceipts => Set<GoodsReceipt>();
     public DbSet<RequestForQuotation> RequestForQuotations => Set<RequestForQuotation>();
+    public DbSet<QualityCase> QualityCases => Set<QualityCase>();
+    public DbSet<QualityAction> QualityActions => Set<QualityAction>();
+    public DbSet<SafetyAssessment> SafetyAssessments => Set<SafetyAssessment>();
+    public DbSet<SafetyPermit> SafetyPermits => Set<SafetyPermit>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -110,6 +122,8 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MachineComponentConfiguration());
         modelBuilder.ApplyConfiguration(new MaintenanceOrderConfiguration());
         modelBuilder.ApplyConfiguration(new MaintenancePlanConfiguration());
+        modelBuilder.ApplyConfiguration(new InspectionPlanConfiguration());
+        modelBuilder.ApplyConfiguration(new InspectionConfiguration());
         modelBuilder.ApplyConfiguration(new EnergyMeterConfiguration());
         modelBuilder.ApplyConfiguration(new EnergyReadingConfiguration());
         modelBuilder.ApplyConfiguration(new PurchaseRequirementConfiguration());
@@ -117,6 +131,10 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PurchaseOrderConfiguration());
         modelBuilder.ApplyConfiguration(new GoodsReceiptConfiguration());
         modelBuilder.ApplyConfiguration(new RequestForQuotationConfiguration());
+        modelBuilder.ApplyConfiguration(new QualityCaseConfiguration());
+        modelBuilder.ApplyConfiguration(new QualityActionConfiguration());
+        modelBuilder.ApplyConfiguration(new SafetyAssessmentConfiguration());
+        modelBuilder.ApplyConfiguration(new SafetyPermitConfiguration());
         modelBuilder.ApplyConfiguration(new AccessRuleConfiguration());
         modelBuilder.ApplyConfiguration(new CostCenterConfiguration());
         modelBuilder.ApplyConfiguration(new ShiftModelConfiguration());
@@ -192,6 +210,22 @@ public sealed class AppDbContext : DbContext
                     .HasColumnName("ManufacturerPartNumber")
                     .HasMaxLength(100)
                     .IsRequired(false);
+            });
+
+            entity.OwnsOne(x => x.StandardUnitPrice, owned =>
+            {
+                owned.Property(p => p.Value)
+                    .HasColumnName("StandardUnitPrice")
+                    .HasPrecision(18, 4)
+                    .IsRequired();
+            });
+
+            entity.OwnsOne(x => x.Currency, owned =>
+            {
+                owned.Property(p => p.Value)
+                    .HasColumnName("Currency")
+                    .HasMaxLength(3)
+                    .IsRequired();
             });
 
             entity.OwnsOne(x => x.AuditInfo, audit =>

@@ -37,6 +37,7 @@ public sealed class RequestForQuotationReadRepository : IRequestForQuotationRead
                 x.supplier.Name,
                 x.rfq.RequestedAtUtc,
                 x.rfq.ResponseDueAtUtc,
+                x.rfq.OfferDocumentReference,
                 x.rfq.IsClosed))
             .ToListAsync(cancellationToken);
     }

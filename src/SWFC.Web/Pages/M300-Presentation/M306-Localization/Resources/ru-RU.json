@@ -1,4 +1,4 @@
-{
+﻿{
   "Common.Save": "Сохранить",
   "Common.Cancel": "Отмена",
   "Common.Back": "Назад",
@@ -122,7 +122,7 @@
   "Users.External": "Внешние",
   "Users.WithShiftModel": "С моделью смен",
   "Users.Loading": "Загрузка данных пользователей...",
-  "Users.SearchPlaceholder": "Поиск пользователей...",
+  "Users.SearchLabel": "Поиск пользователей...",
   "Users.OnlyActive": "Только активные пользователи",
   "Users.CreateUser": "Создать пользователя",
   "Users.UserList": "Список пользователей",

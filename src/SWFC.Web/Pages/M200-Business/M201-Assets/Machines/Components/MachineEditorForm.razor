@@ -23,6 +23,11 @@
         </div>
 
         <div class="m201-machine-form__field">
+            <label class="m201-machine-form__label">Asset type</label>
+            <input class="m201-input" @bind="Model.AssetType" />
+        </div>
+
+        <div class="m201-machine-form__field">
             <label class="m201-machine-form__label">Standort</label>
             <input class="m201-input" @bind="Model.Location" />
         </div>
@@ -65,12 +70,17 @@
         </div>
 
         <div class="m201-machine-form__field m201-machine-form__field--full">
+            <label class="m201-machine-form__label">Energy object ID</label>
+            <input class="m201-input" @bind="Model.EnergyObjectId" />
+        </div>
+
+        <div class="m201-machine-form__field m201-machine-form__field--full">
             <label class="m201-machine-form__label">Beschreibung</label>
             <textarea class="m201-textarea" @bind="Model.Description"></textarea>
         </div>
 
         <div class="m201-machine-form__field m201-machine-form__field--full">
-            <label class="m201-machine-form__label">Begründung</label>
+            <label class="m201-machine-form__label">Begrï¿½ndung</label>
             <textarea class="m201-textarea m201-machine-form__textarea--reason" @bind="Model.Reason"></textarea>
         </div>
     </div>
@@ -112,5 +122,7 @@
     private Task HandleSaveAsync()
         => OnSave.InvokeAsync();
 }
+
+
 
 

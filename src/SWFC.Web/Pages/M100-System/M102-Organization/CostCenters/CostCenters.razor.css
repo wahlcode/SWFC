@@ -17,8 +17,9 @@
 
 .m100-ou__layout {
     display: flex;
+    flex-direction: column;
     gap: var(--space-lg);
-    align-items: flex-start;
+    align-items: stretch;
 }
 
 .m100-card {
@@ -31,7 +32,7 @@
 }
 
 .m100-ou__create {
-    max-width: 360px;
+    width: 100%;
 }
 
 .m100-input,
@@ -46,27 +47,54 @@ select {
     color: var(--color-text-primary);
 }
 
-.m100-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
 .m100-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.m100-table th,
-.m100-table td {
-    padding: var(--space-sm);
-    border-bottom: 1px solid var(--color-border);
-    text-align: left;
-    vertical-align: middle;
-}
+    .m100-table th,
+    .m100-table td {
+        padding: var(--space-sm);
+        border-bottom: 1px solid var(--color-border);
+        text-align: left;
+        vertical-align: middle;
+    }
 
 .m100-table__actions {
     text-align: right;
 }
+
+/* TREE */
+
+.m100-parent-row {
+    font-weight: 600;
+}
+
+.m100-child-row td:first-child {
+    padding-left: calc(var(--space-xl) + var(--space-sm));
+}
+
+.m100-tree-button {
+    background: transparent;
+    border: none;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    margin-right: var(--space-xs);
+    font-size: 1rem;
+    width: 1.5rem;
+}
+
+.m100-tree-spacer {
+    display: inline-block;
+    width: 1.5rem;
+}
+
+.m100-tree-child {
+    color: var(--color-text-secondary);
+    margin-right: var(--space-xs);
+}
+
+/* BUTTONS */
 
 .m100-button {
     background: var(--color-primary);
@@ -78,22 +106,30 @@ select {
     transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
-.m100-button:hover:not(:disabled) {
-    background: var(--color-primary-hover);
-    border-color: var(--color-primary-hover);
-    transform: translateY(var(--motion-lift-xs));
-}
+    .m100-button:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
+        transform: translateY(var(--motion-lift-xs));
+    }
 
-.m100-button:disabled {
-    opacity: var(--opacity-disabled);
-    cursor: not-allowed;
-    transform: none;
-}
+    .m100-button:disabled {
+        opacity: var(--opacity-disabled);
+        cursor: not-allowed;
+        transform: none;
+    }
 
 .m100-button--secondary {
     background: transparent;
     border: 1px solid var(--color-border);
 }
+
+.m100-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* ALERTS */
 
 .m100-alert {
     margin-bottom: var(--space-lg);
@@ -114,14 +150,14 @@ select {
     color: var(--color-success-text);
 }
 
+/* RESPONSIVE */
+
 @media (max-width: 960px) {
-    .m100-ou__header,
-    .m100-ou__layout {
+    .m100-ou__header {
         flex-direction: column;
     }
 
-    .m100-ou__create {
-        max-width: none;
-        width: 100%;
+    .m100-ou__layout {
+        flex-direction: column;
     }
 }

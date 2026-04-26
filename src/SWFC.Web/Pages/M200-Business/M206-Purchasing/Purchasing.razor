@@ -16,6 +16,7 @@
 
 @inject CreatePurchaseRequirement CreatePurchaseRequirementUseCase
 @inject GetPurchaseRequirements GetPurchaseRequirementsUseCase
+@inject GetPurchaseProposals GetPurchaseProposalsUseCase
 @inject CreateSupplier CreateSupplierUseCase
 @inject GetSuppliers GetSuppliersUseCase
 @inject CreatePurchaseOrder CreatePurchaseOrderUseCase
@@ -93,6 +94,19 @@
                         <input class="purchasing-input" @bind="_requirementUnit" />
                     </label>
                 </div>
+                <label>
+                    Quelle
+                    <select class="purchasing-input" @bind="_requirementSourceType">
+                        <option value="@PurchaseRequirementSourceType.Manual">Manuell</option>
+                        <option value="@PurchaseRequirementSourceType.Maintenance">M202 Wartung</option>
+                        <option value="@PurchaseRequirementSourceType.InventoryMinimumStock">M204 Mindestbestand</option>
+                        <option value="@PurchaseRequirementSourceType.Project">M209 Projekt</option>
+                    </select>
+                </label>
+                <label>
+                    Quellreferenz
+                    <input class="purchasing-input" @bind="_requirementSourceReference" />
+                </label>
                 <button class="purchasing-button" type="button" @onclick="CreateRequirementAsync" disabled="@_isBusy">
                     Bedarf speichern
                 </button>
@@ -129,6 +143,14 @@
                         }
                     </select>
                 </label>
+                <label>
+                    ERP-Referenz
+                    <input class="purchasing-input" @bind="_orderErpReference" />
+                </label>
+                <label>
+                    Bestelldokument
+                    <input class="purchasing-input" @bind="_orderDocumentReference" />
+                </label>
                 <button class="purchasing-button" type="button" @onclick="CreateOrderAsync" disabled="@_isBusy">
                     Bestellung speichern
                 </button>
@@ -155,6 +177,10 @@
                             <option value="@supplier.Id">@supplier.Name</option>
                         }
                     </select>
+                </label>
+                <label>
+                    Angebotsdokument
+                    <input class="purchasing-input" @bind="_rfqOfferDocumentReference" />
                 </label>
                 <button class="purchasing-button" type="button" @onclick="CreateRfqAsync" disabled="@_isBusy">
                     RFQ speichern
@@ -209,6 +235,10 @@
                         <input class="purchasing-input" value="@ReceiptUnit" disabled />
                     </label>
                 </div>
+                <label>
+                    Lieferscheindokument
+                    <input class="purchasing-input" @bind="_receiptDeliveryDocumentReference" />
+                </label>
                 <button class="purchasing-button" type="button" @onclick="CreateReceiptAsync" disabled="@_isBusy">
                     Wareneingang buchen lassen
                 </button>
@@ -251,6 +281,21 @@
                         }
                     </div>
                 }
+            </article>
+
+            <article class="purchasing-panel">
+                <h2>Bestellvorschlaege</h2>
+                <div class="purchasing-table purchasing-table--compact">
+                    @foreach (var proposal in _proposals)
+                    {
+                        <div class="purchasing-row">
+                            <span>@proposal.RequiredItem</span>
+                            <span>@proposal.Quantity @proposal.Unit</span>
+                            <span>@(proposal.IsAutomatic ? "Automatisch" : "Manuell")</span>
+                            <span>@proposal.SourceType</span>
+                        </div>
+                    }
+                </div>
             </article>
 
             <article class="purchasing-panel">

@@ -39,6 +39,10 @@ public sealed class GoodsReceiptConfiguration : IEntityTypeConfiguration<GoodsRe
         builder.Property(x => x.ReceivedAtUtc)
             .IsRequired();
 
+        builder.Property(x => x.DeliveryDocumentReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
         builder.Property(x => x.InventoryBookingStatus)
             .HasConversion<int>()
             .IsRequired();

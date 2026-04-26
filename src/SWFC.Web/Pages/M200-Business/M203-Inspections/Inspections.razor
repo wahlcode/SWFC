@@ -1,0 +1,145 @@
+@page "/business/inspections"
+@using Microsoft.AspNetCore.Authorization
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using SWFC.Application.M200_Business.M203_Inspections
+@using SWFC.Domain.M200_Business.M203_Inspections
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@inject CreateInspectionPlan CreatePlan
+@inject CreateInspection CreateInspectionUseCase
+@inject GetInspectionPlans GetPlans
+@inject GetInspections GetInspectionList
+
+<PageTitle>M203 Pruefungen</PageTitle>
+
+<section class="v010-page">
+    <header>
+        <p>M203</p>
+        <h1>Pruefungen</h1>
+    </header>
+
+    @if (_error is not null)
+    {
+        <div class="v010-alert">@_error</div>
+    }
+
+    <div class="v010-grid">
+        <form class="v010-panel" @onsubmit="CreatePlanAsync">
+            <h2>Pruefplan</h2>
+            <input @bind="_planName" placeholder="Name" />
+            <input @bind="_planTargetId" placeholder="M201 Ziel-ID" />
+            <input @bind="_planObjectType" placeholder="Objekttyp" />
+            <input type="number" @bind="_planIntervalDays" placeholder="Intervall Tage" />
+            <input @bind="_planDocumentReference" placeholder="Dokumentreferenz" />
+            <button type="submit" disabled="@_busy">Speichern</button>
+        </form>
+
+        <form class="v010-panel" @onsubmit="CreateInspectionAsync">
+            <h2>Pruefergebnis</h2>
+            <select @bind="_inspectionPlanId">
+                <option value="">Pruefplan waehlen</option>
+                @foreach (var plan in _plans)
+                {
+                    <option value="@plan.Id">@plan.Name</option>
+                }
+            </select>
+            <input @bind="_inspectionTitle" placeholder="Titel" />
+            <select @bind="_inspectionResult">
+                @foreach (var result in Enum.GetValues<InspectionResult>())
+                {
+                    <option value="@result">@result</option>
+                }
+            </select>
+            <textarea @bind="_inspectionNotes" placeholder="Notizen"></textarea>
+            <input @bind="_followUpReference" placeholder="Folgeaktion M202/M207/M208" />
+            <button type="submit" disabled="@_busy">Erfassen</button>
+        </form>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Faelligkeiten</h2>
+        <table>
+            <thead><tr><th>Name</th><th>Ziel</th><th>Intervall</th><th>Naechste Faelligkeit</th><th>Status</th></tr></thead>
+            <tbody>
+                @foreach (var plan in _plans)
+                {
+                    <tr><td>@plan.Name</td><td>@plan.TargetType @plan.TargetId</td><td>@plan.IntervalDays Tage</td><td>@Format(plan.NextDueAtUtc)</td><td>@(plan.IsActive ? "Aktiv" : "Geschlossen")</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Ergebnisse</h2>
+        <table>
+            <thead><tr><th>Titel</th><th>Ergebnis</th><th>Status</th><th>Folgeaktion</th><th>Zeit</th></tr></thead>
+            <tbody>
+                @foreach (var inspection in _inspections)
+                {
+                    <tr><td>@inspection.Title</td><td>@inspection.Result</td><td>@inspection.Status</td><td>@Display(inspection.FollowUpReference)</td><td>@Format(inspection.PerformedAtUtc)</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@code {
+    private bool _busy;
+    private string? _error;
+    private IReadOnlyList<InspectionPlanListItem> _plans = [];
+    private IReadOnlyList<InspectionListItem> _inspections = [];
+    private string _planName = string.Empty;
+    private string _planTargetId = string.Empty;
+    private string _planObjectType = "Machine";
+    private int _planIntervalDays = 30;
+    private string? _planDocumentReference;
+    private string _inspectionPlanId = string.Empty;
+    private string _inspectionTitle = string.Empty;
+    private InspectionResult _inspectionResult = InspectionResult.Passed;
+    private string? _inspectionNotes;
+    private string? _followUpReference;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task CreatePlanAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreatePlan.ExecuteAsync(new CreateInspectionPlanRequest(_planName, InspectionTargetType.Machine, RequireGuid(_planTargetId), _planObjectType, _planIntervalDays, null, _planDocumentReference));
+            _planName = string.Empty;
+            _planTargetId = string.Empty;
+            _planDocumentReference = null;
+        });
+    }
+
+    private async Task CreateInspectionAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreateInspectionUseCase.ExecuteAsync(new CreateInspectionRequest(RequireGuid(_inspectionPlanId), _inspectionTitle, _inspectionResult, null, _inspectionNotes, _followUpReference));
+            _inspectionTitle = string.Empty;
+            _inspectionNotes = null;
+            _followUpReference = null;
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _error = null;
+        try { await action(); await LoadAsync(); }
+        catch (Exception exception) { _error = exception.Message; }
+        finally { _busy = false; }
+    }
+
+    private async Task LoadAsync()
+    {
+        _plans = await GetPlans.ExecuteAsync();
+        _inspections = await GetInspectionList.ExecuteAsync();
+    }
+
+    private static Guid RequireGuid(string value) => Guid.TryParse(value, out var id) && id != Guid.Empty ? id : throw new InvalidOperationException("Gueltige ID erforderlich.");
+    private static string Format(DateTime value) => value.ToString("yyyy-MM-dd HH:mm");
+    private static string Display(string? value) => string.IsNullOrWhiteSpace(value) ? "-" : value;
+}

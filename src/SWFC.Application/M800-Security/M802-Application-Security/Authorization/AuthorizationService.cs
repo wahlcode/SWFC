@@ -1,4 +1,5 @@
 using SWFC.Application.M800_Security.M802_ApplicationSecurity;
+using SWFC.Application.M800_Security.M805_AuditCompliance.Interfaces;
 using SWFC.Application.M800_Security.M806_AccessControl.Decisions;
 
 namespace SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
@@ -6,6 +7,7 @@ namespace SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 public sealed class AuthorizationService : IAuthorizationService
 {
     private readonly IAccessDecisionService _accessDecisionService;
+    private readonly IAuditService? _auditService;
 
     public AuthorizationService()
         : this(new AccessDecisionService())
@@ -13,8 +15,16 @@ public sealed class AuthorizationService : IAuthorizationService
     }
 
     public AuthorizationService(IAccessDecisionService accessDecisionService)
+        : this(accessDecisionService, null)
+    {
+    }
+
+    public AuthorizationService(
+        IAccessDecisionService accessDecisionService,
+        IAuditService? auditService)
     {
         _accessDecisionService = accessDecisionService;
+        _auditService = auditService;
     }
 
     public Task<AuthorizationResult> AuthorizeAsync(
@@ -37,6 +47,17 @@ public sealed class AuthorizationService : IAuthorizationService
                 requirement.RequiredRoles,
                 requirement.RequiredPermissions),
             cancellationToken);
+
+        if (_auditService is not null &&
+            securityContext.IsAuthenticated &&
+            (requirement.RequiredRoles.Count > 0 ||
+             requirement.RequiredPermissions.Count > 0 ||
+             !decision.IsAllowed))
+        {
+            await _auditService.WriteAsync(
+                decision.ToAuditWriteRequest(securityContext, DateTime.UtcNow),
+                cancellationToken);
+        }
 
         return decision.IsAllowed
             ? AuthorizationResult.Authorized()

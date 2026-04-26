@@ -53,6 +53,22 @@ public sealed class StockMovementWriteRepository : IStockMovementWriteRepository
                 cancellationToken);
     }
 
+    public Task<Stock?> GetStockByInventoryItemAndLocationForUpdateAsync(
+        Guid inventoryItemId,
+        Guid locationId,
+        string? bin,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Stocks
+            .Include(x => x.Movements)
+            .Include(x => x.Reservations)
+            .FirstOrDefaultAsync(
+                x => x.InventoryItemId == inventoryItemId
+                    && x.LocationId == locationId
+                    && x.Bin == bin,
+                cancellationToken);
+    }
+
     public Task AddAsync(StockMovement stockMovement, CancellationToken cancellationToken = default)
     {
         return _dbContext.StockMovements.AddAsync(stockMovement, cancellationToken).AsTask();

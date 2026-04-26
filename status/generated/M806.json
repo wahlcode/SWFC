@@ -1,36 +1,29 @@
 {
   "ModuleCode": "M806",
-  "ScorePercent": 45,
-  "Status": "PartiallyVerified",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2346607+00:00",
-  "CodeStatus": "Incomplete",
+  "LastAuditUtc": "2026-04-26T14:08:22.9635405+00:00",
+  "CodeStatus": "Complete",
   "MdStatus": "Complete",
-  "TestStatus": "Incomplete",
-  "Flags": [
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Info",
-      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "RBAC",
-      "Status": "InProgress",
-      "Evidence": "MD, Tests"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "ABAC",
-      "Status": "InProgress",
-      "Evidence": "MD, Tests"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Kontextregeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Allow / Deny",
@@ -39,23 +32,23 @@
     },
     {
       "Title": "Vererbung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Sichtbarkeit vs. Aktion",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Freigaben f\u00C3\u0192\u00C2\u00BCr sicherheitskritische Aktionen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Zentrale Auswertung von Berechtigungen",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine verteilte Schattenlogik",
@@ -64,8 +57,8 @@
     },
     {
       "Title": "Zugriff und Aktion getrennt bewerten",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

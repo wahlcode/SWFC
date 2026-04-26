@@ -26,6 +26,10 @@ public sealed class RequestForQuotationConfiguration : IEntityTypeConfiguration<
         builder.Property(x => x.ResponseDueAtUtc)
             .IsRequired(false);
 
+        builder.Property(x => x.OfferDocumentReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
         builder.Property(x => x.IsClosed)
             .IsRequired();
 

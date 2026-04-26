@@ -5,37 +5,40 @@
 
 @using SWFC.Application.M100_System.M102_Organization.OrganizationUnits
 @using SWFC.Application.M800_Security.M802_ApplicationSecurity.Pipeline.Execution
+@using SWFC.Web.Pages.M300_Presentation.M306_Localization.Services
+@using SWFC.Web.Pages.M100_System.M102_Organization.OrganizationUnits
 
 @inject IExecutionPipeline<GetOrganizationUnitsQuery, IReadOnlyList<OrganizationUnitListItem>> GetOrganizationUnitsPipeline
 @inject IExecutionPipeline<CreateOrganizationUnitCommand, Guid> CreateOrganizationUnitPipeline
 @inject NavigationManager NavigationManager
+@inject LocalizationTextProvider TextProvider
 
 <section class="m100-ou">
 
     <header class="m100-card m100-ou__hero">
         <div class="m100-ou__hero-main">
             <div class="m100-ou__hero-text">
-                <a href="/system/organization" class="m100-ou__back">Back</a>
-                <p class="m100-ou__eyebrow">M102 · Organization</p>
-                <h1>Organization Units</h1>
-                <p>Organizational parent/child structure using real M102 name, code and parent data.</p>
+                <a href="/system/organization" class="m100-ou__back">@_text.Back</a>
+                <p class="m100-ou__eyebrow">@_text.Eyebrow</p>
+                <h1>@_text.Title</h1>
+                <p>@_text.Subtitle</p>
             </div>
 
             <div class="m100-ou__summary">
                 <div class="m100-ou__summary-item">
-                    <span>Total</span>
+                    <span>@_text.Total</span>
                     <strong>@_units.Count</strong>
                 </div>
                 <div class="m100-ou__summary-item">
-                    <span>Active</span>
+                    <span>@_text.Active</span>
                     <strong>@_units.Count(x => x.IsActive)</strong>
                 </div>
                 <div class="m100-ou__summary-item">
-                    <span>Roots</span>
+                    <span>@_text.Roots</span>
                     <strong>@_units.Count(x => !x.ParentId.HasValue)</strong>
                 </div>
                 <div class="m100-ou__summary-item">
-                    <span>Matches</span>
+                    <span>@_text.Matches</span>
                     <strong>@_filteredUnits.Count</strong>
                 </div>
             </div>
@@ -54,12 +57,12 @@
 
     <div class="m100-ou__toolbar m100-card">
         <input class="m100-input"
-               placeholder="Search name or code"
+               aria-label="@_text.SearchLabel"
                value="@_searchText"
                @oninput="OnSearchChanged" />
 
         <button class="m100-button" @onclick="OpenCreatePanel">
-            New unit
+            @_text.NewUnit
         </button>
     </div>
 
@@ -69,11 +72,11 @@
 
             @if (_isLoading)
             {
-                <div class="m100-loading">Loading organization units...</div>
+                <div class="m100-loading">@_text.Loading</div>
             }
             else if (_filteredUnits.Count == 0)
             {
-                <div class="m100-empty">No organization units found.</div>
+                <div class="m100-empty">@_text.Empty</div>
             }
             else
             {
@@ -101,7 +104,7 @@
 
                                         @if (row.ChildCount > 0)
                                         {
-                                            <span>@(row.ChildCount == 1 ? "1 child unit" : $"{row.ChildCount} child units")</span>
+                                            <span>@BuildChildUnitLabel(row.ChildCount)</span>
                                         }
                                     </div>
                                 </div>
@@ -109,11 +112,11 @@
 
                             <div class="m100-ou-tree__side">
                                 <span class="@($"m100-ou-tree__status{(row.Unit.IsActive ? " is-active" : string.Empty)}")">
-                                    @(row.Unit.IsActive ? "Active" : "Inactive")
+                                    @(row.Unit.IsActive ? _text.Active : _text.Inactive)
                                 </span>
 
                                 <a href="@($"/system/organization-units/{row.Unit.Id}")">
-                                    Details
+                                    @_text.Details
                                 </a>
                             </div>
                         </article>
@@ -127,28 +130,29 @@
         {
             <div class="m100-card m100-ou__create">
 
-                <h3>New organization unit</h3>
-                <p>The assignment to a parent unit uses the existing parent structure.</p>
+                <h3>@_text.NewTitle</h3>
+                <p>@_text.CreateInfo</p>
 
                 <label class="m100-ou__field">
-                    <span>Name</span>
+                    <span>@_text.Name</span>
                     <input class="m100-input"
-                           placeholder="Name"
+                           aria-label="@_text.Name"
                            @bind="_createModel.Name" />
                 </label>
 
                 <label class="m100-ou__field">
-                    <span>Code</span>
+                    <span>@_text.Code</span>
                     <input class="m100-input"
-                           placeholder="Code"
+                           aria-label="@_text.Code"
                            @bind="_createModel.Code" />
                 </label>
 
                 <label class="m100-ou__field">
-                    <span>Parent unit</span>
+                    <span>@_text.ParentUnit</span>
                     <select class="m100-input"
+                            aria-label="@_text.ParentUnit"
                             @bind="_createModel.ParentId">
-                        <option value="">-- no parent --</option>
+                        <option value="">@_text.NoParent</option>
                         @foreach (var unit in _units.OrderBy(x => x.Name).ThenBy(x => x.Code))
                         {
                             <option value="@unit.Id">@unit.Name (@unit.Code)</option>
@@ -157,9 +161,9 @@
                 </label>
 
                 <label class="m100-ou__field">
-                    <span>Reason</span>
+                    <span>@_text.Reason</span>
                     <textarea class="m100-textarea"
-                              placeholder="Reason"
+                              aria-label="@_text.Reason"
                               @bind="_createModel.Reason"></textarea>
                 </label>
 
@@ -167,12 +171,12 @@
                     <button class="m100-button"
                             @onclick="CreateAsync"
                             disabled="@_isSubmitting">
-                        Save
+                        @_text.Save
                     </button>
 
                     <button class="m100-button m100-button--secondary"
                             @onclick="CloseCreatePanel">
-                        Cancel
+                        @_text.Cancel
                     </button>
                 </div>
 
@@ -184,6 +188,8 @@
 </section>
 
 @code {
+    private readonly OrganizationUnitsText _text = new();
+
     private bool _isLoading = true;
     private bool _isSubmitting;
     private bool _showCreatePanel;
@@ -201,6 +207,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await _text.LoadAsync(TextProvider);
         await LoadAsync();
     }
 
@@ -292,7 +299,7 @@
                 return;
             }
 
-            _success = "Organization unit created.";
+            _success = _text.Created;
             _showCreatePanel = false;
 
             await LoadAsync();
@@ -303,6 +310,13 @@
         {
             _isSubmitting = false;
         }
+    }
+
+    private string BuildChildUnitLabel(int childCount)
+    {
+        return childCount == 1
+            ? $"1 {_text.ChildUnitSingular}"
+            : $"{childCount} {_text.ChildUnitPlural}";
     }
 
     private static string BuildParentLabel(OrganizationUnitListItem item)

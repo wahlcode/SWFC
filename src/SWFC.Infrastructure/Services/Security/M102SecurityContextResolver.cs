@@ -8,7 +8,7 @@ namespace SWFC.Infrastructure.Services.Security;
 
 public sealed class M102SecurityContextResolver
 {
-    private const string DefaultPreferredCultureName = "de-DE";
+    private const string DefaultPreferredCultureName = "en-US";
 
     private readonly IM102SecurityProjectionService _projectionService;
     private readonly AuthenticationOptions _authenticationOptions;

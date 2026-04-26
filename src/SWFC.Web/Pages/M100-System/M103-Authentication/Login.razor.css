@@ -1,4 +1,4 @@
-﻿.auth-page {
+.auth-page {
     min-height: calc(100vh - 120px);
     display: flex;
     align-items: center;
@@ -68,8 +68,8 @@ input.auth-page__input {
     transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
-    .auth-page__input::placeholder,
-    input.auth-page__input::placeholder {
+    .auth-page__input,
+    input.auth-page__input {
         color: var(--color-text-muted);
         opacity: 1;
     }

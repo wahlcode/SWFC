@@ -1,86 +1,69 @@
 {
   "ModuleCode": "M502",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.892255+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.5233814+00:00",
+  "CodeStatus": "Complete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
-  "Flags": [
-    "missing_code",
-    "missing_tests",
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M502 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M502 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "Automatisierungsregeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Bedingung \u00C3\u00A2\u00E2\u20AC\u00A0\u00E2\u20AC\u2122 Reaktion",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Definierte Ablaufketten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Automatische Systemreaktionen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "F\u00C3\u0192\u00C2\u00A4llige Wartung erzeugt Auftrag",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Negativer Pr\u00C3\u0192\u00C2\u00BCfstatus erzeugt Folgeprozess",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Mindestbestand erzeugt Einkaufsbedarf",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Ereignis erzeugt Benachrichtigung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine automatische Umgehung von Sicherheitsregeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine automatische kritische Steuerung ohne Freigabemechanismen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Automatisierung auditierbar halten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

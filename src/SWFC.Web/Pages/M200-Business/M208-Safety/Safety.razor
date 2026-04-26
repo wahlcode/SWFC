@@ -1,0 +1,138 @@
+@page "/business/safety"
+@using Microsoft.AspNetCore.Authorization
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using SWFC.Application.M200_Business.M208_Safety
+@using SWFC.Domain.M200_Business.M208_Safety
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@inject CreateSafetyAssessment CreateAssessment
+@inject CreateSafetyPermit CreatePermit
+@inject GetSafetyAssessments GetAssessments
+@inject GetSafetyPermits GetPermits
+
+<PageTitle>M208 Sicherheit</PageTitle>
+
+<section class="v010-page">
+    <header><p>M208</p><h1>Sicherheit</h1></header>
+
+    @if (_error is not null)
+    {
+        <div class="v010-alert">@_error</div>
+    }
+
+    <div class="v010-grid">
+        <form class="v010-panel" @onsubmit="CreateAssessmentAsync">
+            <h2>Gefaehrdungsbeurteilung</h2>
+            <input @bind="_activity" placeholder="Taetigkeit" />
+            <input @bind="_targetId" placeholder="M201 Ziel-ID" />
+            <textarea @bind="_hazard" placeholder="Gefaehrdung"></textarea>
+            <input type="number" min="1" max="5" @bind="_likelihood" placeholder="Eintritt 1-5" />
+            <input type="number" min="1" max="5" @bind="_severity" placeholder="Schwere 1-5" />
+            <textarea @bind="_measures" placeholder="Schutzmassnahmen / Regeln"></textarea>
+            <input @bind="_documentReference" placeholder="Dokumentreferenz" />
+            <button type="submit" disabled="@_busy">Speichern</button>
+        </form>
+
+        <form class="v010-panel" @onsubmit="CreatePermitAsync">
+            <h2>Freigabe</h2>
+            <select @bind="_permitAssessmentId">
+                <option value="">Beurteilung waehlen</option>
+                @foreach (var item in _assessments)
+                {
+                    <option value="@item.Id">@item.Activity</option>
+                }
+            </select>
+            <input @bind="_permitActivity" placeholder="Erlaubte Taetigkeit" />
+            <input type="datetime-local" @bind="_permitValidUntil" />
+            <textarea @bind="_restriction" placeholder="Einschraenkungen"></textarea>
+            <button type="submit" disabled="@_busy">Freigeben</button>
+        </form>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Risiken</h2>
+        <table>
+            <thead><tr><th>Taetigkeit</th><th>Ziel</th><th>Risiko</th><th>Massnahmen</th><th>Status</th></tr></thead>
+            <tbody>
+                @foreach (var item in _assessments)
+                {
+                    <tr><td>@item.Activity</td><td>@item.TargetType @item.TargetId</td><td>@item.RiskScore</td><td>@item.RequiredMeasures</td><td>@item.Status</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Freigaben</h2>
+        <table>
+            <thead><tr><th>Taetigkeit</th><th>Gueltig bis</th><th>Status</th><th>Erlaubt</th></tr></thead>
+            <tbody>
+                @foreach (var permit in _permits)
+                {
+                    <tr><td>@permit.Activity</td><td>@permit.ValidUntilUtc.ToString("yyyy-MM-dd HH:mm")</td><td>@permit.Status</td><td>@(permit.AllowsAction ? "Ja" : "Nein")</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@code {
+    private bool _busy;
+    private string? _error;
+    private IReadOnlyList<SafetyAssessmentListItem> _assessments = [];
+    private IReadOnlyList<SafetyPermitListItem> _permits = [];
+    private string _activity = string.Empty;
+    private string _targetId = string.Empty;
+    private string _hazard = string.Empty;
+    private int _likelihood = 2;
+    private int _severity = 2;
+    private string _measures = string.Empty;
+    private string? _documentReference;
+    private string _permitAssessmentId = string.Empty;
+    private string _permitActivity = string.Empty;
+    private DateTime _permitValidUntil = DateTime.Now.AddDays(1);
+    private string? _restriction;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task CreateAssessmentAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreateAssessment.ExecuteAsync(new CreateSafetyAssessmentRequest(_activity, SafetyTargetType.Machine, RequireGuid(_targetId), _hazard, _likelihood, _severity, _measures, null, _documentReference, null));
+            _activity = string.Empty;
+            _targetId = string.Empty;
+            _hazard = string.Empty;
+            _measures = string.Empty;
+            _documentReference = null;
+        });
+    }
+
+    private async Task CreatePermitAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreatePermit.ExecuteAsync(new CreateSafetyPermitRequest(RequireGuid(_permitAssessmentId), _permitActivity, _permitValidUntil.ToUniversalTime(), _restriction, null));
+            _permitActivity = string.Empty;
+            _restriction = null;
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _error = null;
+        try { await action(); await LoadAsync(); }
+        catch (Exception exception) { _error = exception.Message; }
+        finally { _busy = false; }
+    }
+
+    private async Task LoadAsync()
+    {
+        _assessments = await GetAssessments.ExecuteAsync();
+        _permits = await GetPermits.ExecuteAsync();
+    }
+
+    private static Guid RequireGuid(string value) => Guid.TryParse(value, out var id) && id != Guid.Empty ? id : throw new InvalidOperationException("Gueltige ID erforderlich.");
+}

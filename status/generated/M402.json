@@ -1,46 +1,36 @@
 {
   "ModuleCode": "M402",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 35,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8601326+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.4377329+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M402 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M402 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
     {
       "Title": "REST API",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Endpunkte f\u00C3\u0192\u00C2\u00BCr Module",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Authentifizierte Zugriffe",
@@ -59,8 +49,8 @@
     },
     {
       "Title": "POST / PUT",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Definierte Aktionen",
@@ -74,8 +64,8 @@
     },
     {
       "Title": "Berechtigungspr\u00C3\u0192\u00C2\u00BCfung \u00C3\u0192\u00C2\u00BCber M800",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Nutzung von Fachmodulen",
@@ -84,8 +74,8 @@
     },
     {
       "Title": "Zusammenarbeit mit M406",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Keine direkte Datenbankfreigabe",
@@ -94,8 +84,8 @@
     },
     {
       "Title": "Keine Umgehung von Fachlogik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     }
   ]
 }

@@ -16,6 +16,10 @@ public sealed class MaintenanceOrderConfiguration : IEntityTypeConfiguration<Mai
             .HasConversion<int>()
             .IsRequired();
 
+        builder.Property(x => x.Priority)
+            .HasConversion<int>()
+            .IsRequired();
+
         builder.Property(x => x.Type)
             .HasConversion<int>()
             .IsRequired();
@@ -26,6 +30,24 @@ public sealed class MaintenanceOrderConfiguration : IEntityTypeConfiguration<Mai
 
         builder.Property(x => x.TargetId)
             .IsRequired();
+
+        builder.Property(x => x.MaintenancePlanId)
+            .IsRequired(false);
+
+        builder.Property(x => x.PlannedStartUtc)
+            .IsRequired(false);
+
+        builder.Property(x => x.PlannedEndUtc)
+            .IsRequired(false);
+
+        builder.Property(x => x.StartedAtUtc)
+            .IsRequired(false);
+
+        builder.Property(x => x.CompletedAtUtc)
+            .IsRequired(false);
+
+        builder.Property(x => x.DueAtUtc)
+            .IsRequired(false);
 
         builder.OwnsOne(x => x.Number, owned =>
         {

@@ -1,0 +1,57 @@
+@page "/m200/analytics"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M211_Analytics
+
+@inject AnalyticsWorkspaceService AnalyticsService
+
+<PageTitle>Analytics</PageTitle>
+
+<section class="module-page">
+    <header class="module-page__header">
+        <div>
+            <p>M211</p>
+            <h1>Analytics und Auswertungen</h1>
+        </div>
+        <span>@Overview.Kpis.Count KPIs</span>
+    </header>
+
+    <div class="kpi-grid">
+        @foreach (var kpi in Overview.Kpis)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@kpi.SourceModule</span>
+                    <h2>@kpi.Title</h2>
+                </div>
+                <strong>@kpi.Value @kpi.Unit</strong>
+            </article>
+        }
+    </div>
+
+    <div class="module-grid">
+        @foreach (var dashboard in Overview.Dashboards)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@dashboard.Department</span>
+                    <h2>@(dashboard.IsDepartmentSpecific ? "Abteilungsdashboard" : "Globales Dashboard")</h2>
+                </div>
+                <dl>
+                    <div><dt>KPIs</dt><dd>@dashboard.Kpis.Count</dd></div>
+                    <div><dt>Reports</dt><dd>@dashboard.Reports.Count</dd></div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private AnalyticsOverviewDto Overview = new([], [], []);
+
+    protected override void OnInitialized()
+    {
+        Overview = AnalyticsService.GetOverview();
+    }
+}

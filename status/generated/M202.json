@@ -1,9 +1,9 @@
 {
   "ModuleCode": "M202",
-  "ScorePercent": 13,
+  "ScorePercent": 28,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.5794692+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:21.9894011+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
   "TestStatus": "Incomplete",
@@ -18,7 +18,7 @@
     },
     {
       "Severity": "Info",
-      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -39,8 +39,8 @@
     },
     {
       "Title": "Ungeplante Wartung / St\u00C3\u00B6rungen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Notdienst / Soforteins\u00C3\u0192\u00C2\u00A4tze",
@@ -54,8 +54,8 @@
     },
     {
       "Title": "Statusmodell (geplant / in Arbeit / abgeschlossen / abgebrochen)",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Verkn\u00C3\u00BCpfung zu M201",
@@ -64,8 +64,8 @@
     },
     {
       "Title": "Material nur referenzieren",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine Lagerbestands\u00C3\u00A4nderung in M202",
@@ -74,13 +74,13 @@
     },
     {
       "Title": "Dokumentenverkn\u00C3\u00BCpfung zu M104",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Zuordnung zu M102",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Wartungsintervalle",

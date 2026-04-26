@@ -18,6 +18,7 @@ public partial class Purchasing
     private string? _error;
 
     private IReadOnlyList<PurchaseRequirementDto> _requirements = [];
+    private IReadOnlyList<PurchaseProposalListItem> _proposals = [];
     private IReadOnlyList<SupplierListItem> _suppliers = [];
     private IReadOnlyList<PurchaseOrderListItem> _orders = [];
     private IReadOnlyList<GoodsReceiptListItem> _goodsReceipts = [];
@@ -28,16 +29,22 @@ public partial class Purchasing
     private string _requirementItem = string.Empty;
     private decimal _requirementQuantity = 1;
     private string _requirementUnit = "Stk";
+    private PurchaseRequirementSourceType _requirementSourceType = PurchaseRequirementSourceType.Manual;
+    private string? _requirementSourceReference;
     private string _supplierName = string.Empty;
     private string? _supplierNumber;
     private string _orderNumber = string.Empty;
     private string _orderSupplierId = string.Empty;
+    private string? _orderErpReference;
+    private string? _orderDocumentReference;
     private string _rfqRequirementId = string.Empty;
     private string _rfqSupplierId = string.Empty;
+    private string? _rfqOfferDocumentReference;
     private string _receiptOrderId = string.Empty;
     private string _receiptInventoryItemId = string.Empty;
     private string _receiptLocationId = string.Empty;
     private string? _receiptBin;
+    private string? _receiptDeliveryDocumentReference;
     private int _receiptQuantity = 1;
 
     private string ReceiptUnit =>
@@ -56,6 +63,7 @@ public partial class Purchasing
         try
         {
             _requirements = await GetPurchaseRequirementsUseCase.ExecuteAsync();
+            _proposals = await GetPurchaseProposalsUseCase.ExecuteAsync();
             _suppliers = await GetSuppliersUseCase.ExecuteAsync();
             _orders = await GetPurchaseOrdersUseCase.ExecuteAsync();
             _goodsReceipts = await GetGoodsReceiptsUseCase.ExecuteAsync();
@@ -91,12 +99,14 @@ public partial class Purchasing
                     _requirementItem,
                     _requirementQuantity,
                     _requirementUnit,
-                    PurchaseRequirementSourceType.Manual,
-                    null));
+                    _requirementSourceType,
+                    ParseOptionalGuid(_requirementSourceReference, "Quellreferenz muss eine gueltige ID sein.")));
 
             _requirementItem = string.Empty;
             _requirementQuantity = 1;
             _requirementUnit = "Stk";
+            _requirementSourceType = PurchaseRequirementSourceType.Manual;
+            _requirementSourceReference = null;
             _message = "Bedarf wurde gespeichert.";
         });
     }
@@ -117,9 +127,15 @@ public partial class Purchasing
         await RunAndReloadAsync(async () =>
         {
             var supplierId = RequireGuid(_orderSupplierId, "Lieferant ist erforderlich.");
-            await CreatePurchaseOrderUseCase.ExecuteAsync(new CreatePurchaseOrderRequest(_orderNumber, supplierId));
+            await CreatePurchaseOrderUseCase.ExecuteAsync(new CreatePurchaseOrderRequest(
+                _orderNumber,
+                supplierId,
+                _orderErpReference,
+                _orderDocumentReference));
             _orderNumber = string.Empty;
             _orderSupplierId = string.Empty;
+            _orderErpReference = null;
+            _orderDocumentReference = null;
             _message = "Bestellung wurde gespeichert.";
         });
     }
@@ -130,9 +146,14 @@ public partial class Purchasing
         {
             var requirementId = RequireGuid(_rfqRequirementId, "Bedarf ist erforderlich.");
             var supplierId = RequireGuid(_rfqSupplierId, "Lieferant ist erforderlich.");
-            await CreateRequestForQuotationUseCase.ExecuteAsync(new CreateRequestForQuotationRequest(requirementId, supplierId, null));
+            await CreateRequestForQuotationUseCase.ExecuteAsync(new CreateRequestForQuotationRequest(
+                requirementId,
+                supplierId,
+                null,
+                _rfqOfferDocumentReference));
             _rfqRequirementId = string.Empty;
             _rfqSupplierId = string.Empty;
+            _rfqOfferDocumentReference = null;
             _message = "Angebotsanfrage wurde gespeichert.";
         });
     }
@@ -152,12 +173,20 @@ public partial class Purchasing
             }
 
             var receipt = await CreateGoodsReceiptUseCase.ExecuteAsync(
-                new CreateGoodsReceiptRequest(orderId, itemId, locationId, _receiptBin, _receiptQuantity, unit));
+                new CreateGoodsReceiptRequest(
+                    orderId,
+                    itemId,
+                    locationId,
+                    _receiptBin,
+                    _receiptQuantity,
+                    unit,
+                    _receiptDeliveryDocumentReference));
 
             _receiptOrderId = string.Empty;
             _receiptInventoryItemId = string.Empty;
             _receiptLocationId = string.Empty;
             _receiptBin = null;
+            _receiptDeliveryDocumentReference = null;
             _receiptQuantity = 1;
             _message = receipt.InventoryBookingStatus == GoodsReceiptInventoryBookingStatus.Booked
                 ? "Wareneingang wurde erfasst und durch M204 gebucht."
@@ -188,6 +217,18 @@ public partial class Purchasing
 
     private static Guid RequireGuid(string value, string message)
     {
+        return Guid.TryParse(value, out var id) && id != Guid.Empty
+            ? id
+            : throw new InvalidOperationException(message);
+    }
+
+    private static Guid? ParseOptionalGuid(string? value, string message)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
         return Guid.TryParse(value, out var id) && id != Guid.Empty
             ? id
             : throw new InvalidOperationException(message);

@@ -1,0 +1,10 @@
+.v010-page { display: grid; gap: 1rem; padding: 1.25rem; }
+.v010-page header p { margin: 0; color: #5c667a; font-weight: 700; }
+.v010-page header h1, .v010-panel h2 { margin: 0; }
+.v010-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+.v010-panel { border: 1px solid #d7dce5; border-radius: 8px; padding: 1rem; background: #fff; display: grid; gap: .75rem; overflow-x: auto; }
+.v010-panel input, .v010-panel select, .v010-panel textarea { width: 100%; padding: .55rem .65rem; border: 1px solid #c9d0dc; border-radius: 6px; }
+.v010-panel button { width: fit-content; padding: .55rem .9rem; border: 0; border-radius: 6px; color: #fff; background: #2458a6; }
+.v010-panel table { width: 100%; border-collapse: collapse; }
+.v010-panel th, .v010-panel td { padding: .45rem; border-bottom: 1px solid #e3e7ef; text-align: left; vertical-align: top; }
+.v010-alert { padding: .75rem; border: 1px solid #c94545; border-radius: 6px; color: #8a1f1f; background: #fff3f3; }

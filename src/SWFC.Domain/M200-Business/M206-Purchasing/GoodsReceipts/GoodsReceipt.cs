@@ -10,6 +10,7 @@ public sealed class GoodsReceipt
     public int Quantity { get; private set; }
     public string Unit { get; private set; }
     public DateTime ReceivedAtUtc { get; private set; }
+    public string? DeliveryDocumentReference { get; private set; }
     public GoodsReceiptInventoryBookingStatus InventoryBookingStatus { get; private set; }
     public Guid? InventoryStockMovementId { get; private set; }
     public string? InventoryBookingMessage { get; private set; }
@@ -27,7 +28,8 @@ public sealed class GoodsReceipt
         string? bin,
         int quantity,
         string unit,
-        DateTime receivedAtUtc)
+        DateTime receivedAtUtc,
+        string? deliveryDocumentReference = null)
     {
         if (id == Guid.Empty) throw new ArgumentException("Id is required.", nameof(id));
         if (purchaseOrderId == Guid.Empty) throw new ArgumentException("Purchase order id is required.", nameof(purchaseOrderId));
@@ -44,6 +46,7 @@ public sealed class GoodsReceipt
         Quantity = quantity;
         Unit = unit.Trim();
         ReceivedAtUtc = receivedAtUtc;
+        DeliveryDocumentReference = NormalizeReference(deliveryDocumentReference, nameof(deliveryDocumentReference));
         InventoryBookingStatus = GoodsReceiptInventoryBookingStatus.Requested;
     }
 
@@ -77,6 +80,23 @@ public sealed class GoodsReceipt
         if (normalized.Length > 100)
         {
             throw new ArgumentException("Bin must not exceed 100 characters.", nameof(bin));
+        }
+
+        return normalized;
+    }
+
+    private static string? NormalizeReference(string? value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var normalized = value.Trim();
+
+        if (normalized.Length > 200)
+        {
+            throw new ArgumentException("Reference must not exceed 200 characters.", parameterName);
         }
 
         return normalized;

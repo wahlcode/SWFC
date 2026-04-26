@@ -18,13 +18,13 @@
         <div>
             <h1>Machines</h1>
             <p class="m201-machines__description">
-                Überblick über Maschinen in Parent-Child-Hierarchie.
+                ï¿½berblick ï¿½ber Maschinen in Parent-Child-Hierarchie.
             </p>
         </div>
 
         <div class="m201-machines__actions">
             <input class="m201-input"
-                   placeholder="Suche nach Name, Nummer oder Status"
+                   aria-label="Search by name, inventory number, or status"
                    value="@_searchText"
                    @oninput="OnSearchChanged" />
 
@@ -108,5 +108,6 @@
         _filteredItems = query.ToList();
     }
 }
+
 
 

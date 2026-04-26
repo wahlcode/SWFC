@@ -5,6 +5,7 @@ public sealed class MachineEditorModel
     public string Name { get; set; } = string.Empty;
     public string InventoryNumber { get; set; } = string.Empty;
     public string Status { get; set; } = "Planned";
+    public string? AssetType { get; set; }
     public string? Location { get; set; }
     public string? Manufacturer { get; set; }
     public string? MachineModel { get; set; }
@@ -12,5 +13,6 @@ public sealed class MachineEditorModel
     public string? Description { get; set; }
     public Guid? ParentMachineId { get; set; }
     public Guid? OrganizationUnitId { get; set; }
+    public Guid? EnergyObjectId { get; set; }
     public string Reason { get; set; } = string.Empty;
 }

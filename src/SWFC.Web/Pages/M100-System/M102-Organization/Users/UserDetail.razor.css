@@ -177,8 +177,8 @@ select:focus-visible {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.018)), var(--color-surface-4);
 }
 
-.m100-input::placeholder,
-.m100-textarea::placeholder {
+.m100-input,
+.m100-textarea {
     color: var(--color-text-muted);
 }
 

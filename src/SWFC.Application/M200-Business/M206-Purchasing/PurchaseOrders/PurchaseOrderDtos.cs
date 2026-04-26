@@ -6,6 +6,8 @@ public sealed record PurchaseOrderDto(
     Guid Id,
     string OrderNumber,
     Guid SupplierId,
+    string? ErpReference,
+    string? OrderDocumentReference,
     PurchaseOrderStatus Status,
     DateTime CreatedAtUtc,
     DateTime? OrderedAtUtc);
@@ -15,10 +17,14 @@ public sealed record PurchaseOrderListItem(
     string OrderNumber,
     Guid SupplierId,
     string SupplierName,
+    string? ErpReference,
+    string? OrderDocumentReference,
     PurchaseOrderStatus Status,
     DateTime CreatedAtUtc,
     DateTime? OrderedAtUtc);
 
 public sealed record CreatePurchaseOrderRequest(
     string OrderNumber,
-    Guid SupplierId);
+    Guid SupplierId,
+    string? ErpReference,
+    string? OrderDocumentReference);

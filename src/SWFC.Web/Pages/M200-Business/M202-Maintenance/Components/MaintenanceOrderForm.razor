@@ -32,6 +32,30 @@
             </div>
 
             <div class="m202-form__field">
+                <label for="m202-order-status">Status</label>
+                <InputSelect id="m202-order-status"
+                             @bind-Value="Model.Status"
+                             class="m202-form__input">
+                    <option value="@MaintenanceOrderStatus.Planned">Planned</option>
+                    <option value="@MaintenanceOrderStatus.InProgress">InProgress</option>
+                    <option value="@MaintenanceOrderStatus.Completed">Completed</option>
+                    <option value="@MaintenanceOrderStatus.Cancelled">Cancelled</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-priority">Priorität</label>
+                <InputSelect id="m202-order-priority"
+                             @bind-Value="Model.Priority"
+                             class="m202-form__input">
+                    <option value="@MaintenanceOrderPriority.Low">Low</option>
+                    <option value="@MaintenanceOrderPriority.Normal">Normal</option>
+                    <option value="@MaintenanceOrderPriority.High">High</option>
+                    <option value="@MaintenanceOrderPriority.Critical">Critical</option>
+                </InputSelect>
+            </div>
+
+            <div class="m202-form__field">
                 <label for="m202-order-targettype">Zieltyp</label>
                 <InputSelect id="m202-order-targettype"
                              @bind-Value="Model.TargetType"
@@ -45,6 +69,34 @@
                 <label for="m202-order-targetid">TargetId</label>
                 <InputText id="m202-order-targetid"
                            @bind-Value="Model.TargetIdText"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-planid">PlanId</label>
+                <InputText id="m202-order-planid"
+                           @bind-Value="Model.MaintenancePlanIdText"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-planned-start">Geplanter Start</label>
+                <InputDate id="m202-order-planned-start"
+                           @bind-Value="Model.PlannedStartAt"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-planned-end">Geplantes Ende</label>
+                <InputDate id="m202-order-planned-end"
+                           @bind-Value="Model.PlannedEndAt"
+                           class="m202-form__input" />
+            </div>
+
+            <div class="m202-form__field">
+                <label for="m202-order-due">Fällig</label>
+                <InputDate id="m202-order-due"
+                           @bind-Value="Model.DueAt"
                            class="m202-form__input" />
             </div>
 

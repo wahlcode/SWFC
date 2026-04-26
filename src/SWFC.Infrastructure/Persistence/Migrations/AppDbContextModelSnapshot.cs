@@ -71,6 +71,9 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<Guid?>("ParentCostCenterId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateOnly>("ValidFrom")
+                        .HasColumnType("date");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
@@ -359,10 +362,18 @@ namespace SWFC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AssetType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<Guid?>("EnergyObjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("InventoryNumber")
                         .IsRequired()
@@ -424,6 +435,27 @@ namespace SWFC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DueAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("MaintenancePlanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("PlannedEndUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("PlannedStartUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -468,6 +500,107 @@ namespace SWFC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MaintenancePlans", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M203_Inspections.Inspection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FollowUpReference")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("InspectionPlanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("InspectorUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime>("PerformedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Result")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InspectionPlanId");
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("Inspections", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M203_Inspections.InspectionPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DocumentReference")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("IntervalDays")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("NextDueAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ObjectType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("ResponsibleUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("InspectionPlans", "core");
                 });
 
             modelBuilder.Entity("SWFC.Domain.M200_Business.M204_Inventory.Items.InventoryItem", b =>
@@ -613,10 +746,15 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<int>("MediumType")
                         .HasColumnType("integer");
 
+                    b.Property<Guid?>("ParentMeterId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("SupportsOfflineCapture")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentMeterId");
 
                     b.ToTable("EnergyMeters", "core");
                 });
@@ -627,15 +765,35 @@ namespace SWFC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CapturedByUserId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("CapturedOfflineAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("MeterId")
                         .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OfflineCaptureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("PlausibilityStatus")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Source")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("SyncedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MeterId");
+
+                    b.HasIndex("OfflineCaptureId")
+                        .IsUnique()
+                        .HasFilter("\"OfflineCaptureId\" IS NOT NULL");
 
                     b.ToTable("EnergyReadings", "core");
                 });
@@ -649,6 +807,10 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<string>("Bin")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("DeliveryDocumentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("InventoryBookingMessage")
                         .HasMaxLength(500)
@@ -705,6 +867,14 @@ namespace SWFC.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ErpReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("OrderDocumentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
@@ -784,6 +954,10 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<bool>("IsClosed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("OfferDocumentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<Guid>("PurchaseRequirementId")
                         .HasColumnType("uuid");
 
@@ -835,6 +1009,207 @@ namespace SWFC.Infrastructure.Migrations
                     b.ToTable("Suppliers", "core");
                 });
 
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M207_Quality.QualityAction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AssignedUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DueAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("QualityCaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QualityCaseId");
+
+                    b.ToTable("QualityActions", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M207_Quality.QualityCase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime?>("DueAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("InspectionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("MachineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("MaintenanceOrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ResponsibleUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RootCause")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceReference")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InspectionId");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("QualityCases", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M208_Safety.SafetyAssessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Activity")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DocumentReference")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Hazard")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Likelihood")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("QualityCaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RequiredMeasures")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<Guid?>("ResponsibleUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QualityCaseId");
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("SafetyAssessments", "core");
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M208_Safety.SafetyPermit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Activity")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("ApprovedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AssessmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Restriction")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ValidUntilUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssessmentId");
+
+                    b.ToTable("SafetyPermits", "core");
+                });
+
             modelBuilder.Entity("SWFC.Domain.M700_Support.M701_BugTracking.Bug", b =>
                 {
                     b.Property<Guid>("Id")
@@ -844,6 +1219,18 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ObjectReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Reproducibility")
                         .IsRequired()
@@ -869,6 +1256,18 @@ namespace SWFC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ObjectReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("RequirementReference")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -876,6 +1275,11 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<string>("RoadmapReference")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -893,9 +1297,26 @@ namespace SWFC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ObjectReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("ProblemDescription")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<Guid?>("TriggeredBugId")
                         .HasColumnType("uuid");
@@ -935,7 +1356,19 @@ namespace SWFC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<string>("NotificationReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ObjectReference")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
@@ -946,6 +1379,11 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<string>("RuntimeReference")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -961,6 +1399,23 @@ namespace SWFC.Infrastructure.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ObjectReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -978,6 +1433,18 @@ namespace SWFC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("HistoryLog")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModuleReference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ObjectReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("Priority")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -988,6 +1455,11 @@ namespace SWFC.Infrastructure.Migrations
 
                     b.Property<TimeSpan>("ResponseTime")
                         .HasColumnType("interval");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<bool>("UseForIncidentManagement")
                         .HasColumnType("boolean");
@@ -1878,6 +2350,15 @@ namespace SWFC.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M203_Inspections.Inspection", b =>
+                {
+                    b.HasOne("SWFC.Domain.M200_Business.M203_Inspections.InspectionPlan", null)
+                        .WithMany()
+                        .HasForeignKey("InspectionPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWFC.Domain.M200_Business.M204_Inventory.Items.InventoryItem", b =>
                 {
                     b.OwnsOne("SWFC.Domain.M100_System.M101_Foundation.ValueObjects.AuditInfo", "AuditInfo", b1 =>
@@ -1940,6 +2421,25 @@ namespace SWFC.Infrastructure.Migrations
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)")
                                 .HasColumnName("Barcode");
+
+                            b1.HasKey("InventoryItemId");
+
+                            b1.ToTable("InventoryItems", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InventoryItemId");
+                        });
+
+                    b.OwnsOne("SWFC.Domain.M200_Business.M204_Inventory.Items.InventoryItemCurrency", "Currency", b1 =>
+                        {
+                            b1.Property<Guid>("InventoryItemId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
 
                             b1.HasKey("InventoryItemId");
 
@@ -2023,6 +2523,24 @@ namespace SWFC.Infrastructure.Migrations
                                 .HasForeignKey("InventoryItemId");
                         });
 
+                    b.OwnsOne("SWFC.Domain.M200_Business.M204_Inventory.Items.InventoryItemStandardUnitPrice", "StandardUnitPrice", b1 =>
+                        {
+                            b1.Property<Guid>("InventoryItemId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Value")
+                                .HasPrecision(18, 4)
+                                .HasColumnType("numeric(18,4)")
+                                .HasColumnName("StandardUnitPrice");
+
+                            b1.HasKey("InventoryItemId");
+
+                            b1.ToTable("InventoryItems", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InventoryItemId");
+                        });
+
                     b.OwnsOne("SWFC.Domain.M200_Business.M204_Inventory.Items.InventoryItemUnit", "Unit", b1 =>
                         {
                             b1.Property<Guid>("InventoryItemId")
@@ -2050,6 +2568,9 @@ namespace SWFC.Infrastructure.Migrations
 
                     b.Navigation("Barcode");
 
+                    b.Navigation("Currency")
+                        .IsRequired();
+
                     b.Navigation("Description")
                         .IsRequired();
 
@@ -2058,6 +2579,9 @@ namespace SWFC.Infrastructure.Migrations
                     b.Navigation("ManufacturerPartNumber");
 
                     b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("StandardUnitPrice")
                         .IsRequired();
 
                     b.Navigation("Unit")
@@ -2291,6 +2815,11 @@ namespace SWFC.Infrastructure.Migrations
 
             modelBuilder.Entity("SWFC.Domain.M200_Business.M205_Energy.EnergyMeters.EnergyMeter", b =>
                 {
+                    b.HasOne("SWFC.Domain.M200_Business.M205_Energy.EnergyMeters.EnergyMeter", null)
+                        .WithMany()
+                        .HasForeignKey("ParentMeterId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyMeters.EnergyExternalSystem", "ExternalSystem", b1 =>
                         {
                             b1.Property<Guid>("EnergyMeterId")
@@ -2300,6 +2829,25 @@ namespace SWFC.Infrastructure.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("ExternalSystem");
+
+                            b1.HasKey("EnergyMeterId");
+
+                            b1.ToTable("EnergyMeters", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EnergyMeterId");
+                        });
+
+                    b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyMeters.EnergyMediumName", "MediumName", b1 =>
+                        {
+                            b1.Property<Guid>("EnergyMeterId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("MediumName");
 
                             b1.HasKey("EnergyMeterId");
 
@@ -2402,6 +2950,9 @@ namespace SWFC.Infrastructure.Migrations
 
                     b.Navigation("ExternalSystem");
 
+                    b.Navigation("MediumName")
+                        .IsRequired();
+
                     b.Navigation("Name")
                         .IsRequired();
 
@@ -2445,6 +2996,24 @@ namespace SWFC.Infrastructure.Migrations
                                 .HasForeignKey("EnergyReadingId");
                         });
 
+                    b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyReadings.EnergyReadingCaptureContext", "CaptureContext", b1 =>
+                        {
+                            b1.Property<Guid>("EnergyReadingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("CaptureContext");
+
+                            b1.HasKey("EnergyReadingId");
+
+                            b1.ToTable("EnergyReadings", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EnergyReadingId");
+                        });
+
                     b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyReadings.EnergyReadingDate", "Date", b1 =>
                         {
                             b1.Property<Guid>("EnergyReadingId")
@@ -2453,6 +3022,60 @@ namespace SWFC.Infrastructure.Migrations
                             b1.Property<DateTime>("Value")
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("ReadingDate");
+
+                            b1.HasKey("EnergyReadingId");
+
+                            b1.ToTable("EnergyReadings", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EnergyReadingId");
+                        });
+
+                    b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyReadings.EnergyReadingPlausibilityNote", "PlausibilityNote", b1 =>
+                        {
+                            b1.Property<Guid>("EnergyReadingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("PlausibilityNote");
+
+                            b1.HasKey("EnergyReadingId");
+
+                            b1.ToTable("EnergyReadings", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EnergyReadingId");
+                        });
+
+                    b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyReadings.EnergyReadingRfidExceptionReason", "RfidExceptionReason", b1 =>
+                        {
+                            b1.Property<Guid>("EnergyReadingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("RfidExceptionReason");
+
+                            b1.HasKey("EnergyReadingId");
+
+                            b1.ToTable("EnergyReadings", "core");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EnergyReadingId");
+                        });
+
+                    b.OwnsOne("SWFC.Domain.M200_Business.M205_Energy.EnergyReadings.EnergyReadingRfidTag", "RfidTag", b1 =>
+                        {
+                            b1.Property<Guid>("EnergyReadingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("RfidTag");
 
                             b1.HasKey("EnergyReadingId");
 
@@ -2483,8 +3106,16 @@ namespace SWFC.Infrastructure.Migrations
                     b.Navigation("AuditInfo")
                         .IsRequired();
 
+                    b.Navigation("CaptureContext");
+
                     b.Navigation("Date")
                         .IsRequired();
+
+                    b.Navigation("PlausibilityNote");
+
+                    b.Navigation("RfidExceptionReason");
+
+                    b.Navigation("RfidTag");
 
                     b.Navigation("Value")
                         .IsRequired();
@@ -2536,6 +3167,24 @@ namespace SWFC.Infrastructure.Migrations
                     b.HasOne("SWFC.Domain.M200_Business.M206_Purchasing.Suppliers.Supplier", null)
                         .WithMany()
                         .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M207_Quality.QualityAction", b =>
+                {
+                    b.HasOne("SWFC.Domain.M200_Business.M207_Quality.QualityCase", null)
+                        .WithMany()
+                        .HasForeignKey("QualityCaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWFC.Domain.M200_Business.M208_Safety.SafetyPermit", b =>
+                {
+                    b.HasOne("SWFC.Domain.M200_Business.M208_Safety.SafetyAssessment", null)
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

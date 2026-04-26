@@ -19,7 +19,7 @@
 
     <div class="m204-detail__header">
         <h1>@(IsNew ? "Reservierung anlegen" : "Reservierung")</h1>
-        <a href="/business/stock-reservations" class="m204-button-secondary">Zurück</a>
+        <a href="/business/stock-reservations" class="m204-button-secondary">Zurï¿½ck</a>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(_error))
@@ -40,7 +40,7 @@
                 <div class="m204-form-grid">
 
                     <select class="m204-input" @bind="_createModel.StockReference">
-                        <option value="">-- Stock wählen --</option>
+                        <option value="">-- Stock wï¿½hlen --</option>
                         @foreach (var stock in _stocks)
                         {
                             <option value="@stock.ToString()">@stock.ToString()</option>
@@ -49,9 +49,9 @@
 
                     <input type="number" min="1" class="m204-input" @bind="_createModel.Quantity" />
 
-                    <textarea class="m204-input" placeholder="Note" @bind="_createModel.Note"></textarea>
+                    <textarea class="m204-input" aria-label="Note" @bind="_createModel.Note"></textarea>
 
-                    <textarea class="m204-input" placeholder="Reason" @bind="_createModel.Reason"></textarea>
+                    <textarea class="m204-input" aria-label="Reason" @bind="_createModel.Reason"></textarea>
 
                 </div>
 
@@ -84,7 +84,7 @@
 
                         <div class="m204-form-grid">
                             <input type="number" min="1" class="m204-input" @bind="_consumeModel.Quantity" />
-                            <input class="m204-input" placeholder="Reason" @bind="_consumeModel.Reason" />
+                            <input class="m204-input" aria-label="Reason" @bind="_consumeModel.Reason" />
                         </div>
 
                         <div class="m204-actions">

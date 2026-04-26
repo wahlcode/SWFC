@@ -54,7 +54,7 @@
                        href="@item.Route"
                        aria-current="@(isCurrent ? "page" : null)">
                         <span class="m700-shell__nav-code">@item.Code</span>
-                        <span class="m700-shell__nav-title">@item.Title</span>
+                        <span class="m700-shell__nav-title">@GetNavigationTitle(item)</span>
                     </a>
                 }
             </nav>
@@ -76,13 +76,13 @@
 @code {
     private static readonly NavigationItem[] NavigationItems =
     [
-        new("M700", "Support Overview", "/support"),
-        new("M701", "Bug Tracking", "/support/bug-tracking"),
-        new("M702", "Change Requests", "/support/change-requests"),
-        new("M703", "Support Cases", "/support/cases"),
-        new("M704", "Incident Management", "/support/incidents"),
-        new("M705", "Knowledge Base", "/support/knowledge-base"),
-        new("M706", "Service Levels", "/support/service-levels")
+        new("M700", "Support.Module.M700", "/support"),
+        new("M701", "Support.Module.M701", "/support/bug-tracking"),
+        new("M702", "Support.Module.M702", "/support/change-requests"),
+        new("M703", "Support.Module.M703", "/support/cases"),
+        new("M704", "Support.Module.M704", "/support/incidents"),
+        new("M705", "Support.Module.M705", "/support/knowledge-base"),
+        new("M706", "Support.Module.M706", "/support/service-levels")
     ];
 
     [Parameter]
@@ -115,6 +115,8 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    private readonly Dictionary<string, string> _navigationTitleTexts = new(StringComparer.OrdinalIgnoreCase);
+
     private string _contextText = "Context";
     private string _navigationText = "Navigation";
     private string _navigationAriaLabelText = "M700 Navigation";
@@ -130,7 +132,19 @@
         _navigationAriaLabelText = await TextProvider.GetTextAsync("Support.NavigationAriaLabel", culture);
         _supportTitleText = await TextProvider.GetTextAsync("Support.Title", culture);
         _supportDescriptionText = await TextProvider.GetTextAsync("Support.Description", culture);
+
+        foreach (var item in NavigationItems)
+        {
+            _navigationTitleTexts[item.TitleKey] = await TextProvider.GetTextAsync(item.TitleKey, culture);
+        }
     }
 
-    private sealed record NavigationItem(string Code, string Title, string Route);
+    private string GetNavigationTitle(NavigationItem item)
+    {
+        return _navigationTitleTexts.TryGetValue(item.TitleKey, out var title)
+            ? title
+            : item.TitleKey;
+    }
+
+    private sealed record NavigationItem(string Code, string TitleKey, string Route);
 }

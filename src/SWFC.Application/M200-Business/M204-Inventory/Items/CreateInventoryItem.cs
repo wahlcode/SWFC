@@ -24,7 +24,9 @@ public sealed record CreateInventoryItemCommand(
     string? Manufacturer,
     string? ManufacturerPartNumber,
     bool IsActive,
-    string Reason);
+    string Reason,
+    decimal StandardUnitPrice = 0,
+    string Currency = "EUR");
 
 public sealed class CreateInventoryItemValidator : ICommandValidator<CreateInventoryItemCommand>
 {
@@ -46,6 +48,11 @@ public sealed class CreateInventoryItemValidator : ICommandValidator<CreateInven
         if (string.IsNullOrWhiteSpace(command.Reason))
         {
             result.Add(InventoryErrorCodes.ReasonRequired, "Reason is required.");
+        }
+
+        if (command.StandardUnitPrice < 0)
+        {
+            result.Add(ValidationErrorCodes.Invalid, "Standard unit price must not be negative.");
         }
 
         return Task.FromResult(result);
@@ -90,7 +97,10 @@ public sealed class CreateInventoryItemHandler : IUseCaseHandler<CreateInventory
             InventoryItemUnit.Create(command.Unit),
             InventoryItemBarcode.CreateOptional(command.Barcode),
             InventoryItemManufacturer.CreateOptional(command.Manufacturer),
-            InventoryItemManufacturerPartNumber.CreateOptional(command.ManufacturerPartNumber), ctx);
+            InventoryItemManufacturerPartNumber.CreateOptional(command.ManufacturerPartNumber),
+            InventoryItemStandardUnitPrice.Create(command.StandardUnitPrice),
+            InventoryItemCurrency.Create(command.Currency),
+            ctx);
 
         await _repository.AddAsync(item, ct);
 
@@ -112,6 +122,8 @@ public sealed class CreateInventoryItemHandler : IUseCaseHandler<CreateInventory
                 Barcode = item.Barcode?.Value,
                 Manufacturer = item.Manufacturer?.Value,
                 ManufacturerPartNumber = item.ManufacturerPartNumber?.Value,
+                StandardUnitPrice = item.StandardUnitPrice.Value,
+                Currency = item.Currency.Value,
                 item.IsActive,
                 command.Reason
             }),

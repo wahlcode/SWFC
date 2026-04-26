@@ -1,25 +1,20 @@
 {
   "ModuleCode": "M208",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 4,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7610201+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.2379341+00:00",
   "CodeStatus": "Missing",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
     "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
       "Severity": "Warning",
       "Message": "Keine Implementierung f\u00FCr M208 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M208 gefunden."
     },
     {
       "Severity": "Info",
@@ -69,8 +64,8 @@
     },
     {
       "Title": "Verkn\u00C3\u0192\u00C2\u00BCpfung zu M207",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Dokumentenverkn\u00C3\u0192\u00C2\u00BCpfung zu M104",

@@ -21,7 +21,7 @@
             <h1>@(IsNew ? "Location anlegen" : "Location Detail")</h1>
         </div>
 
-        <a href="/business/locations" class="m204-button-secondary">Zurück</a>
+        <a href="/business/locations" class="m204-button-secondary">Zurï¿½ck</a>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(_errorMessage))
@@ -47,8 +47,8 @@
 
                 <div class="m204-form-grid">
 
-                    <input class="m204-input" placeholder="Name" @bind="_model.Name" />
-                    <input class="m204-input" placeholder="Code" @bind="_model.Code" />
+                    <input class="m204-input" aria-label="Name" @bind="_model.Name" />
+                    <input class="m204-input" aria-label="Code" @bind="_model.Code" />
 
                     <select class="m204-input" @bind="_model.ParentLocationId">
                         <option value="">-- Parent Location --</option>
@@ -58,7 +58,7 @@
                         }
                     </select>
 
-                    <textarea class="m204-input" placeholder="Reason" @bind="_model.Reason"></textarea>
+                    <textarea class="m204-input" aria-label="Reason" @bind="_model.Reason"></textarea>
 
                 </div>
 

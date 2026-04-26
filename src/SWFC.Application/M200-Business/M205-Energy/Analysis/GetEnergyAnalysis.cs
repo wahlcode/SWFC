@@ -5,6 +5,7 @@ using SWFC.Application.M800_Security.M802_ApplicationSecurity.Authorization;
 using SWFC.Domain.M100_System.M101_Foundation.Exceptions;
 using SWFC.Domain.M100_System.M101_Foundation.Abstractions;
 using SWFC.Domain.M100_System.M101_Foundation.Results;
+using SWFC.Domain.M200_Business.M205_Energy.EnergyReadings;
 
 namespace SWFC.Application.M200_Business.M205_Energy.Analysis;
 
@@ -87,6 +88,10 @@ public sealed class GetEnergyAnalysisHandler
                 reading.Value.Value,
                 reading.Source,
                 consumption,
+                reading.IsPlausibilityFlagged,
+                reading.PlausibilityNote?.Value,
+                reading.RfidExceptionReason?.Value,
+                reading.OfflineCaptureId,
                 reading.AuditInfo.CreatedAtUtc,
                 reading.AuditInfo.CreatedBy));
 
@@ -129,17 +134,39 @@ public sealed class GetEnergyAnalysisHandler
             meter.Id,
             meter.Name.Value,
             meter.MediumType,
+            meter.MediumName.Value,
             meter.Unit.Value,
             meter.IsManualEntryEnabled,
             meter.IsExternalImportEnabled,
             meter.ExternalSystem?.Value,
+            meter.ParentMeterId,
             meter.MachineId,
             meter.IsActive);
+
+        var captureComparisons = orderedReadings
+            .GroupBy(x => x.Date.Value.Date)
+            .Select(group =>
+            {
+                var manual = group.FirstOrDefault(x => x.Source == EnergyReadingSource.Manual);
+                var automatic = group.FirstOrDefault(x => x.Source is EnergyReadingSource.Automatic or EnergyReadingSource.Import or EnergyReadingSource.Realtime);
+
+                return manual is null || automatic is null
+                    ? null
+                    : new EnergyAnalysisCaptureComparisonDto(
+                        group.Key,
+                        manual.Value.Value,
+                        automatic.Value.Value,
+                        Math.Abs(manual.Value.Value - automatic.Value.Value));
+            })
+            .Where(x => x is not null)
+            .Select(x => x!)
+            .ToList();
 
         var result = new EnergyAnalysisResultDto(
             meterDto,
             readingDtos,
-            monthlyDtos);
+            monthlyDtos,
+            captureComparisons);
 
         return Result<EnergyAnalysisResultDto>.Success(result);
     }

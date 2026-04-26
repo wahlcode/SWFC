@@ -10,6 +10,7 @@ public sealed class CostCenter
         Name = null!;
         Code = null!;
         ParentCostCenterId = null;
+        ValidFrom = default;
         IsActive = true;
         AuditInfo = null!;
     }
@@ -19,6 +20,7 @@ public sealed class CostCenter
         CostCenterName name,
         CostCenterCode code,
         Guid? parentCostCenterId,
+        DateOnly validFrom,
         bool isActive,
         AuditInfo auditInfo)
     {
@@ -26,6 +28,7 @@ public sealed class CostCenter
         Name = name;
         Code = code;
         ParentCostCenterId = parentCostCenterId;
+        ValidFrom = validFrom;
         IsActive = isActive;
         AuditInfo = auditInfo;
     }
@@ -34,6 +37,7 @@ public sealed class CostCenter
     public CostCenterName Name { get; private set; }
     public CostCenterCode Code { get; private set; }
     public Guid? ParentCostCenterId { get; private set; }
+    public DateOnly ValidFrom { get; private set; }
     public bool IsActive { get; private set; }
     public AuditInfo AuditInfo { get; private set; }
 
@@ -41,6 +45,7 @@ public sealed class CostCenter
         CostCenterName name,
         CostCenterCode code,
         Guid? parentCostCenterId,
+        DateOnly validFrom,
         ChangeContext changeContext)
     {
         var auditInfo = new AuditInfo(
@@ -52,6 +57,7 @@ public sealed class CostCenter
             name,
             code,
             parentCostCenterId,
+            validFrom,
             isActive: true,
             auditInfo);
     }
@@ -60,11 +66,13 @@ public sealed class CostCenter
         CostCenterName name,
         CostCenterCode code,
         Guid? parentCostCenterId,
+        DateOnly validFrom,
         ChangeContext changeContext)
     {
         Name = name;
         Code = code;
         ParentCostCenterId = parentCostCenterId;
+        ValidFrom = validFrom;
 
         Touch(changeContext);
     }

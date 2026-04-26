@@ -12,12 +12,14 @@ public sealed record UpdateEnergyMeterCommand(
     Guid Id,
     string Name,
     EnergyMediumType MediumType,
+    string MediumName,
     string Unit,
     bool IsManualEntryEnabled,
     bool IsExternalImportEnabled,
     string? ExternalSystem,
     string? RfidTag,
     bool SupportsOfflineCapture,
+    Guid? ParentMeterId,
     Guid? MachineId,
     bool IsActive,
     string Reason);
@@ -39,6 +41,9 @@ public sealed class UpdateEnergyMeterValidator : ICommandValidator<UpdateEnergyM
         if (string.IsNullOrWhiteSpace(command.Unit))
             result.Add("M205.Meter.Unit.Required", "Unit is required.");
 
+        if (string.IsNullOrWhiteSpace(command.MediumName))
+            result.Add("M205.Meter.MediumName.Required", "Medium name is required.");
+
         if (!command.IsManualEntryEnabled && !command.IsExternalImportEnabled)
             result.Add("M205.Meter.Mode.Required", "At least one meter mode is required.");
 
@@ -47,6 +52,9 @@ public sealed class UpdateEnergyMeterValidator : ICommandValidator<UpdateEnergyM
 
         if (command.SupportsOfflineCapture && !command.IsManualEntryEnabled)
             result.Add("M205.Meter.Offline.RequiresManualEntry", "Offline capture requires manual entry support.");
+
+        if (command.ParentMeterId == command.Id)
+            result.Add("M205.Meter.Parent.SelfReference", "A meter cannot be its own parent.");
 
         if (string.IsNullOrWhiteSpace(command.Reason))
             result.Add("M205.Meter.Reason.Required", "Reason is required.");
@@ -91,12 +99,14 @@ public sealed class UpdateEnergyMeterHandler : IUseCaseHandler<UpdateEnergyMeter
         meter.Update(
             new EnergyMeterName(request.Name),
             request.MediumType,
+            new EnergyMediumName(request.MediumName),
             new EnergyMeterUnit(request.Unit),
             request.IsManualEntryEnabled,
             request.IsExternalImportEnabled,
             EnergyExternalSystem.CreateOptional(request.ExternalSystem),
             EnergyMeterRfidTag.CreateOptional(request.RfidTag),
             request.SupportsOfflineCapture,
+            request.ParentMeterId,
             request.MachineId,
             changeContext);
 

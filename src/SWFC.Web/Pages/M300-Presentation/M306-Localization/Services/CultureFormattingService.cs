@@ -28,7 +28,7 @@ public sealed class CultureFormattingService
     {
         if (string.IsNullOrWhiteSpace(cultureName))
         {
-            return CultureInfo.GetCultureInfo("de-DE");
+            return CultureInfo.GetCultureInfo(LocalizationTextProvider.DefaultCultureName);
         }
 
         try
@@ -37,7 +37,7 @@ public sealed class CultureFormattingService
         }
         catch (CultureNotFoundException)
         {
-            return CultureInfo.GetCultureInfo("de-DE");
+            return CultureInfo.GetCultureInfo(LocalizationTextProvider.DefaultCultureName);
         }
     }
 }

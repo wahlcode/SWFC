@@ -1,46 +1,36 @@
 {
   "ModuleCode": "M1001",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 69,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2594745+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:23.0569226+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M1001 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1001 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "13 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "4 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
     {
       "Title": "Plugin-Struktur definieren",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Plugin-Schnittstellen definieren",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Standardisierte Erweiterungspunkte",
@@ -49,28 +39,28 @@
     },
     {
       "Title": "Kontrolliertes Laden von Plugins",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Laufzeitanbindung von Plugins",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Plugin-Initialisierung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Isolation von Plugins sicherstellen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Trennung Core vs Plugin erzwingen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Zugriff nur \u00C3\u0192\u00C2\u00BCber definierte Schnittstellen",
@@ -79,13 +69,13 @@
     },
     {
       "Title": "Plugin-Lifecycle (Load / Unload)",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Fehlerisolation von Plugins",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Drittmodule",

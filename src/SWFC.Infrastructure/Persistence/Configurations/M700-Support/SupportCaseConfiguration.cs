@@ -22,6 +22,23 @@ public sealed class SupportCaseConfiguration : IEntityTypeConfiguration<SupportC
             .HasColumnType("text")
             .IsRequired();
 
+        entity.Property(x => x.Status)
+            .HasConversion<string>()
+            .IsRequired()
+            .HasMaxLength(32);
+
+        entity.Property(x => x.ModuleReference)
+            .HasMaxLength(50)
+            .IsRequired(false);
+
+        entity.Property(x => x.ObjectReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        entity.Property(x => x.HistoryLog)
+            .HasColumnType("text")
+            .IsRequired();
+
         entity.Property(x => x.TriggeredBugId)
             .IsRequired(false);
 

@@ -1,76 +1,54 @@
 {
   "ModuleCode": "M809",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2423379+00:00",
-  "CodeStatus": "Missing",
-  "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
-  "Flags": [
-    "missing_code",
-    "md_incomplete",
-    "missing_tests",
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M809 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M809 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "LastAuditUtc": "2026-04-26T14:08:22.9962467+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "Sicherheitsrichtlinien",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Zugriffsrichtlinien",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Policy-Vorgaben",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Compliance-Regeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Nachweisbare Regelwerke",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Policies sind verbindlich",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Abweichungen nachvollziehbar und begr\u00C3\u0192\u00C2\u00BCndet machen",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Policies wirken auf Konfiguration, Zugriff und Prozesse",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

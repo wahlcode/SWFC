@@ -1,22 +1,17 @@
 {
   "ModuleCode": "M210",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 6,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.7689529+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.2604092+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
   "TestStatus": "Missing",
   "Flags": [
-    "missing_code",
     "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M210 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "Keine Tests mit Bezug zu M210 gefunden."
@@ -34,8 +29,8 @@
     },
     {
       "Title": "Ansprechpartner",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "Code, MD"
     },
     {
       "Title": "Zuordnungen zu Anlagen / Projekten",

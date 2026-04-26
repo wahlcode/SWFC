@@ -1,29 +1,19 @@
 {
   "ModuleCode": "M407",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 44,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8848021+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.5034354+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M407 gefunden."
-    },
-    {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M407 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "8 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -34,8 +24,8 @@
     },
     {
       "Title": "Dateiablage extern",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Referenzierung von Dokumenten",
@@ -44,13 +34,13 @@
     },
     {
       "Title": "Zusammenarbeit mit M104",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Gro\u00C3\u0192\u00C5\u00B8e Dateien extern speichern",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Dokumente verlinken statt speichern",
@@ -59,8 +49,8 @@
     },
     {
       "Title": "SWFC bleibt Referenzsystem",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "DMS bleibt Speicher",

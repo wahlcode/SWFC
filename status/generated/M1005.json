@@ -1,34 +1,24 @@
 {
   "ModuleCode": "M1005",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 30,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2752876+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:23.1100098+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M1005 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1005 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -39,8 +29,8 @@
     },
     {
       "Title": "Update-St\u00C3\u0192\u00C2\u00A4nde",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Kontrollierte Updateprozesse",
@@ -69,13 +59,13 @@
     },
     {
       "Title": "Kontrollierte Rollout-Informationen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Updates nachvollziehbar machen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Versionen klar zuordnen",
@@ -89,13 +79,13 @@
     },
     {
       "Title": "Updater aus M500 herausl\u00C3\u0192\u00C2\u00B6sen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Versioning aus M500 herausl\u00C3\u0192\u00C2\u00B6sen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr kontrollierte Weiterentwicklung",

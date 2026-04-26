@@ -14,7 +14,8 @@ public sealed record CreateCostCenterCommand(
     string Name,
     string Code,
     Guid? ParentId,
-    string Reason);
+    DateOnly ValidFrom,
+    string? Reason);
 
 public sealed class CreateCostCenterValidator : ICommandValidator<CreateCostCenterCommand>
 {
@@ -39,9 +40,9 @@ public sealed class CreateCostCenterValidator : ICommandValidator<CreateCostCent
             result.Add("ParentId", "Parent id is invalid.");
         }
 
-        if (string.IsNullOrWhiteSpace(command.Reason))
+        if (command.ValidFrom == default)
         {
-            result.Add("Reason", "Reason is required.");
+            result.Add("ValidFrom", "Valid from is required.");
         }
 
         return Task.FromResult(result);
@@ -105,12 +106,17 @@ public sealed class CreateCostCenterHandler : IUseCaseHandler<CreateCostCenterCo
 
         var securityContext = await _currentUserService.GetSecurityContextAsync(cancellationToken);
 
-        var changeContext = ChangeContext.Create(securityContext.UserId, command.Reason);
+        var reason = string.IsNullOrWhiteSpace(command.Reason)
+            ? "Cost center created"
+            : command.Reason.Trim();
+
+        var changeContext = ChangeContext.Create(securityContext.UserId, reason);
 
         var costCenter = CostCenter.Create(
             CostCenterName.Create(command.Name),
             CostCenterCode.Create(command.Code),
             command.ParentId,
+            command.ValidFrom,
             changeContext);
 
         await _costCenterWriteRepository.AddAsync(costCenter, cancellationToken);
@@ -129,8 +135,9 @@ public sealed class CreateCostCenterHandler : IUseCaseHandler<CreateCostCenterCo
                 Name = costCenter.Name.Value,
                 Code = costCenter.Code.Value,
                 ParentId = costCenter.ParentCostCenterId,
+                costCenter.ValidFrom,
                 costCenter.IsActive,
-                command.Reason
+                Reason = reason
             }),
             cancellationToken: cancellationToken);
 

@@ -40,10 +40,17 @@ select {
     color: var(--color-text-primary);
 }
 
-.m100-textarea {
-    min-height: 120px;
-    resize: vertical;
+/* Checkbox */
+
+.m100-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
 }
+
+/* Button */
 
 .m100-button {
     background: var(--color-primary);
@@ -52,7 +59,22 @@ select {
     border: 1px solid var(--color-primary);
     border-radius: var(--radius-md);
     cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
+
+    .m100-button:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
+        transform: translateY(var(--motion-lift-xs));
+    }
+
+    .m100-button:disabled {
+        opacity: var(--opacity-disabled);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+/* List */
 
 .m100-list {
     list-style: none;
@@ -60,13 +82,36 @@ select {
     margin: 0;
 }
 
-.m100-list li {
-    margin-bottom: var(--space-sm);
-}
+    .m100-list li {
+        margin-bottom: var(--space-sm);
+    }
+
+/* States */
 
 .m100-muted {
     color: var(--color-text-secondary);
 }
+
+.m100-alert {
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.m100-alert--error {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger-text);
+}
+
+.m100-alert--success {
+    background: var(--color-success-bg);
+    border-color: var(--color-success-border);
+    color: var(--color-success-text);
+}
+
+/* Responsive */
 
 @media (max-width: 960px) {
     .m100-ou-detail__header,

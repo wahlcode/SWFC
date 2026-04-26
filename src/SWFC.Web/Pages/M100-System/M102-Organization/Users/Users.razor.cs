@@ -60,7 +60,7 @@ public partial class Users
     private string _externalText = "External";
     private string _withShiftModelText = "With shift model";
     private string _loadingText = "Loading user data...";
-    private string _searchPlaceholderText = "Search users...";
+    private string _searchLabelText = "Search users...";
     private string _onlyActiveText = "Only active users";
     private string _createUserText = "Create user";
     private string _userListText = "User list";
@@ -138,7 +138,7 @@ public partial class Users
         _externalText = await TextProvider.GetTextAsync("Users.External", _cultureName);
         _withShiftModelText = await TextProvider.GetTextAsync("Users.WithShiftModel", _cultureName);
         _loadingText = await TextProvider.GetTextAsync("Users.Loading", _cultureName);
-        _searchPlaceholderText = await TextProvider.GetTextAsync("Users.SearchPlaceholder", _cultureName);
+        _searchLabelText = await TextProvider.GetTextAsync("Users.SearchLabel", _cultureName);
         _onlyActiveText = await TextProvider.GetTextAsync("Users.OnlyActive", _cultureName);
         _createUserText = await TextProvider.GetTextAsync("Users.CreateUser", _cultureName);
         _userListText = await TextProvider.GetTextAsync("Users.UserList", _cultureName);

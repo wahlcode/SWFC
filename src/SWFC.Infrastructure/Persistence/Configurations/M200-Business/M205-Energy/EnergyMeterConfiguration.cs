@@ -28,6 +28,9 @@ public sealed class EnergyMeterConfiguration : IEntityTypeConfiguration<EnergyMe
         builder.Property(x => x.SupportsOfflineCapture)
             .IsRequired();
 
+        builder.Property(x => x.ParentMeterId)
+            .IsRequired(false);
+
         builder.Property(x => x.MachineId)
             .IsRequired(false);
 
@@ -44,6 +47,14 @@ public sealed class EnergyMeterConfiguration : IEntityTypeConfiguration<EnergyMe
             unit.Property(v => v.Value)
                 .HasColumnName("Unit")
                 .HasMaxLength(50)
+                .IsRequired();
+        });
+
+        builder.OwnsOne(x => x.MediumName, mediumName =>
+        {
+            mediumName.Property(v => v.Value)
+                .HasColumnName("MediumName")
+                .HasMaxLength(100)
                 .IsRequired();
         });
 
@@ -83,5 +94,10 @@ public sealed class EnergyMeterConfiguration : IEntityTypeConfiguration<EnergyMe
                 .HasMaxLength(200)
                 .IsRequired(false);
         });
+
+        builder.HasOne<EnergyMeter>()
+            .WithMany()
+            .HasForeignKey(x => x.ParentMeterId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

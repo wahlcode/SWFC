@@ -1,86 +1,69 @@
 {
   "ModuleCode": "M503",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8960773+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.5335757+00:00",
+  "CodeStatus": "Complete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
-  "Flags": [
-    "missing_code",
-    "missing_tests",
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M503 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M503 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "Ausf\u00C3\u0192\u00C2\u00BChrung geplanter Jobs",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Kontrollierte Prozessausf\u00C3\u0192\u00C2\u00BChrung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Wiederholungslogik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Ausf\u00C3\u0192\u00C2\u00BChrungsstatus",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Fehler- und Wiederanlaufverhalten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Geplante Wartungsjobs",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Pr\u00C3\u0192\u00C2\u00BCfzyklus-Ausf\u00C3\u0192\u00C2\u00BChrung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Periodische Synchronisationen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Automatisierte Hintergrundl\u00C3\u0192\u00C2\u00A4ufe",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Fehler protokollieren",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine Umgehung von Sicherheits- oder Fachregeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

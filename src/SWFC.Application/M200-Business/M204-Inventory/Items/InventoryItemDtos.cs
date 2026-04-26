@@ -9,10 +9,13 @@ public sealed record InventoryItemDetailsDto(
     string? Barcode,
     string? Manufacturer,
     string? ManufacturerPartNumber,
+    decimal StandardUnitPrice,
+    string Currency,
     bool IsActive,
     int QuantityOnHand,
     int ReservedQuantity,
     int AvailableQuantity,
+    decimal StockValue,
     IReadOnlyList<InventoryItemStockDto> Stocks,
     DateTime CreatedAtUtc,
     string CreatedBy,
@@ -27,7 +30,8 @@ public sealed record InventoryItemStockDto(
     string? Bin,
     int QuantityOnHand,
     int ReservedQuantity,
-    int AvailableQuantity);
+    int AvailableQuantity,
+    decimal StockValue);
 
 public sealed record InventoryItemLookupItem(
     Guid Id,
@@ -42,11 +46,14 @@ public sealed record InventoryItemListItem(
     string Name,
     string Description,
     string Unit,
+    decimal StandardUnitPrice,
+    string Currency,
     bool IsActive,
     int StockCount,
     int QuantityOnHand,
     int ReservedQuantity,
     int AvailableQuantity,
+    decimal StockValue,
     DateTime CreatedAtUtc,
     string CreatedBy,
     DateTime? LastModifiedAtUtc,

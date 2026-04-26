@@ -1,9 +1,9 @@
 {
   "ModuleCode": "M303",
-  "ScorePercent": 10,
+  "ScorePercent": 17,
   "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.8115014+00:00",
+  "LastAuditUtc": "2026-04-26T14:08:22.3469827+00:00",
   "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
   "TestStatus": "Incomplete",
@@ -64,8 +64,8 @@
     },
     {
       "Title": "Kan\u00C3\u0192\u00C2\u00A4le UI / E-Mail",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     },
     {
       "Title": "Vorbereitung f\u00C3\u0192\u00C2\u00BCr Teams / Slack",
@@ -94,8 +94,8 @@
     },
     {
       "Title": "Keine Fachlogik",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     }
   ]
 }

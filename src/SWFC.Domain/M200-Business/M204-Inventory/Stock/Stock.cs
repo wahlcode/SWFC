@@ -80,30 +80,6 @@ public sealed class Stock
             auditInfo);
     }
 
-    public void Relocate(Guid locationId, string? bin, ChangeContext changeContext)
-    {
-        if (locationId == Guid.Empty)
-        {
-            throw new ValidationException(ValidationErrorCodes.Invalid);
-        }
-
-        LocationId = locationId;
-        Bin = NormalizeBin(bin);
-
-        Touch(changeContext);
-    }
-
-    public void ApplyInventoryCorrection(int correctedQuantityOnHand, ChangeContext changeContext)
-    {
-        if (correctedQuantityOnHand < 0)
-        {
-            throw new ValidationException(ValidationErrorCodes.Invalid);
-        }
-
-        QuantityOnHand = correctedQuantityOnHand;
-        Touch(changeContext);
-    }
-
     public void ApplyMovement(StockMovement movement, ChangeContext changeContext)
     {
         if (movement.StockId != Id)

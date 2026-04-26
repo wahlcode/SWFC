@@ -6,6 +6,7 @@ public sealed record RequestForQuotationDto(
     Guid SupplierId,
     DateTime RequestedAtUtc,
     DateTime? ResponseDueAtUtc,
+    string? OfferDocumentReference,
     bool IsClosed);
 
 public sealed record RequestForQuotationListItem(
@@ -16,9 +17,11 @@ public sealed record RequestForQuotationListItem(
     string SupplierName,
     DateTime RequestedAtUtc,
     DateTime? ResponseDueAtUtc,
+    string? OfferDocumentReference,
     bool IsClosed);
 
 public sealed record CreateRequestForQuotationRequest(
     Guid PurchaseRequirementId,
     Guid SupplierId,
-    DateTime? ResponseDueAtUtc);
+    DateTime? ResponseDueAtUtc,
+    string? OfferDocumentReference);

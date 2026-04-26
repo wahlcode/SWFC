@@ -6,7 +6,7 @@
         <h3>@(Model.Id.HasValue ? "Komponente bearbeiten" : "Komponente anlegen")</h3>
     </div>
 
-    <input class="m201-input" placeholder="Name" @bind="Model.Name" />
+    <input class="m201-input" aria-label="Component name" @bind="Model.Name" />
 
     <select class="m201-input" @bind="Model.MachineComponentAreaId">
         <option value="">-- Globaler Katalogbereich --</option>
@@ -24,8 +24,8 @@
         }
     </select>
 
-    <textarea class="m201-textarea" placeholder="Beschreibung" @bind="Model.Description"></textarea>
-    <textarea class="m201-textarea" placeholder="Begründung" @bind="Model.Reason"></textarea>
+    <textarea class="m201-textarea" aria-label="Description" @bind="Model.Description"></textarea>
+    <textarea class="m201-textarea" aria-label="Reason" @bind="Model.Reason"></textarea>
 
     <div class="m201-component-form__actions">
         <button type="button"
@@ -72,5 +72,6 @@
     private Task HandleToggleActiveAsync()
         => OnToggleActive.InvokeAsync();
 }
+
 
 

@@ -1,4 +1,4 @@
-{
+﻿{
   "Common.Save": "Speichern",
   "Common.Cancel": "Abbrechen",
   "Common.Back": "Zurück",
@@ -121,7 +121,7 @@
   "Users.External": "Extern",
   "Users.WithShiftModel": "Mit Schichtmodell",
   "Users.Loading": "Lade Benutzerdaten...",
-  "Users.SearchPlaceholder": "Benutzer suchen...",
+  "Users.SearchLabel": "Benutzer suchen...",
   "Users.OnlyActive": "Nur aktive Benutzer",
   "Users.CreateUser": "Benutzer anlegen",
   "Users.UserList": "Benutzerliste",

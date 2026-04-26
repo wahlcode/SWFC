@@ -1,86 +1,64 @@
 {
   "ModuleCode": "M808",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2398111+00:00",
-  "CodeStatus": "Missing",
-  "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
-  "Flags": [
-    "missing_code",
-    "md_incomplete",
-    "missing_tests",
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M808 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M808 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "LastAuditUtc": "2026-04-26T14:08:22.9864765+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "Erkennung ungew\u00C3\u0192\u00C2\u00B6hnlicher Zugriffe",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Erkennung verd\u00C3\u0192\u00C2\u00A4chtiger Muster",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Sicherheitsalarme",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Monitoring sicherheitsrelevanter Ereignisse",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Viele Fehlanmeldungen",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Ungew\u00C3\u0192\u00C2\u00B6hnliche API-Zugriffe",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Auff\u00C3\u0192\u00C2\u00A4llige Nutzungsmuster",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Verd\u00C3\u0192\u00C2\u00A4chtige Aktivit\u00C3\u0192\u00C2\u00A4ten im System",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Nicht nur loggen, sondern aktiv \u00C3\u0192\u00C2\u00BCberwachen",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Kritische Auff\u00C3\u0192\u00C2\u00A4lligkeiten erzeugen Reaktion / Alarm",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

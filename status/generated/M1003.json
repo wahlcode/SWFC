@@ -1,34 +1,24 @@
 {
   "ModuleCode": "M1003",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 7,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.2682008+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:23.0824676+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
     "md_incomplete",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M1003 gefunden."
-    },
     {
       "Severity": "Info",
       "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
     },
     {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M1003 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "15 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "14 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -94,8 +84,8 @@
     },
     {
       "Title": "Trennung von Plugin-Core (M1001)",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Grundlage f\u00C3\u0192\u00C2\u00BCr stabilen Plattformbetrieb",

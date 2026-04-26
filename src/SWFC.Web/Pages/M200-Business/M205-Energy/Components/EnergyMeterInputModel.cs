@@ -11,6 +11,9 @@ public sealed class EnergyMeterInputModel
     public EnergyMediumType MediumType { get; set; } = EnergyMediumType.Electricity;
 
     [Required]
+    public string MediumName { get; set; } = "Electricity";
+
+    [Required]
     public string Unit { get; set; } = string.Empty;
 
     public bool IsManualEntryEnabled { get; set; } = true;
@@ -22,6 +25,8 @@ public sealed class EnergyMeterInputModel
     public string? RfidTag { get; set; }
 
     public bool SupportsOfflineCapture { get; set; }
+
+    public string? ParentMeterId { get; set; }
 
     public string? MachineId { get; set; }
 

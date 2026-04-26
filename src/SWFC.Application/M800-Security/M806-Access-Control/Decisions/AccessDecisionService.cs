@@ -22,7 +22,7 @@ public sealed class AccessDecisionService : IAccessDecisionService
     {
         if (securityContext.IsDeveloperMode)
         {
-            return Task.FromResult(AccessDecisionResult.Allowed(request, "Developer mode bypass."));
+            return Task.FromResult(AccessDecisionResult.Allowed(request, "Developer mode override."));
         }
 
         if (!securityContext.IsAuthenticated)

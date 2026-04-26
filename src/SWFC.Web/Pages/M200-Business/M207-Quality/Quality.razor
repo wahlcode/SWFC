@@ -1,0 +1,149 @@
+@page "/business/quality"
+@using Microsoft.AspNetCore.Authorization
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using SWFC.Application.M200_Business.M207_Quality
+@using SWFC.Domain.M200_Business.M207_Quality
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@inject CreateQualityCase CreateCase
+@inject CreateQualityAction CreateAction
+@inject GetQualityCases GetCases
+@inject GetQualityActions GetActions
+
+<PageTitle>M207 Qualitaet</PageTitle>
+
+<section class="v010-page">
+    <header><p>M207</p><h1>Qualitaet</h1></header>
+
+    @if (_error is not null)
+    {
+        <div class="v010-alert">@_error</div>
+    }
+
+    <div class="v010-grid">
+        <form class="v010-panel" @onsubmit="CreateCaseAsync">
+            <h2>Qualitaetsfall</h2>
+            <input @bind="_caseTitle" placeholder="Titel" />
+            <textarea @bind="_caseDescription" placeholder="Abweichung / Fehler / Beanstandung"></textarea>
+            <select @bind="_caseSource">
+                @foreach (var source in Enum.GetValues<QualityCaseSource>())
+                {
+                    <option value="@source">@source</option>
+                }
+            </select>
+            <input @bind="_sourceReference" placeholder="Quelle / M203 / M202 Referenz" />
+            <input @bind="_machineId" placeholder="M201 Maschine optional" />
+            <select @bind="_priority">
+                @foreach (var priority in Enum.GetValues<QualityPriority>())
+                {
+                    <option value="@priority">@priority</option>
+                }
+            </select>
+            <button type="submit" disabled="@_busy">Speichern</button>
+        </form>
+
+        <form class="v010-panel" @onsubmit="CreateActionAsync">
+            <h2>Massnahme</h2>
+            <select @bind="_actionCaseId">
+                <option value="">Qualitaetsfall waehlen</option>
+                @foreach (var item in _cases)
+                {
+                    <option value="@item.Id">@item.Title</option>
+                }
+            </select>
+            <input @bind="_actionTitle" placeholder="Massnahme" />
+            <select @bind="_actionType">
+                @foreach (var type in Enum.GetValues<QualityActionType>())
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+            <button type="submit" disabled="@_busy">Anlegen</button>
+        </form>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Faelle</h2>
+        <table>
+            <thead><tr><th>Titel</th><th>Quelle</th><th>Prioritaet</th><th>Status</th><th>Eskalation</th></tr></thead>
+            <tbody>
+                @foreach (var item in _cases)
+                {
+                    <tr><td>@item.Title</td><td>@item.Source @Display(item.SourceReference)</td><td>@item.Priority</td><td>@item.Status</td><td>@item.EscalationLevel</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="v010-panel">
+        <h2>Massnahmen</h2>
+        <table>
+            <thead><tr><th>Titel</th><th>Typ</th><th>Status</th><th>Fall</th></tr></thead>
+            <tbody>
+                @foreach (var action in _actions)
+                {
+                    <tr><td>@action.Title</td><td>@action.Type</td><td>@action.Status</td><td>@action.QualityCaseId</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@code {
+    private bool _busy;
+    private string? _error;
+    private IReadOnlyList<QualityCaseListItem> _cases = [];
+    private IReadOnlyList<QualityActionListItem> _actions = [];
+    private string _caseTitle = string.Empty;
+    private string _caseDescription = string.Empty;
+    private QualityCaseSource _caseSource = QualityCaseSource.Manual;
+    private string? _sourceReference;
+    private string? _machineId;
+    private QualityPriority _priority = QualityPriority.Normal;
+    private string _actionCaseId = string.Empty;
+    private string _actionTitle = string.Empty;
+    private QualityActionType _actionType = QualityActionType.Corrective;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task CreateCaseAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreateCase.ExecuteAsync(new CreateQualityCaseRequest(_caseTitle, _caseDescription, _caseSource, _sourceReference, ParseGuid(_machineId), null, null, _priority, DateTime.UtcNow.AddDays(7), null));
+            _caseTitle = string.Empty;
+            _caseDescription = string.Empty;
+            _sourceReference = null;
+            _machineId = null;
+        });
+    }
+
+    private async Task CreateActionAsync()
+    {
+        await RunAsync(async () =>
+        {
+            await CreateAction.ExecuteAsync(new CreateQualityActionRequest(RequireGuid(_actionCaseId), _actionTitle, _actionType, null, DateTime.UtcNow.AddDays(7)));
+            _actionTitle = string.Empty;
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _error = null;
+        try { await action(); await LoadAsync(); }
+        catch (Exception exception) { _error = exception.Message; }
+        finally { _busy = false; }
+    }
+
+    private async Task LoadAsync()
+    {
+        _cases = await GetCases.ExecuteAsync();
+        _actions = await GetActions.ExecuteAsync();
+    }
+
+    private static Guid RequireGuid(string value) => Guid.TryParse(value, out var id) && id != Guid.Empty ? id : throw new InvalidOperationException("Gueltige ID erforderlich.");
+    private static Guid? ParseGuid(string? value) => string.IsNullOrWhiteSpace(value) ? null : RequireGuid(value);
+    private static string Display(string? value) => string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+}

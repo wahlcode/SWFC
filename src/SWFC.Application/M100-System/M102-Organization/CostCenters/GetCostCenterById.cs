@@ -77,6 +77,7 @@ public sealed class GetCostCenterByIdHandler : IUseCaseHandler<GetCostCenterById
             costCenter.ParentCostCenterId,
             parentName,
             parentCode,
+            costCenter.ValidFrom,
             costCenter.IsActive);
 
         return Result<CostCenterDetailsDto>.Success(dto);

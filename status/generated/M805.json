@@ -1,21 +1,14 @@
 {
   "ModuleCode": "M805",
-  "ScorePercent": 43,
-  "Status": "PartiallyVerified",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.1810676+00:00",
-  "CodeStatus": "Incomplete",
+  "LastAuditUtc": "2026-04-26T14:08:22.9338839+00:00",
+  "CodeStatus": "Complete",
   "MdStatus": "Complete",
-  "TestStatus": "Incomplete",
-  "Flags": [
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Info",
-      "Message": "5 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "AuditLog",
@@ -29,28 +22,28 @@
     },
     {
       "Title": "Protokollierung sicherheitsrelevanter Ereignisse",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Nachvollziehbarkeit von \u00C3\u0192\u00E2\u20AC\u017Enderungen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Nachvollziehbarkeit von Aktionen",
-      "Status": "InProgress",
-      "Evidence": "Code, MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Keine L\u00C3\u0192\u00C2\u00B6schung auditrelevanter Daten",
-      "Status": "InProgress",
-      "Evidence": "MD, Tests"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Wer / wann / was / vorher / nachher nachvollziehbar machen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }

@@ -1,29 +1,19 @@
 {
   "ModuleCode": "M605",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 14,
+  "Status": "PartiallyVerified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:41.9384524+00:00",
-  "CodeStatus": "Missing",
+  "LastAuditUtc": "2026-04-26T14:08:22.6378853+00:00",
+  "CodeStatus": "Incomplete",
   "MdStatus": "Complete",
-  "TestStatus": "Missing",
+  "TestStatus": "Incomplete",
   "Flags": [
-    "missing_code",
-    "missing_tests",
     "workitems_not_verified"
   ],
   "Issues": [
     {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M605 gefunden."
-    },
-    {
       "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M605 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "11 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
+      "Message": "10 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
     }
   ],
   "WorkItems": [
@@ -74,13 +64,13 @@
     },
     {
       "Title": "Standards einhalten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Abweichungen begr\u00C3\u0192\u00C2\u00BCnden",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "InProgress",
+      "Evidence": "MD, Tests"
     }
   ]
 }

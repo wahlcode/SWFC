@@ -25,6 +25,18 @@ public sealed class BugConfiguration : IEntityTypeConfiguration<Bug>
             .IsRequired()
             .HasMaxLength(32);
 
+        entity.Property(x => x.ModuleReference)
+            .HasMaxLength(50)
+            .IsRequired(false);
+
+        entity.Property(x => x.ObjectReference)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        entity.Property(x => x.HistoryLog)
+            .HasColumnType("text")
+            .IsRequired();
+
         entity.OwnsOne(x => x.AuditInfo, audit =>
         {
             audit.Property(a => a.CreatedAtUtc).IsRequired();

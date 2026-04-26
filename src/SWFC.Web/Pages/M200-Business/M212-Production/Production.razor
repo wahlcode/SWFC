@@ -1,0 +1,48 @@
+@page "/m200/production"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using SWFC.Application.M200_Business.M212_Production
+
+@inject ProductionWorkspaceService ProductionService
+
+<PageTitle>Produktion</PageTitle>
+
+<section class="module-page">
+    <header class="module-page__header">
+        <div>
+            <p>M212</p>
+            <h1>Produktion und Rückmeldungen</h1>
+        </div>
+        <span>@Orders.Count Aufträge</span>
+    </header>
+
+    <div class="module-grid">
+        @foreach (var order in Orders)
+        {
+            <article class="module-card">
+                <div>
+                    <span>@order.Status</span>
+                    <h2>@order.OrderNumber</h2>
+                </div>
+                <dl>
+                    <div><dt>Produkt</dt><dd>@order.Product</dd></div>
+                    <div><dt>Planmenge</dt><dd>@order.PlannedQuantity @order.Unit</dd></div>
+                    <div><dt>Gutmenge</dt><dd>@(order.ProducedQuantity - order.ScrapQuantity) @order.Unit</dd></div>
+                    <div><dt>Ausschuss</dt><dd>@order.ScrapQuantity @order.Unit</dd></div>
+                    <div><dt>M207 Signal</dt><dd>@(order.HasQualitySignal ? "ja" : "nein")</dd></div>
+                    <div><dt>M205 Korrelation</dt><dd>@(order.HasEnergyCorrelation ? "ja" : "nein")</dd></div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<ProductionOrderSummaryDto> Orders = Array.Empty<ProductionOrderSummaryDto>();
+
+    protected override void OnInitialized()
+    {
+        Orders = ProductionService.GetOrders();
+    }
+}

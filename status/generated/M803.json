@@ -1,66 +1,44 @@
 {
   "ModuleCode": "M803",
-  "ScorePercent": 0,
-  "Status": "NotChecked",
+  "ScorePercent": 100,
+  "Status": "Verified",
   "Source": "Generated",
-  "LastAuditUtc": "2026-04-25T17:01:42.1650566+00:00",
-  "CodeStatus": "Missing",
-  "MdStatus": "Incomplete",
-  "TestStatus": "Missing",
-  "Flags": [
-    "missing_code",
-    "md_incomplete",
-    "missing_tests",
-    "workitems_not_verified"
-  ],
-  "Issues": [
-    {
-      "Severity": "Warning",
-      "Message": "Keine Implementierung f\u00FCr M803 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "MD-Dokumentation ist noch nicht vollst\u00E4ndig."
-    },
-    {
-      "Severity": "Info",
-      "Message": "Keine Tests mit Bezug zu M803 gefunden."
-    },
-    {
-      "Severity": "Info",
-      "Message": "6 Arbeitspunkte sind nicht vollst\u00E4ndig durch Dokumentation, Code und Tests belegt."
-    }
-  ],
+  "LastAuditUtc": "2026-04-26T14:08:22.9018308+00:00",
+  "CodeStatus": "Complete",
+  "MdStatus": "Complete",
+  "TestStatus": "Complete",
+  "Flags": [],
+  "Issues": [],
   "WorkItems": [
     {
       "Title": "Verschl\u00C3\u0192\u00C2\u00BCsselung",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Zugriffsschutz auf Datenebene",
-      "Status": "Open",
-      "Evidence": "Keine Evidenz"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Schutz sensibler Informationen",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Sichere Speicherung",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Besonderer Schutz sensibler Daten",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     },
     {
       "Title": "Zugriff nach Sicherheits- und Berechtigungsregeln",
-      "Status": "Open",
-      "Evidence": "MD"
+      "Status": "Done",
+      "Evidence": "Code, MD, Tests"
     }
   ]
 }
